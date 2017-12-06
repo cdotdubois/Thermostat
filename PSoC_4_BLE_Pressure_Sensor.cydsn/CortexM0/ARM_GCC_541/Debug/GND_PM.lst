@@ -1,0 +1,670 @@
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"GND_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              		.align	2
+  21              	GND_backup:
+  22 0000 00000000 		.space	12
+  22      00000000 
+  22      00000000 
+  23              		.section	.text.GND_Sleep,"ax",%progbits
+  24              		.align	2
+  25              		.global	GND_Sleep
+  26              		.code	16
+  27              		.thumb_func
+  28              		.type	GND_Sleep, %function
+  29              	GND_Sleep:
+  30              	.LFB0:
+  31              		.file 1 "Generated_Source\\PSoC4\\GND_PM.c"
+   1:Generated_Source\PSoC4/GND_PM.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/GND_PM.c **** * File Name: GND.c  
+   3:Generated_Source\PSoC4/GND_PM.c **** * Version 2.20
+   4:Generated_Source\PSoC4/GND_PM.c **** *
+   5:Generated_Source\PSoC4/GND_PM.c **** * Description:
+   6:Generated_Source\PSoC4/GND_PM.c **** *  This file contains APIs to set up the Pins component for low power modes.
+   7:Generated_Source\PSoC4/GND_PM.c **** *
+   8:Generated_Source\PSoC4/GND_PM.c **** * Note:
+   9:Generated_Source\PSoC4/GND_PM.c **** *
+  10:Generated_Source\PSoC4/GND_PM.c **** ********************************************************************************
+  11:Generated_Source\PSoC4/GND_PM.c **** * Copyright 2015, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC4/GND_PM.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  13:Generated_Source\PSoC4/GND_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  14:Generated_Source\PSoC4/GND_PM.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC4/GND_PM.c **** *******************************************************************************/
+  16:Generated_Source\PSoC4/GND_PM.c **** 
+  17:Generated_Source\PSoC4/GND_PM.c **** #include "cytypes.h"
+  18:Generated_Source\PSoC4/GND_PM.c **** #include "GND.h"
+  19:Generated_Source\PSoC4/GND_PM.c **** 
+  20:Generated_Source\PSoC4/GND_PM.c **** static GND_BACKUP_STRUCT  GND_backup = {0u, 0u, 0u};
+  21:Generated_Source\PSoC4/GND_PM.c **** 
+  22:Generated_Source\PSoC4/GND_PM.c **** 
+  23:Generated_Source\PSoC4/GND_PM.c **** /*******************************************************************************
+  24:Generated_Source\PSoC4/GND_PM.c **** * Function Name: GND_Sleep
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 2
+
+
+  25:Generated_Source\PSoC4/GND_PM.c **** ****************************************************************************//**
+  26:Generated_Source\PSoC4/GND_PM.c **** *
+  27:Generated_Source\PSoC4/GND_PM.c **** * \brief Stores the pin configuration and prepares the pin for entering chip 
+  28:Generated_Source\PSoC4/GND_PM.c **** *  deep-sleep/hibernate modes. This function applies only to SIO and USBIO pins.
+  29:Generated_Source\PSoC4/GND_PM.c **** *  It should not be called for GPIO or GPIO_OVT pins.
+  30:Generated_Source\PSoC4/GND_PM.c **** *
+  31:Generated_Source\PSoC4/GND_PM.c **** * <b>Note</b> This function is available in PSoC 4 only.
+  32:Generated_Source\PSoC4/GND_PM.c **** *
+  33:Generated_Source\PSoC4/GND_PM.c **** * \return 
+  34:Generated_Source\PSoC4/GND_PM.c **** *  None 
+  35:Generated_Source\PSoC4/GND_PM.c **** *  
+  36:Generated_Source\PSoC4/GND_PM.c **** * \sideeffect
+  37:Generated_Source\PSoC4/GND_PM.c **** *  For SIO pins, this function configures the pin input threshold to CMOS and
+  38:Generated_Source\PSoC4/GND_PM.c **** *  drive level to Vddio. This is needed for SIO pins when in device 
+  39:Generated_Source\PSoC4/GND_PM.c **** *  deep-sleep/hibernate modes.
+  40:Generated_Source\PSoC4/GND_PM.c **** *
+  41:Generated_Source\PSoC4/GND_PM.c **** * \funcusage
+  42:Generated_Source\PSoC4/GND_PM.c **** *  \snippet GND_SUT.c usage_GND_Sleep_Wakeup
+  43:Generated_Source\PSoC4/GND_PM.c **** *******************************************************************************/
+  44:Generated_Source\PSoC4/GND_PM.c **** void GND_Sleep(void)
+  45:Generated_Source\PSoC4/GND_PM.c **** {
+  32              		.loc 1 45 0
+  33              		.cfi_startproc
+  34              		@ args = 0, pretend = 0, frame = 0
+  35              		@ frame_needed = 1, uses_anonymous_args = 0
+  36 0000 80B5     		push	{r7, lr}
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  40 0002 00AF     		add	r7, sp, #0
+  41              		.cfi_def_cfa_register 7
+  46:Generated_Source\PSoC4/GND_PM.c ****     #if defined(GND__PC)
+  47:Generated_Source\PSoC4/GND_PM.c ****         GND_backup.pcState = GND_PC;
+  42              		.loc 1 47 0
+  43 0004 034B     		ldr	r3, .L2
+  44 0006 1A68     		ldr	r2, [r3]
+  45 0008 034B     		ldr	r3, .L2+4
+  46 000a 1A60     		str	r2, [r3]
+  48:Generated_Source\PSoC4/GND_PM.c ****     #else
+  49:Generated_Source\PSoC4/GND_PM.c ****         #if (CY_PSOC4_4200L)
+  50:Generated_Source\PSoC4/GND_PM.c ****             /* Save the regulator state and put the PHY into suspend mode */
+  51:Generated_Source\PSoC4/GND_PM.c ****             GND_backup.usbState = GND_CR1_REG;
+  52:Generated_Source\PSoC4/GND_PM.c ****             GND_USB_POWER_REG |= GND_USBIO_ENTER_SLEEP;
+  53:Generated_Source\PSoC4/GND_PM.c ****             GND_CR1_REG &= GND_USBIO_CR1_OFF;
+  54:Generated_Source\PSoC4/GND_PM.c ****         #endif
+  55:Generated_Source\PSoC4/GND_PM.c ****     #endif
+  56:Generated_Source\PSoC4/GND_PM.c ****     #if defined(CYIPBLOCK_m0s8ioss_VERSION) && defined(GND__SIO)
+  57:Generated_Source\PSoC4/GND_PM.c ****         GND_backup.sioState = GND_SIO_REG;
+  58:Generated_Source\PSoC4/GND_PM.c ****         /* SIO requires unregulated output buffer and single ended input buffer */
+  59:Generated_Source\PSoC4/GND_PM.c ****         GND_SIO_REG &= (uint32)(~GND_SIO_LPM_MASK);
+  60:Generated_Source\PSoC4/GND_PM.c ****     #endif  
+  61:Generated_Source\PSoC4/GND_PM.c **** }
+  47              		.loc 1 61 0
+  48 000c C046     		nop
+  49 000e BD46     		mov	sp, r7
+  50              		@ sp needed
+  51 0010 80BD     		pop	{r7, pc}
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 3
+
+
+  52              	.L3:
+  53 0012 C046     		.align	2
+  54              	.L2:
+  55 0014 08030440 		.word	1074004744
+  56 0018 00000000 		.word	GND_backup
+  57              		.cfi_endproc
+  58              	.LFE0:
+  59              		.size	GND_Sleep, .-GND_Sleep
+  60              		.section	.text.GND_Wakeup,"ax",%progbits
+  61              		.align	2
+  62              		.global	GND_Wakeup
+  63              		.code	16
+  64              		.thumb_func
+  65              		.type	GND_Wakeup, %function
+  66              	GND_Wakeup:
+  67              	.LFB1:
+  62:Generated_Source\PSoC4/GND_PM.c **** 
+  63:Generated_Source\PSoC4/GND_PM.c **** 
+  64:Generated_Source\PSoC4/GND_PM.c **** /*******************************************************************************
+  65:Generated_Source\PSoC4/GND_PM.c **** * Function Name: GND_Wakeup
+  66:Generated_Source\PSoC4/GND_PM.c **** ****************************************************************************//**
+  67:Generated_Source\PSoC4/GND_PM.c **** *
+  68:Generated_Source\PSoC4/GND_PM.c **** * \brief Restores the pin configuration that was saved during Pin_Sleep(). This 
+  69:Generated_Source\PSoC4/GND_PM.c **** * function applies only to SIO and USBIO pins. It should not be called for
+  70:Generated_Source\PSoC4/GND_PM.c **** * GPIO or GPIO_OVT pins.
+  71:Generated_Source\PSoC4/GND_PM.c **** *
+  72:Generated_Source\PSoC4/GND_PM.c **** * For USBIO pins, the wakeup is only triggered for falling edge interrupts.
+  73:Generated_Source\PSoC4/GND_PM.c **** *
+  74:Generated_Source\PSoC4/GND_PM.c **** * <b>Note</b> This function is available in PSoC 4 only.
+  75:Generated_Source\PSoC4/GND_PM.c **** *
+  76:Generated_Source\PSoC4/GND_PM.c **** * \return 
+  77:Generated_Source\PSoC4/GND_PM.c **** *  None
+  78:Generated_Source\PSoC4/GND_PM.c **** *  
+  79:Generated_Source\PSoC4/GND_PM.c **** * \funcusage
+  80:Generated_Source\PSoC4/GND_PM.c **** *  Refer to GND_Sleep() for an example usage.
+  81:Generated_Source\PSoC4/GND_PM.c **** *******************************************************************************/
+  82:Generated_Source\PSoC4/GND_PM.c **** void GND_Wakeup(void)
+  83:Generated_Source\PSoC4/GND_PM.c **** {
+  68              		.loc 1 83 0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 1, uses_anonymous_args = 0
+  72 0000 80B5     		push	{r7, lr}
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 7, -8
+  75              		.cfi_offset 14, -4
+  76 0002 00AF     		add	r7, sp, #0
+  77              		.cfi_def_cfa_register 7
+  84:Generated_Source\PSoC4/GND_PM.c ****     #if defined(GND__PC)
+  85:Generated_Source\PSoC4/GND_PM.c ****         GND_PC = GND_backup.pcState;
+  78              		.loc 1 85 0
+  79 0004 034A     		ldr	r2, .L5
+  80 0006 044B     		ldr	r3, .L5+4
+  81 0008 1B68     		ldr	r3, [r3]
+  82 000a 1360     		str	r3, [r2]
+  86:Generated_Source\PSoC4/GND_PM.c ****     #else
+  87:Generated_Source\PSoC4/GND_PM.c ****         #if (CY_PSOC4_4200L)
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 4
+
+
+  88:Generated_Source\PSoC4/GND_PM.c ****             /* Restore the regulator state and come out of suspend mode */
+  89:Generated_Source\PSoC4/GND_PM.c ****             GND_USB_POWER_REG &= GND_USBIO_EXIT_SLEEP_PH1;
+  90:Generated_Source\PSoC4/GND_PM.c ****             GND_CR1_REG = GND_backup.usbState;
+  91:Generated_Source\PSoC4/GND_PM.c ****             GND_USB_POWER_REG &= GND_USBIO_EXIT_SLEEP_PH2;
+  92:Generated_Source\PSoC4/GND_PM.c ****         #endif
+  93:Generated_Source\PSoC4/GND_PM.c ****     #endif
+  94:Generated_Source\PSoC4/GND_PM.c ****     #if defined(CYIPBLOCK_m0s8ioss_VERSION) && defined(GND__SIO)
+  95:Generated_Source\PSoC4/GND_PM.c ****         GND_SIO_REG = GND_backup.sioState;
+  96:Generated_Source\PSoC4/GND_PM.c ****     #endif
+  97:Generated_Source\PSoC4/GND_PM.c **** }
+  83              		.loc 1 97 0
+  84 000c C046     		nop
+  85 000e BD46     		mov	sp, r7
+  86              		@ sp needed
+  87 0010 80BD     		pop	{r7, pc}
+  88              	.L6:
+  89 0012 C046     		.align	2
+  90              	.L5:
+  91 0014 08030440 		.word	1074004744
+  92 0018 00000000 		.word	GND_backup
+  93              		.cfi_endproc
+  94              	.LFE1:
+  95              		.size	GND_Wakeup, .-GND_Wakeup
+  96              		.text
+  97              	.Letext0:
+  98              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+  99              		.file 3 "Generated_Source\\PSoC4\\GND.h"
+ 100              		.section	.debug_info,"",%progbits
+ 101              	.Ldebug_info0:
+ 102 0000 0F010000 		.4byte	0x10f
+ 103 0004 0300     		.2byte	0x3
+ 104 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 105 000a 04       		.byte	0x4
+ 106 000b 01       		.uleb128 0x1
+ 107 000c 4F010000 		.4byte	.LASF20
+ 108 0010 0C       		.byte	0xc
+ 109 0011 21000000 		.4byte	.LASF21
+ 110 0015 81000000 		.4byte	.LASF22
+ 111 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 112 001d 00000000 		.4byte	0
+ 113 0021 00000000 		.4byte	0
+ 114 0025 00000000 		.4byte	.Ldebug_line0
+ 115 0029 02       		.uleb128 0x2
+ 116 002a 01       		.byte	0x1
+ 117 002b 06       		.byte	0x6
+ 118 002c 43010000 		.4byte	.LASF0
+ 119 0030 02       		.uleb128 0x2
+ 120 0031 01       		.byte	0x1
+ 121 0032 08       		.byte	0x8
+ 122 0033 47000000 		.4byte	.LASF1
+ 123 0037 02       		.uleb128 0x2
+ 124 0038 02       		.byte	0x2
+ 125 0039 05       		.byte	0x5
+ 126 003a 28010000 		.4byte	.LASF2
+ 127 003e 02       		.uleb128 0x2
+ 128 003f 02       		.byte	0x2
+ 129 0040 07       		.byte	0x7
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 5
+
+
+ 130 0041 67000000 		.4byte	.LASF3
+ 131 0045 02       		.uleb128 0x2
+ 132 0046 04       		.byte	0x4
+ 133 0047 05       		.byte	0x5
+ 134 0048 3A010000 		.4byte	.LASF4
+ 135 004c 02       		.uleb128 0x2
+ 136 004d 04       		.byte	0x4
+ 137 004e 07       		.byte	0x7
+ 138 004f 55000000 		.4byte	.LASF5
+ 139 0053 02       		.uleb128 0x2
+ 140 0054 08       		.byte	0x8
+ 141 0055 05       		.byte	0x5
+ 142 0056 15010000 		.4byte	.LASF6
+ 143 005a 02       		.uleb128 0x2
+ 144 005b 08       		.byte	0x8
+ 145 005c 07       		.byte	0x7
+ 146 005d EA000000 		.4byte	.LASF7
+ 147 0061 03       		.uleb128 0x3
+ 148 0062 04       		.byte	0x4
+ 149 0063 05       		.byte	0x5
+ 150 0064 696E7400 		.ascii	"int\000"
+ 151 0068 02       		.uleb128 0x2
+ 152 0069 04       		.byte	0x4
+ 153 006a 07       		.byte	0x7
+ 154 006b DD000000 		.4byte	.LASF8
+ 155 006f 04       		.uleb128 0x4
+ 156 0070 D6000000 		.4byte	.LASF12
+ 157 0074 02       		.byte	0x2
+ 158 0075 D401     		.2byte	0x1d4
+ 159 0077 4C000000 		.4byte	0x4c
+ 160 007b 02       		.uleb128 0x2
+ 161 007c 04       		.byte	0x4
+ 162 007d 04       		.byte	0x4
+ 163 007e 41000000 		.4byte	.LASF9
+ 164 0082 02       		.uleb128 0x2
+ 165 0083 08       		.byte	0x8
+ 166 0084 04       		.byte	0x4
+ 167 0085 7A000000 		.4byte	.LASF10
+ 168 0089 02       		.uleb128 0x2
+ 169 008a 01       		.byte	0x1
+ 170 008b 08       		.byte	0x8
+ 171 008c 23010000 		.4byte	.LASF11
+ 172 0090 04       		.uleb128 0x4
+ 173 0091 12000000 		.4byte	.LASF13
+ 174 0095 02       		.byte	0x2
+ 175 0096 7E02     		.2byte	0x27e
+ 176 0098 9C000000 		.4byte	0x9c
+ 177 009c 05       		.uleb128 0x5
+ 178 009d 6F000000 		.4byte	0x6f
+ 179 00a1 06       		.uleb128 0x6
+ 180 00a2 0C       		.byte	0xc
+ 181 00a3 03       		.byte	0x3
+ 182 00a4 21       		.byte	0x21
+ 183 00a5 CE000000 		.4byte	0xce
+ 184 00a9 07       		.uleb128 0x7
+ 185 00aa 32010000 		.4byte	.LASF14
+ 186 00ae 03       		.byte	0x3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 6
+
+
+ 187 00af 23       		.byte	0x23
+ 188 00b0 6F000000 		.4byte	0x6f
+ 189 00b4 00       		.byte	0
+ 190 00b5 07       		.uleb128 0x7
+ 191 00b6 01010000 		.4byte	.LASF15
+ 192 00ba 03       		.byte	0x3
+ 193 00bb 24       		.byte	0x24
+ 194 00bc 6F000000 		.4byte	0x6f
+ 195 00c0 04       		.byte	0x4
+ 196 00c1 07       		.uleb128 0x7
+ 197 00c2 18000000 		.4byte	.LASF16
+ 198 00c6 03       		.byte	0x3
+ 199 00c7 25       		.byte	0x25
+ 200 00c8 6F000000 		.4byte	0x6f
+ 201 00cc 08       		.byte	0x8
+ 202 00cd 00       		.byte	0
+ 203 00ce 08       		.uleb128 0x8
+ 204 00cf 00000000 		.4byte	.LASF17
+ 205 00d3 03       		.byte	0x3
+ 206 00d4 26       		.byte	0x26
+ 207 00d5 A1000000 		.4byte	0xa1
+ 208 00d9 09       		.uleb128 0x9
+ 209 00da 01       		.byte	0x1
+ 210 00db F2010000 		.4byte	.LASF18
+ 211 00df 01       		.byte	0x1
+ 212 00e0 2C       		.byte	0x2c
+ 213 00e1 01       		.byte	0x1
+ 214 00e2 00000000 		.4byte	.LFB0
+ 215 00e6 1C000000 		.4byte	.LFE0
+ 216 00ea 01       		.byte	0x1
+ 217 00eb 9C       		.byte	0x9c
+ 218 00ec 01       		.byte	0x1
+ 219 00ed 09       		.uleb128 0x9
+ 220 00ee 01       		.byte	0x1
+ 221 00ef E7010000 		.4byte	.LASF19
+ 222 00f3 01       		.byte	0x1
+ 223 00f4 52       		.byte	0x52
+ 224 00f5 01       		.byte	0x1
+ 225 00f6 00000000 		.4byte	.LFB1
+ 226 00fa 1C000000 		.4byte	.LFE1
+ 227 00fe 01       		.byte	0x1
+ 228 00ff 9C       		.byte	0x9c
+ 229 0100 01       		.byte	0x1
+ 230 0101 0A       		.uleb128 0xa
+ 231 0102 0A010000 		.4byte	.LASF23
+ 232 0106 01       		.byte	0x1
+ 233 0107 14       		.byte	0x14
+ 234 0108 CE000000 		.4byte	0xce
+ 235 010c 05       		.byte	0x5
+ 236 010d 03       		.byte	0x3
+ 237 010e 00000000 		.4byte	GND_backup
+ 238 0112 00       		.byte	0
+ 239              		.section	.debug_abbrev,"",%progbits
+ 240              	.Ldebug_abbrev0:
+ 241 0000 01       		.uleb128 0x1
+ 242 0001 11       		.uleb128 0x11
+ 243 0002 01       		.byte	0x1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 7
+
+
+ 244 0003 25       		.uleb128 0x25
+ 245 0004 0E       		.uleb128 0xe
+ 246 0005 13       		.uleb128 0x13
+ 247 0006 0B       		.uleb128 0xb
+ 248 0007 03       		.uleb128 0x3
+ 249 0008 0E       		.uleb128 0xe
+ 250 0009 1B       		.uleb128 0x1b
+ 251 000a 0E       		.uleb128 0xe
+ 252 000b 55       		.uleb128 0x55
+ 253 000c 06       		.uleb128 0x6
+ 254 000d 11       		.uleb128 0x11
+ 255 000e 01       		.uleb128 0x1
+ 256 000f 52       		.uleb128 0x52
+ 257 0010 01       		.uleb128 0x1
+ 258 0011 10       		.uleb128 0x10
+ 259 0012 06       		.uleb128 0x6
+ 260 0013 00       		.byte	0
+ 261 0014 00       		.byte	0
+ 262 0015 02       		.uleb128 0x2
+ 263 0016 24       		.uleb128 0x24
+ 264 0017 00       		.byte	0
+ 265 0018 0B       		.uleb128 0xb
+ 266 0019 0B       		.uleb128 0xb
+ 267 001a 3E       		.uleb128 0x3e
+ 268 001b 0B       		.uleb128 0xb
+ 269 001c 03       		.uleb128 0x3
+ 270 001d 0E       		.uleb128 0xe
+ 271 001e 00       		.byte	0
+ 272 001f 00       		.byte	0
+ 273 0020 03       		.uleb128 0x3
+ 274 0021 24       		.uleb128 0x24
+ 275 0022 00       		.byte	0
+ 276 0023 0B       		.uleb128 0xb
+ 277 0024 0B       		.uleb128 0xb
+ 278 0025 3E       		.uleb128 0x3e
+ 279 0026 0B       		.uleb128 0xb
+ 280 0027 03       		.uleb128 0x3
+ 281 0028 08       		.uleb128 0x8
+ 282 0029 00       		.byte	0
+ 283 002a 00       		.byte	0
+ 284 002b 04       		.uleb128 0x4
+ 285 002c 16       		.uleb128 0x16
+ 286 002d 00       		.byte	0
+ 287 002e 03       		.uleb128 0x3
+ 288 002f 0E       		.uleb128 0xe
+ 289 0030 3A       		.uleb128 0x3a
+ 290 0031 0B       		.uleb128 0xb
+ 291 0032 3B       		.uleb128 0x3b
+ 292 0033 05       		.uleb128 0x5
+ 293 0034 49       		.uleb128 0x49
+ 294 0035 13       		.uleb128 0x13
+ 295 0036 00       		.byte	0
+ 296 0037 00       		.byte	0
+ 297 0038 05       		.uleb128 0x5
+ 298 0039 35       		.uleb128 0x35
+ 299 003a 00       		.byte	0
+ 300 003b 49       		.uleb128 0x49
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 8
+
+
+ 301 003c 13       		.uleb128 0x13
+ 302 003d 00       		.byte	0
+ 303 003e 00       		.byte	0
+ 304 003f 06       		.uleb128 0x6
+ 305 0040 13       		.uleb128 0x13
+ 306 0041 01       		.byte	0x1
+ 307 0042 0B       		.uleb128 0xb
+ 308 0043 0B       		.uleb128 0xb
+ 309 0044 3A       		.uleb128 0x3a
+ 310 0045 0B       		.uleb128 0xb
+ 311 0046 3B       		.uleb128 0x3b
+ 312 0047 0B       		.uleb128 0xb
+ 313 0048 01       		.uleb128 0x1
+ 314 0049 13       		.uleb128 0x13
+ 315 004a 00       		.byte	0
+ 316 004b 00       		.byte	0
+ 317 004c 07       		.uleb128 0x7
+ 318 004d 0D       		.uleb128 0xd
+ 319 004e 00       		.byte	0
+ 320 004f 03       		.uleb128 0x3
+ 321 0050 0E       		.uleb128 0xe
+ 322 0051 3A       		.uleb128 0x3a
+ 323 0052 0B       		.uleb128 0xb
+ 324 0053 3B       		.uleb128 0x3b
+ 325 0054 0B       		.uleb128 0xb
+ 326 0055 49       		.uleb128 0x49
+ 327 0056 13       		.uleb128 0x13
+ 328 0057 38       		.uleb128 0x38
+ 329 0058 0B       		.uleb128 0xb
+ 330 0059 00       		.byte	0
+ 331 005a 00       		.byte	0
+ 332 005b 08       		.uleb128 0x8
+ 333 005c 16       		.uleb128 0x16
+ 334 005d 00       		.byte	0
+ 335 005e 03       		.uleb128 0x3
+ 336 005f 0E       		.uleb128 0xe
+ 337 0060 3A       		.uleb128 0x3a
+ 338 0061 0B       		.uleb128 0xb
+ 339 0062 3B       		.uleb128 0x3b
+ 340 0063 0B       		.uleb128 0xb
+ 341 0064 49       		.uleb128 0x49
+ 342 0065 13       		.uleb128 0x13
+ 343 0066 00       		.byte	0
+ 344 0067 00       		.byte	0
+ 345 0068 09       		.uleb128 0x9
+ 346 0069 2E       		.uleb128 0x2e
+ 347 006a 00       		.byte	0
+ 348 006b 3F       		.uleb128 0x3f
+ 349 006c 0C       		.uleb128 0xc
+ 350 006d 03       		.uleb128 0x3
+ 351 006e 0E       		.uleb128 0xe
+ 352 006f 3A       		.uleb128 0x3a
+ 353 0070 0B       		.uleb128 0xb
+ 354 0071 3B       		.uleb128 0x3b
+ 355 0072 0B       		.uleb128 0xb
+ 356 0073 27       		.uleb128 0x27
+ 357 0074 0C       		.uleb128 0xc
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 9
+
+
+ 358 0075 11       		.uleb128 0x11
+ 359 0076 01       		.uleb128 0x1
+ 360 0077 12       		.uleb128 0x12
+ 361 0078 01       		.uleb128 0x1
+ 362 0079 40       		.uleb128 0x40
+ 363 007a 0A       		.uleb128 0xa
+ 364 007b 9742     		.uleb128 0x2117
+ 365 007d 0C       		.uleb128 0xc
+ 366 007e 00       		.byte	0
+ 367 007f 00       		.byte	0
+ 368 0080 0A       		.uleb128 0xa
+ 369 0081 34       		.uleb128 0x34
+ 370 0082 00       		.byte	0
+ 371 0083 03       		.uleb128 0x3
+ 372 0084 0E       		.uleb128 0xe
+ 373 0085 3A       		.uleb128 0x3a
+ 374 0086 0B       		.uleb128 0xb
+ 375 0087 3B       		.uleb128 0x3b
+ 376 0088 0B       		.uleb128 0xb
+ 377 0089 49       		.uleb128 0x49
+ 378 008a 13       		.uleb128 0x13
+ 379 008b 02       		.uleb128 0x2
+ 380 008c 0A       		.uleb128 0xa
+ 381 008d 00       		.byte	0
+ 382 008e 00       		.byte	0
+ 383 008f 00       		.byte	0
+ 384              		.section	.debug_aranges,"",%progbits
+ 385 0000 24000000 		.4byte	0x24
+ 386 0004 0200     		.2byte	0x2
+ 387 0006 00000000 		.4byte	.Ldebug_info0
+ 388 000a 04       		.byte	0x4
+ 389 000b 00       		.byte	0
+ 390 000c 0000     		.2byte	0
+ 391 000e 0000     		.2byte	0
+ 392 0010 00000000 		.4byte	.LFB0
+ 393 0014 1C000000 		.4byte	.LFE0-.LFB0
+ 394 0018 00000000 		.4byte	.LFB1
+ 395 001c 1C000000 		.4byte	.LFE1-.LFB1
+ 396 0020 00000000 		.4byte	0
+ 397 0024 00000000 		.4byte	0
+ 398              		.section	.debug_ranges,"",%progbits
+ 399              	.Ldebug_ranges0:
+ 400 0000 00000000 		.4byte	.LFB0
+ 401 0004 1C000000 		.4byte	.LFE0
+ 402 0008 00000000 		.4byte	.LFB1
+ 403 000c 1C000000 		.4byte	.LFE1
+ 404 0010 00000000 		.4byte	0
+ 405 0014 00000000 		.4byte	0
+ 406              		.section	.debug_line,"",%progbits
+ 407              	.Ldebug_line0:
+ 408 0000 79000000 		.section	.debug_str,"MS",%progbits,1
+ 408      02004C00 
+ 408      00000201 
+ 408      FB0E0D00 
+ 408      01010101 
+ 409              	.LASF17:
+ 410 0000 474E445F 		.ascii	"GND_BACKUP_STRUCT\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 10
+
+
+ 410      4241434B 
+ 410      55505F53 
+ 410      54525543 
+ 410      5400
+ 411              	.LASF13:
+ 412 0012 72656733 		.ascii	"reg32\000"
+ 412      3200
+ 413              	.LASF16:
+ 414 0018 75736253 		.ascii	"usbState\000"
+ 414      74617465 
+ 414      00
+ 415              	.LASF21:
+ 416 0021 47656E65 		.ascii	"Generated_Source\\PSoC4\\GND_PM.c\000"
+ 416      72617465 
+ 416      645F536F 
+ 416      75726365 
+ 416      5C50536F 
+ 417              	.LASF9:
+ 418 0041 666C6F61 		.ascii	"float\000"
+ 418      7400
+ 419              	.LASF1:
+ 420 0047 756E7369 		.ascii	"unsigned char\000"
+ 420      676E6564 
+ 420      20636861 
+ 420      7200
+ 421              	.LASF5:
+ 422 0055 6C6F6E67 		.ascii	"long unsigned int\000"
+ 422      20756E73 
+ 422      69676E65 
+ 422      6420696E 
+ 422      7400
+ 423              	.LASF3:
+ 424 0067 73686F72 		.ascii	"short unsigned int\000"
+ 424      7420756E 
+ 424      7369676E 
+ 424      65642069 
+ 424      6E7400
+ 425              	.LASF10:
+ 426 007a 646F7562 		.ascii	"double\000"
+ 426      6C6500
+ 427              	.LASF22:
+ 428 0081 433A5C55 		.ascii	"C:\\Users\\hasur\\Documents\\PSoC_4_BLE_Pressure_Se"
+ 428      73657273 
+ 428      5C686173 
+ 428      75725C44 
+ 428      6F63756D 
+ 429 00b0 6E736F72 		.ascii	"nsor\\PSoC_4_BLE_Pressure_Sensor.cydsn\000"
+ 429      5C50536F 
+ 429      435F345F 
+ 429      424C455F 
+ 429      50726573 
+ 430              	.LASF12:
+ 431 00d6 75696E74 		.ascii	"uint32\000"
+ 431      333200
+ 432              	.LASF8:
+ 433 00dd 756E7369 		.ascii	"unsigned int\000"
+ 433      676E6564 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 11
+
+
+ 433      20696E74 
+ 433      00
+ 434              	.LASF7:
+ 435 00ea 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 435      206C6F6E 
+ 435      6720756E 
+ 435      7369676E 
+ 435      65642069 
+ 436              	.LASF15:
+ 437 0101 73696F53 		.ascii	"sioState\000"
+ 437      74617465 
+ 437      00
+ 438              	.LASF23:
+ 439 010a 474E445F 		.ascii	"GND_backup\000"
+ 439      6261636B 
+ 439      757000
+ 440              	.LASF6:
+ 441 0115 6C6F6E67 		.ascii	"long long int\000"
+ 441      206C6F6E 
+ 441      6720696E 
+ 441      7400
+ 442              	.LASF11:
+ 443 0123 63686172 		.ascii	"char\000"
+ 443      00
+ 444              	.LASF2:
+ 445 0128 73686F72 		.ascii	"short int\000"
+ 445      7420696E 
+ 445      7400
+ 446              	.LASF14:
+ 447 0132 70635374 		.ascii	"pcState\000"
+ 447      61746500 
+ 448              	.LASF4:
+ 449 013a 6C6F6E67 		.ascii	"long int\000"
+ 449      20696E74 
+ 449      00
+ 450              	.LASF0:
+ 451 0143 7369676E 		.ascii	"signed char\000"
+ 451      65642063 
+ 451      68617200 
+ 452              	.LASF20:
+ 453 014f 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 453      43313120 
+ 453      352E342E 
+ 453      31203230 
+ 453      31363036 
+ 454 0182 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -g"
+ 454      20726576 
+ 454      6973696F 
+ 454      6E203233 
+ 454      37373135 
+ 455 01b5 64776172 		.ascii	"dwarf-3 -O0 -ffunction-sections -ffat-lto-objects\000"
+ 455      662D3320 
+ 455      2D4F3020 
+ 455      2D666675 
+ 455      6E637469 
+ 456              	.LASF19:
+ 457 01e7 474E445F 		.ascii	"GND_Wakeup\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccprelNK.s 			page 12
+
+
+ 457      57616B65 
+ 457      757000
+ 458              	.LASF18:
+ 459 01f2 474E445F 		.ascii	"GND_Sleep\000"
+ 459      536C6565 
+ 459      7000
+ 460              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

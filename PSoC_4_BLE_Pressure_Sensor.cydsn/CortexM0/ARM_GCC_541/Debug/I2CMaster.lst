@@ -1,0 +1,2966 @@
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"I2CMaster.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	SensorCalibrationData,22,4
+  20              		.comm	X1,4,4
+  21              		.comm	X2,4,4
+  22              		.comm	X3,4,4
+  23              		.comm	B3,4,4
+  24              		.comm	B5,4,4
+  25              		.comm	B6,4,4
+  26              		.comm	UT,4,4
+  27              		.comm	UP,4,4
+  28              		.comm	B4,4,4
+  29              		.comm	B7,4,4
+  30              		.comm	AC1,2,2
+  31              		.comm	AC2,2,2
+  32              		.comm	AC3,2,2
+  33              		.comm	B1,2,2
+  34              		.comm	B2,2,2
+  35              		.comm	MC,2,2
+  36              		.comm	MD,2,2
+  37              		.comm	AC4,2,2
+  38              		.comm	AC5,2,2
+  39              		.comm	AC6,2,2
+  40              		.comm	Temperature,4,4
+  41              		.comm	Pressure,4,4
+  42              		.comm	Altitude,4,4
+  43              		.global	PressureAtSeaLevel
+  44              		.data
+  45              		.align	3
+  46              		.type	PressureAtSeaLevel, %object
+  47              		.size	PressureAtSeaLevel, 8
+  48              	PressureAtSeaLevel:
+  49 0000 00000000 		.word	0
+  50 0004 D0BCF840 		.word	1090043088
+  51              		.global	CalibrationDataAvailable
+  52              		.bss
+  53              		.type	CalibrationDataAvailable, %object
+  54              		.size	CalibrationDataAvailable, 1
+  55              	CalibrationDataAvailable:
+  56 0000 00       		.space	1
+  57              		.section	.text.ReadSensorCalibrationData,"ax",%progbits
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 2
+
+
+  58              		.align	2
+  59              		.global	ReadSensorCalibrationData
+  60              		.code	16
+  61              		.thumb_func
+  62              		.type	ReadSensorCalibrationData, %function
+  63              	ReadSensorCalibrationData:
+  64              	.LFB35:
+  65              		.file 1 "I2CMaster.c"
+   1:I2CMaster.c   **** /**************************************************************************************************
+   2:I2CMaster.c   **** * Project Name		: PSoC_4_BLE_Pressure_Sensor
+   3:I2CMaster.c   **** * File Name			: I2CMaster.c
+   4:I2CMaster.c   **** * Version 			: 1.0
+   5:I2CMaster.c   **** * Device Used		: CY8C4247LQI-BL483
+   6:I2CMaster.c   **** * Software Used		: PSoC Creator 3.1
+   7:I2CMaster.c   **** * Compiler    		: ARM GCC 4.8.4
+   8:I2CMaster.c   **** * Related Hardware	: CY8CKIT-042-BLE Bluetooth Low Energy Pioneer Kit
+   9:I2CMaster.c   **** ***************************************************************************************************
+  10:I2CMaster.c   **** 
+  11:I2CMaster.c   **** /**************************************************************************************************
+  12:I2CMaster.c   **** * Copyright (2015), Cypress Semiconductor Corporation. All Rights Reserved.
+  13:I2CMaster.c   **** ***************************************************************************************************
+  14:I2CMaster.c   **** * This software, including source code, documentation and related materials
+  15:I2CMaster.c   **** * ("Software") is owned by Cypress Semiconductor Corporation (Cypress) and is
+  16:I2CMaster.c   **** * protected by and subject to worldwide patent protection (United States and 
+  17:I2CMaster.c   **** * foreign), United States copyright laws and international treaty provisions. 
+  18:I2CMaster.c   **** * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+  19:I2CMaster.c   **** * license to copy, use, modify, create derivative works of, and compile the 
+  20:I2CMaster.c   **** * Cypress source code and derivative works for the sole purpose of creating 
+  21:I2CMaster.c   **** * custom software in support of licensee product, such licensee product to be
+  22:I2CMaster.c   **** * used only in conjunction with Cypress's integrated circuit as specified in the
+  23:I2CMaster.c   **** * applicable agreement. Any reproduction, modification, translation, compilation,
+  24:I2CMaster.c   **** * or representation of this Software except as specified above is prohibited 
+  25:I2CMaster.c   **** * without the express written permission of Cypress.
+  26:I2CMaster.c   **** * 
+  27:I2CMaster.c   **** * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, 
+  28:I2CMaster.c   **** * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED 
+  29:I2CMaster.c   **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  30:I2CMaster.c   **** * Cypress reserves the right to make changes to the Software without notice. 
+  31:I2CMaster.c   **** * Cypress does not assume any liability arising out of the application or use
+  32:I2CMaster.c   **** * of Software or any product or circuit described in the Software. Cypress does
+  33:I2CMaster.c   **** * not authorize its products for use as critical components in any products 
+  34:I2CMaster.c   **** * where a malfunction or failure may reasonably be expected to result in 
+  35:I2CMaster.c   **** * significant injury or death ("ACTIVE Risk Product"). By including Cypress's 
+  36:I2CMaster.c   **** * product in a ACTIVE Risk Product, the manufacturer of such system or application
+  37:I2CMaster.c   **** * assumes all risk of such use and in doing so indemnifies Cypress against all
+  38:I2CMaster.c   **** * liability. Use of this Software may be limited by and subject to the applicable
+  39:I2CMaster.c   **** * Cypress software license agreement.
+  40:I2CMaster.c   **** ***************************************************************************************************
+  41:I2CMaster.c   **** 
+  42:I2CMaster.c   **** #include <I2CMaster.h>
+  43:I2CMaster.c   **** 
+  44:I2CMaster.c   **** /*************************Variables Declaration****************************************************
+  45:I2CMaster.c   **** uint8 SensorCalibrationData[0x16]; //Calibration data is stored in this array
+  46:I2CMaster.c   **** long X1, X2, X3, B3, B5, B6, UT, UP; //Variables to store calibration coefficients
+  47:I2CMaster.c   **** unsigned long B4, B7; //Variables to store calibration coefficients
+  48:I2CMaster.c   **** short AC1, AC2, AC3, B1, B2, MC, MD; //Variables to store calibration coefficients
+  49:I2CMaster.c   **** unsigned short AC4, AC5, AC6; //Variables to store calibration coefficients
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 3
+
+
+  50:I2CMaster.c   **** long UT, UP; //Variables to store uncompensated temperature and pressure data
+  51:I2CMaster.c   **** long Temperature, Pressure, Altitude; //Variables to store the true temperature, pressure and altit
+  52:I2CMaster.c   **** double PressureAtSeaLevel = 101325.0; //Pressure at sea level in Pascal
+  53:I2CMaster.c   **** uint8 CalibrationDataAvailable = FALSE; //This flag is to whether the calibration data is available
+  54:I2CMaster.c   **** /**************************************************************************************************
+  55:I2CMaster.c   **** 
+  56:I2CMaster.c   **** /**************************************************************************************************
+  57:I2CMaster.c   **** * Function Name: ReadSensorCalibrationData
+  58:I2CMaster.c   **** ***************************************************************************************************
+  59:I2CMaster.c   **** * Summary: This function reads the sensor calibration data over I2C and
+  60:I2CMaster.c   **** * assigns it to the appropriate sensor coefficient variables.
+  61:I2CMaster.c   **** *
+  62:I2CMaster.c   **** * Parameters:
+  63:I2CMaster.c   **** *  void
+  64:I2CMaster.c   **** *
+  65:I2CMaster.c   **** * Return:
+  66:I2CMaster.c   **** *  void
+  67:I2CMaster.c   **** *
+  68:I2CMaster.c   **** ***************************************************************************************************
+  69:I2CMaster.c   **** void ReadSensorCalibrationData(void)
+  70:I2CMaster.c   **** {
+  66              		.loc 1 70 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 1, uses_anonymous_args = 0
+  70 0000 80B5     		push	{r7, lr}
+  71              		.cfi_def_cfa_offset 8
+  72              		.cfi_offset 7, -8
+  73              		.cfi_offset 14, -4
+  74 0002 00AF     		add	r7, sp, #0
+  75              		.cfi_def_cfa_register 7
+  71:I2CMaster.c   ****     static uint8 I2CWriteBuffer[0x01] = {0xAA}; //Location from which the calibration data is to be
+  72:I2CMaster.c   ****     
+  73:I2CMaster.c   ****     /* Do a write operation with the memory address bytes to get calibration data */
+  74:I2CMaster.c   **** 	I2C_I2CMasterWriteBuf(I2CSlaveAddress, (uint8 *) I2CWriteBuffer, sizeof(I2CWriteBuffer), I2C_I2C_M
+  76              		.loc 1 74 0
+  77 0004 4A49     		ldr	r1, .L4
+  78 0006 0023     		movs	r3, #0
+  79 0008 0122     		movs	r2, #1
+  80 000a 7720     		movs	r0, #119
+  81 000c FFF7FEFF 		bl	I2C_I2CMasterWriteBuf
+  75:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT)); //Wait till the master completes writ
+  82              		.loc 1 75 0
+  83 0010 C046     		nop
+  84              	.L2:
+  85              		.loc 1 75 0 is_stmt 0 discriminator 1
+  86 0012 FFF7FEFF 		bl	I2C_I2CMasterStatus
+  87 0016 0200     		movs	r2, r0
+  88 0018 0223     		movs	r3, #2
+  89 001a 1340     		ands	r3, r2
+  90 001c F9D0     		beq	.L2
+  76:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+  91              		.loc 1 76 0 is_stmt 1
+  92 001e FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+  77:I2CMaster.c   ****     
+  78:I2CMaster.c   ****     /* Read calibration from the sensor EEPROM and store it in a buffer */
+  79:I2CMaster.c   **** 	I2C_I2CMasterReadBuf(I2CSlaveAddress, (uint8 *) SensorCalibrationData, sizeof(SensorCalibrationDat
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 4
+
+
+  93              		.loc 1 79 0
+  94 0022 4449     		ldr	r1, .L4+4
+  95 0024 0023     		movs	r3, #0
+  96 0026 1622     		movs	r2, #22
+  97 0028 7720     		movs	r0, #119
+  98 002a FFF7FEFF 		bl	I2C_I2CMasterReadBuf
+  80:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_RD_CMPLT)); //Wait till the master completes read
+  99              		.loc 1 80 0
+ 100 002e C046     		nop
+ 101              	.L3:
+ 102              		.loc 1 80 0 is_stmt 0 discriminator 1
+ 103 0030 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 104 0034 0200     		movs	r2, r0
+ 105 0036 0123     		movs	r3, #1
+ 106 0038 1340     		ands	r3, r2
+ 107 003a F9D0     		beq	.L3
+  81:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 108              		.loc 1 81 0 is_stmt 1
+ 109 003c FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+  82:I2CMaster.c   ****     
+  83:I2CMaster.c   ****     CalibrationDataAvailable = TRUE; //Set sensor calibration data available flag
+ 110              		.loc 1 83 0
+ 111 0040 3D4B     		ldr	r3, .L4+8
+ 112 0042 0122     		movs	r2, #1
+ 113 0044 1A70     		strb	r2, [r3]
+  84:I2CMaster.c   ****     
+  85:I2CMaster.c   ****     /* Assign calibration data to coefficient variables as described in sensor datasheet */
+  86:I2CMaster.c   ****     AC1 = (SensorCalibrationData[0x00] << 0x08) | SensorCalibrationData[0x01];
+ 114              		.loc 1 86 0
+ 115 0046 3B4B     		ldr	r3, .L4+4
+ 116 0048 1B78     		ldrb	r3, [r3]
+ 117 004a 1B02     		lsls	r3, r3, #8
+ 118 004c 1AB2     		sxth	r2, r3
+ 119 004e 394B     		ldr	r3, .L4+4
+ 120 0050 5B78     		ldrb	r3, [r3, #1]
+ 121 0052 1BB2     		sxth	r3, r3
+ 122 0054 1343     		orrs	r3, r2
+ 123 0056 1AB2     		sxth	r2, r3
+ 124 0058 384B     		ldr	r3, .L4+12
+ 125 005a 1A80     		strh	r2, [r3]
+  87:I2CMaster.c   ****     AC2 = (SensorCalibrationData[0x02] << 0x08) | SensorCalibrationData[0x03];
+ 126              		.loc 1 87 0
+ 127 005c 354B     		ldr	r3, .L4+4
+ 128 005e 9B78     		ldrb	r3, [r3, #2]
+ 129 0060 1B02     		lsls	r3, r3, #8
+ 130 0062 1AB2     		sxth	r2, r3
+ 131 0064 334B     		ldr	r3, .L4+4
+ 132 0066 DB78     		ldrb	r3, [r3, #3]
+ 133 0068 1BB2     		sxth	r3, r3
+ 134 006a 1343     		orrs	r3, r2
+ 135 006c 1AB2     		sxth	r2, r3
+ 136 006e 344B     		ldr	r3, .L4+16
+ 137 0070 1A80     		strh	r2, [r3]
+  88:I2CMaster.c   ****     AC3 = (SensorCalibrationData[0x04] << 0x08) | SensorCalibrationData[0x05];
+ 138              		.loc 1 88 0
+ 139 0072 304B     		ldr	r3, .L4+4
+ 140 0074 1B79     		ldrb	r3, [r3, #4]
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 5
+
+
+ 141 0076 1B02     		lsls	r3, r3, #8
+ 142 0078 1AB2     		sxth	r2, r3
+ 143 007a 2E4B     		ldr	r3, .L4+4
+ 144 007c 5B79     		ldrb	r3, [r3, #5]
+ 145 007e 1BB2     		sxth	r3, r3
+ 146 0080 1343     		orrs	r3, r2
+ 147 0082 1AB2     		sxth	r2, r3
+ 148 0084 2F4B     		ldr	r3, .L4+20
+ 149 0086 1A80     		strh	r2, [r3]
+  89:I2CMaster.c   ****     AC4 = (SensorCalibrationData[0x06] << 0x08) | SensorCalibrationData[0x07];
+ 150              		.loc 1 89 0
+ 151 0088 2A4B     		ldr	r3, .L4+4
+ 152 008a 9B79     		ldrb	r3, [r3, #6]
+ 153 008c 1B02     		lsls	r3, r3, #8
+ 154 008e 1AB2     		sxth	r2, r3
+ 155 0090 284B     		ldr	r3, .L4+4
+ 156 0092 DB79     		ldrb	r3, [r3, #7]
+ 157 0094 1BB2     		sxth	r3, r3
+ 158 0096 1343     		orrs	r3, r2
+ 159 0098 1BB2     		sxth	r3, r3
+ 160 009a 9AB2     		uxth	r2, r3
+ 161 009c 2A4B     		ldr	r3, .L4+24
+ 162 009e 1A80     		strh	r2, [r3]
+  90:I2CMaster.c   ****     AC5 = (SensorCalibrationData[0x08] << 0x08) | SensorCalibrationData[0x09];
+ 163              		.loc 1 90 0
+ 164 00a0 244B     		ldr	r3, .L4+4
+ 165 00a2 1B7A     		ldrb	r3, [r3, #8]
+ 166 00a4 1B02     		lsls	r3, r3, #8
+ 167 00a6 1AB2     		sxth	r2, r3
+ 168 00a8 224B     		ldr	r3, .L4+4
+ 169 00aa 5B7A     		ldrb	r3, [r3, #9]
+ 170 00ac 1BB2     		sxth	r3, r3
+ 171 00ae 1343     		orrs	r3, r2
+ 172 00b0 1BB2     		sxth	r3, r3
+ 173 00b2 9AB2     		uxth	r2, r3
+ 174 00b4 254B     		ldr	r3, .L4+28
+ 175 00b6 1A80     		strh	r2, [r3]
+  91:I2CMaster.c   ****     AC6 = (SensorCalibrationData[0x0A] << 0x08) | SensorCalibrationData[0x0B];
+ 176              		.loc 1 91 0
+ 177 00b8 1E4B     		ldr	r3, .L4+4
+ 178 00ba 9B7A     		ldrb	r3, [r3, #10]
+ 179 00bc 1B02     		lsls	r3, r3, #8
+ 180 00be 1AB2     		sxth	r2, r3
+ 181 00c0 1C4B     		ldr	r3, .L4+4
+ 182 00c2 DB7A     		ldrb	r3, [r3, #11]
+ 183 00c4 1BB2     		sxth	r3, r3
+ 184 00c6 1343     		orrs	r3, r2
+ 185 00c8 1BB2     		sxth	r3, r3
+ 186 00ca 9AB2     		uxth	r2, r3
+ 187 00cc 204B     		ldr	r3, .L4+32
+ 188 00ce 1A80     		strh	r2, [r3]
+  92:I2CMaster.c   ****     B1 = (SensorCalibrationData[0x0C] << 0x08) | SensorCalibrationData[0x0D];
+ 189              		.loc 1 92 0
+ 190 00d0 184B     		ldr	r3, .L4+4
+ 191 00d2 1B7B     		ldrb	r3, [r3, #12]
+ 192 00d4 1B02     		lsls	r3, r3, #8
+ 193 00d6 1AB2     		sxth	r2, r3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 6
+
+
+ 194 00d8 164B     		ldr	r3, .L4+4
+ 195 00da 5B7B     		ldrb	r3, [r3, #13]
+ 196 00dc 1BB2     		sxth	r3, r3
+ 197 00de 1343     		orrs	r3, r2
+ 198 00e0 1AB2     		sxth	r2, r3
+ 199 00e2 1C4B     		ldr	r3, .L4+36
+ 200 00e4 1A80     		strh	r2, [r3]
+  93:I2CMaster.c   ****     B2 = (SensorCalibrationData[0x0E] << 0x08) | SensorCalibrationData[0x0F];
+ 201              		.loc 1 93 0
+ 202 00e6 134B     		ldr	r3, .L4+4
+ 203 00e8 9B7B     		ldrb	r3, [r3, #14]
+ 204 00ea 1B02     		lsls	r3, r3, #8
+ 205 00ec 1AB2     		sxth	r2, r3
+ 206 00ee 114B     		ldr	r3, .L4+4
+ 207 00f0 DB7B     		ldrb	r3, [r3, #15]
+ 208 00f2 1BB2     		sxth	r3, r3
+ 209 00f4 1343     		orrs	r3, r2
+ 210 00f6 1AB2     		sxth	r2, r3
+ 211 00f8 174B     		ldr	r3, .L4+40
+ 212 00fa 1A80     		strh	r2, [r3]
+  94:I2CMaster.c   ****     MC = (SensorCalibrationData[0x012] << 0x08) | SensorCalibrationData[0x013];
+ 213              		.loc 1 94 0
+ 214 00fc 0D4B     		ldr	r3, .L4+4
+ 215 00fe 9B7C     		ldrb	r3, [r3, #18]
+ 216 0100 1B02     		lsls	r3, r3, #8
+ 217 0102 1AB2     		sxth	r2, r3
+ 218 0104 0B4B     		ldr	r3, .L4+4
+ 219 0106 DB7C     		ldrb	r3, [r3, #19]
+ 220 0108 1BB2     		sxth	r3, r3
+ 221 010a 1343     		orrs	r3, r2
+ 222 010c 1AB2     		sxth	r2, r3
+ 223 010e 134B     		ldr	r3, .L4+44
+ 224 0110 1A80     		strh	r2, [r3]
+  95:I2CMaster.c   ****     MD = (SensorCalibrationData[0x014] << 0x08) | SensorCalibrationData[0x015];
+ 225              		.loc 1 95 0
+ 226 0112 084B     		ldr	r3, .L4+4
+ 227 0114 1B7D     		ldrb	r3, [r3, #20]
+ 228 0116 1B02     		lsls	r3, r3, #8
+ 229 0118 1AB2     		sxth	r2, r3
+ 230 011a 064B     		ldr	r3, .L4+4
+ 231 011c 5B7D     		ldrb	r3, [r3, #21]
+ 232 011e 1BB2     		sxth	r3, r3
+ 233 0120 1343     		orrs	r3, r2
+ 234 0122 1AB2     		sxth	r2, r3
+ 235 0124 0E4B     		ldr	r3, .L4+48
+ 236 0126 1A80     		strh	r2, [r3]
+  96:I2CMaster.c   **** }
+ 237              		.loc 1 96 0
+ 238 0128 C046     		nop
+ 239 012a BD46     		mov	sp, r7
+ 240              		@ sp needed
+ 241 012c 80BD     		pop	{r7, pc}
+ 242              	.L5:
+ 243 012e C046     		.align	2
+ 244              	.L4:
+ 245 0130 08000000 		.word	I2CWriteBuffer.7778
+ 246 0134 00000000 		.word	SensorCalibrationData
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 7
+
+
+ 247 0138 00000000 		.word	CalibrationDataAvailable
+ 248 013c 00000000 		.word	AC1
+ 249 0140 00000000 		.word	AC2
+ 250 0144 00000000 		.word	AC3
+ 251 0148 00000000 		.word	AC4
+ 252 014c 00000000 		.word	AC5
+ 253 0150 00000000 		.word	AC6
+ 254 0154 00000000 		.word	B1
+ 255 0158 00000000 		.word	B2
+ 256 015c 00000000 		.word	MC
+ 257 0160 00000000 		.word	MD
+ 258              		.cfi_endproc
+ 259              	.LFE35:
+ 260              		.size	ReadSensorCalibrationData, .-ReadSensorCalibrationData
+ 261              		.section	.text.ReadUncompensatedTemperature,"ax",%progbits
+ 262              		.align	2
+ 263              		.global	ReadUncompensatedTemperature
+ 264              		.code	16
+ 265              		.thumb_func
+ 266              		.type	ReadUncompensatedTemperature, %function
+ 267              	ReadUncompensatedTemperature:
+ 268              	.LFB36:
+  97:I2CMaster.c   **** /**************************************************************************************************
+  98:I2CMaster.c   **** 
+  99:I2CMaster.c   **** /**************************************************************************************************
+ 100:I2CMaster.c   **** * Function Name: ReadUncompensatedTemperature
+ 101:I2CMaster.c   **** ***************************************************************************************************
+ 102:I2CMaster.c   **** * Summary: This function writes the temperature conversion command to the sensor and
+ 103:I2CMaster.c   **** * waits for conversion to complete, and then reads the converted data (uncompensated temperature) a
+ 104:I2CMaster.c   **** *
+ 105:I2CMaster.c   **** * Parameters:
+ 106:I2CMaster.c   **** *  void
+ 107:I2CMaster.c   **** *
+ 108:I2CMaster.c   **** * Return:
+ 109:I2CMaster.c   **** *  void
+ 110:I2CMaster.c   **** *
+ 111:I2CMaster.c   **** ***************************************************************************************************
+ 112:I2CMaster.c   **** void ReadUncompensatedTemperature(void)
+ 113:I2CMaster.c   **** {
+ 269              		.loc 1 113 0
+ 270              		.cfi_startproc
+ 271              		@ args = 0, pretend = 0, frame = 0
+ 272              		@ frame_needed = 1, uses_anonymous_args = 0
+ 273 0000 80B5     		push	{r7, lr}
+ 274              		.cfi_def_cfa_offset 8
+ 275              		.cfi_offset 7, -8
+ 276              		.cfi_offset 14, -4
+ 277 0002 00AF     		add	r7, sp, #0
+ 278              		.cfi_def_cfa_register 7
+ 114:I2CMaster.c   ****     static uint8 I2CReadBuffer[0x02]; //The uncompensated temperature read from the sensor is store
+ 115:I2CMaster.c   ****     static uint8 I2CWriteBuffer[0x02] = {0xF4, 0x2E}; //Command for temperature conversion - Regist
+ 116:I2CMaster.c   ****     static uint8 SetReadAddressBuffer[0x01] = {0xF6}; //Register address from which the data is rea
+ 117:I2CMaster.c   ****     
+ 118:I2CMaster.c   ****     /* Do a write operation with the memory address bytes to get temperature data */
+ 119:I2CMaster.c   **** 	I2C_I2CMasterWriteBuf(I2CSlaveAddress, (uint8 *) I2CWriteBuffer, sizeof(I2CWriteBuffer), I2C_I2C_M
+ 279              		.loc 1 119 0
+ 280 0004 1D49     		ldr	r1, .L10
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 8
+
+
+ 281 0006 0023     		movs	r3, #0
+ 282 0008 0222     		movs	r2, #2
+ 283 000a 7720     		movs	r0, #119
+ 284 000c FFF7FEFF 		bl	I2C_I2CMasterWriteBuf
+ 120:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT)); //Wait till the master completes writ
+ 285              		.loc 1 120 0
+ 286 0010 C046     		nop
+ 287              	.L7:
+ 288              		.loc 1 120 0 is_stmt 0 discriminator 1
+ 289 0012 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 290 0016 0200     		movs	r2, r0
+ 291 0018 0223     		movs	r3, #2
+ 292 001a 1340     		ands	r3, r2
+ 293 001c F9D0     		beq	.L7
+ 121:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 294              		.loc 1 121 0 is_stmt 1
+ 295 001e FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 122:I2CMaster.c   ****     
+ 123:I2CMaster.c   ****     CyDelay(5); //Wait for 5ms temperature conversion
+ 296              		.loc 1 123 0
+ 297 0022 0520     		movs	r0, #5
+ 298 0024 FFF7FEFF 		bl	CyDelay
+ 124:I2CMaster.c   ****     
+ 125:I2CMaster.c   ****     /* In order to do a read from a specific address, do a write operation with the memory address 
+ 126:I2CMaster.c   **** 	I2C_I2CMasterWriteBuf(I2CSlaveAddress, (uint8 *) SetReadAddressBuffer, sizeof(SetReadAddressBuffer
+ 299              		.loc 1 126 0
+ 300 0028 1549     		ldr	r1, .L10+4
+ 301 002a 0023     		movs	r3, #0
+ 302 002c 0122     		movs	r2, #1
+ 303 002e 7720     		movs	r0, #119
+ 304 0030 FFF7FEFF 		bl	I2C_I2CMasterWriteBuf
+ 127:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT)); //Wait till the master completes writ
+ 305              		.loc 1 127 0
+ 306 0034 C046     		nop
+ 307              	.L8:
+ 308              		.loc 1 127 0 is_stmt 0 discriminator 1
+ 309 0036 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 310 003a 0200     		movs	r2, r0
+ 311 003c 0223     		movs	r3, #2
+ 312 003e 1340     		ands	r3, r2
+ 313 0040 F9D0     		beq	.L8
+ 128:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 314              		.loc 1 128 0 is_stmt 1
+ 315 0042 FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 129:I2CMaster.c   ****     
+ 130:I2CMaster.c   ****     /* Read temperature from the sensor and store it in a buffer */
+ 131:I2CMaster.c   **** 	I2C_I2CMasterReadBuf(I2CSlaveAddress, (uint8 *) I2CReadBuffer, sizeof(I2CReadBuffer), I2C_I2C_MODE
+ 316              		.loc 1 131 0
+ 317 0046 0F49     		ldr	r1, .L10+8
+ 318 0048 0023     		movs	r3, #0
+ 319 004a 0222     		movs	r2, #2
+ 320 004c 7720     		movs	r0, #119
+ 321 004e FFF7FEFF 		bl	I2C_I2CMasterReadBuf
+ 132:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_RD_CMPLT)); //Wait till the master completes read
+ 322              		.loc 1 132 0
+ 323 0052 C046     		nop
+ 324              	.L9:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 9
+
+
+ 325              		.loc 1 132 0 is_stmt 0 discriminator 1
+ 326 0054 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 327 0058 0200     		movs	r2, r0
+ 328 005a 0123     		movs	r3, #1
+ 329 005c 1340     		ands	r3, r2
+ 330 005e F9D0     		beq	.L9
+ 133:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 331              		.loc 1 133 0 is_stmt 1
+ 332 0060 FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 134:I2CMaster.c   ****     
+ 135:I2CMaster.c   **** 	UT = (I2CReadBuffer[0x00] << 0x08) | I2CReadBuffer[0x01]; //Return uncompensated temperature value
+ 333              		.loc 1 135 0
+ 334 0064 074B     		ldr	r3, .L10+8
+ 335 0066 1B78     		ldrb	r3, [r3]
+ 336 0068 1B02     		lsls	r3, r3, #8
+ 337 006a 064A     		ldr	r2, .L10+8
+ 338 006c 5278     		ldrb	r2, [r2, #1]
+ 339 006e 1A43     		orrs	r2, r3
+ 340 0070 054B     		ldr	r3, .L10+12
+ 341 0072 1A60     		str	r2, [r3]
+ 136:I2CMaster.c   **** }
+ 342              		.loc 1 136 0
+ 343 0074 C046     		nop
+ 344 0076 BD46     		mov	sp, r7
+ 345              		@ sp needed
+ 346 0078 80BD     		pop	{r7, pc}
+ 347              	.L11:
+ 348 007a C046     		.align	2
+ 349              	.L10:
+ 350 007c 0C000000 		.word	I2CWriteBuffer.7789
+ 351 0080 10000000 		.word	SetReadAddressBuffer.7790
+ 352 0084 04000000 		.word	I2CReadBuffer.7788
+ 353 0088 00000000 		.word	UT
+ 354              		.cfi_endproc
+ 355              	.LFE36:
+ 356              		.size	ReadUncompensatedTemperature, .-ReadUncompensatedTemperature
+ 357              		.section	.text.ReadUncompensatedPressure,"ax",%progbits
+ 358              		.align	2
+ 359              		.global	ReadUncompensatedPressure
+ 360              		.code	16
+ 361              		.thumb_func
+ 362              		.type	ReadUncompensatedPressure, %function
+ 363              	ReadUncompensatedPressure:
+ 364              	.LFB37:
+ 137:I2CMaster.c   **** /**************************************************************************************************
+ 138:I2CMaster.c   **** 
+ 139:I2CMaster.c   **** /**************************************************************************************************
+ 140:I2CMaster.c   **** * Function Name: ReadUncompensatedPressure
+ 141:I2CMaster.c   **** ***************************************************************************************************
+ 142:I2CMaster.c   **** * Summary: This function writes the pressure conversion command to the sensor and
+ 143:I2CMaster.c   **** * waits for conversion to complete, and then reads the converted data (uncompensated pressure) and 
+ 144:I2CMaster.c   **** *
+ 145:I2CMaster.c   **** * Parameters:
+ 146:I2CMaster.c   **** *  void
+ 147:I2CMaster.c   **** *
+ 148:I2CMaster.c   **** * Return:
+ 149:I2CMaster.c   **** *  void
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 10
+
+
+ 150:I2CMaster.c   **** *
+ 151:I2CMaster.c   **** ***************************************************************************************************
+ 152:I2CMaster.c   **** void ReadUncompensatedPressure(void)
+ 153:I2CMaster.c   **** {
+ 365              		.loc 1 153 0
+ 366              		.cfi_startproc
+ 367              		@ args = 0, pretend = 0, frame = 0
+ 368              		@ frame_needed = 1, uses_anonymous_args = 0
+ 369 0000 80B5     		push	{r7, lr}
+ 370              		.cfi_def_cfa_offset 8
+ 371              		.cfi_offset 7, -8
+ 372              		.cfi_offset 14, -4
+ 373 0002 00AF     		add	r7, sp, #0
+ 374              		.cfi_def_cfa_register 7
+ 154:I2CMaster.c   ****     static uint8 I2CReadBuffer[0x03]; //The uncompensated pressure read from the sensor is stored h
+ 155:I2CMaster.c   ****     static uint8 I2CWriteBuffer[0x02] = {0xF4, 0x34 + (OSS << 0x06)}; //Command for pressure conver
+ 156:I2CMaster.c   ****     static uint8 SetReadAddressBuffer[0x01] = {0xF6}; //Register address from which the data is rea
+ 157:I2CMaster.c   ****     
+ 158:I2CMaster.c   ****     /* Do a write operation with the memory address bytes to get pressure data */
+ 159:I2CMaster.c   **** 	I2C_I2CMasterWriteBuf(I2CSlaveAddress, (uint8 *) I2CWriteBuffer, sizeof(I2CWriteBuffer), I2C_I2C_M
+ 375              		.loc 1 159 0
+ 376 0004 1F49     		ldr	r1, .L16
+ 377 0006 0023     		movs	r3, #0
+ 378 0008 0222     		movs	r2, #2
+ 379 000a 7720     		movs	r0, #119
+ 380 000c FFF7FEFF 		bl	I2C_I2CMasterWriteBuf
+ 160:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT)); //Wait till the master completes writ
+ 381              		.loc 1 160 0
+ 382 0010 C046     		nop
+ 383              	.L13:
+ 384              		.loc 1 160 0 is_stmt 0 discriminator 1
+ 385 0012 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 386 0016 0200     		movs	r2, r0
+ 387 0018 0223     		movs	r3, #2
+ 388 001a 1340     		ands	r3, r2
+ 389 001c F9D0     		beq	.L13
+ 161:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 390              		.loc 1 161 0 is_stmt 1
+ 391 001e FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 162:I2CMaster.c   ****     
+ 163:I2CMaster.c   ****     CyDelay(26); //Wait for 26ms pressure conversion
+ 392              		.loc 1 163 0
+ 393 0022 1A20     		movs	r0, #26
+ 394 0024 FFF7FEFF 		bl	CyDelay
+ 164:I2CMaster.c   ****     
+ 165:I2CMaster.c   ****     /* In order to do a read from a specific address, do a write operation with the memory address 
+ 166:I2CMaster.c   **** 	I2C_I2CMasterWriteBuf(I2CSlaveAddress, (uint8 *) SetReadAddressBuffer, sizeof(SetReadAddressBuffer
+ 395              		.loc 1 166 0
+ 396 0028 1749     		ldr	r1, .L16+4
+ 397 002a 0023     		movs	r3, #0
+ 398 002c 0122     		movs	r2, #1
+ 399 002e 7720     		movs	r0, #119
+ 400 0030 FFF7FEFF 		bl	I2C_I2CMasterWriteBuf
+ 167:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT)); //Wait till the master completes writ
+ 401              		.loc 1 167 0
+ 402 0034 C046     		nop
+ 403              	.L14:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 11
+
+
+ 404              		.loc 1 167 0 is_stmt 0 discriminator 1
+ 405 0036 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 406 003a 0200     		movs	r2, r0
+ 407 003c 0223     		movs	r3, #2
+ 408 003e 1340     		ands	r3, r2
+ 409 0040 F9D0     		beq	.L14
+ 168:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 410              		.loc 1 168 0 is_stmt 1
+ 411 0042 FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 169:I2CMaster.c   ****     
+ 170:I2CMaster.c   ****     /* Read pressure from the sensor and store it in a buffer */
+ 171:I2CMaster.c   **** 	I2C_I2CMasterReadBuf(I2CSlaveAddress, (uint8 *) I2CReadBuffer, sizeof(I2CReadBuffer), I2C_I2C_MODE
+ 412              		.loc 1 171 0
+ 413 0046 1149     		ldr	r1, .L16+8
+ 414 0048 0023     		movs	r3, #0
+ 415 004a 0322     		movs	r2, #3
+ 416 004c 7720     		movs	r0, #119
+ 417 004e FFF7FEFF 		bl	I2C_I2CMasterReadBuf
+ 172:I2CMaster.c   ****     while(!(I2C_I2CMasterStatus() & I2C_I2C_MSTAT_RD_CMPLT)); //Wait till the master completes read
+ 418              		.loc 1 172 0
+ 419 0052 C046     		nop
+ 420              	.L15:
+ 421              		.loc 1 172 0 is_stmt 0 discriminator 1
+ 422 0054 FFF7FEFF 		bl	I2C_I2CMasterStatus
+ 423 0058 0200     		movs	r2, r0
+ 424 005a 0123     		movs	r3, #1
+ 425 005c 1340     		ands	r3, r2
+ 426 005e F9D0     		beq	.L15
+ 173:I2CMaster.c   ****     I2C_I2CMasterClearStatus(); //Clear I2C master status
+ 427              		.loc 1 173 0 is_stmt 1
+ 428 0060 FFF7FEFF 		bl	I2C_I2CMasterClearStatus
+ 174:I2CMaster.c   ****     
+ 175:I2CMaster.c   **** 	UP = ((I2CReadBuffer[0x00] << 0x10) | (I2CReadBuffer[0x01] << 0x08) | I2CReadBuffer[0x02]) >> (0x0
+ 429              		.loc 1 175 0
+ 430 0064 094B     		ldr	r3, .L16+8
+ 431 0066 1B78     		ldrb	r3, [r3]
+ 432 0068 1A04     		lsls	r2, r3, #16
+ 433 006a 084B     		ldr	r3, .L16+8
+ 434 006c 5B78     		ldrb	r3, [r3, #1]
+ 435 006e 1B02     		lsls	r3, r3, #8
+ 436 0070 1343     		orrs	r3, r2
+ 437 0072 064A     		ldr	r2, .L16+8
+ 438 0074 9278     		ldrb	r2, [r2, #2]
+ 439 0076 1343     		orrs	r3, r2
+ 440 0078 5A11     		asrs	r2, r3, #5
+ 441 007a 054B     		ldr	r3, .L16+12
+ 442 007c 1A60     		str	r2, [r3]
+ 176:I2CMaster.c   **** }
+ 443              		.loc 1 176 0
+ 444 007e C046     		nop
+ 445 0080 BD46     		mov	sp, r7
+ 446              		@ sp needed
+ 447 0082 80BD     		pop	{r7, pc}
+ 448              	.L17:
+ 449              		.align	2
+ 450              	.L16:
+ 451 0084 14000000 		.word	I2CWriteBuffer.7804
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 12
+
+
+ 452 0088 18000000 		.word	SetReadAddressBuffer.7805
+ 453 008c 08000000 		.word	I2CReadBuffer.7803
+ 454 0090 00000000 		.word	UP
+ 455              		.cfi_endproc
+ 456              	.LFE37:
+ 457              		.size	ReadUncompensatedPressure, .-ReadUncompensatedPressure
+ 458              		.global	__aeabi_i2d
+ 459              		.global	__aeabi_ddiv
+ 460              		.global	__aeabi_d2iz
+ 461              		.global	__aeabi_dmul
+ 462              		.global	__aeabi_ui2d
+ 463              		.global	__aeabi_d2uiz
+ 464              		.global	__aeabi_uidiv
+ 465              		.global	__aeabi_dadd
+ 466              		.global	__aeabi_dsub
+ 467              		.section	.text.ReadAndCalculateSensorData,"ax",%progbits
+ 468              		.align	2
+ 469              		.global	ReadAndCalculateSensorData
+ 470              		.code	16
+ 471              		.thumb_func
+ 472              		.type	ReadAndCalculateSensorData, %function
+ 473              	ReadAndCalculateSensorData:
+ 474              	.LFB38:
+ 177:I2CMaster.c   **** /**************************************************************************************************
+ 178:I2CMaster.c   **** 
+ 179:I2CMaster.c   **** /**************************************************************************************************
+ 180:I2CMaster.c   **** * Function Name: ReadCalculateSensorData
+ 181:I2CMaster.c   **** ***************************************************************************************************
+ 182:I2CMaster.c   **** * Summary: This function reads the uncompensated temperature and pressure value and converts it
+ 183:I2CMaster.c   **** * into true temperature, pressure and altitude using the algorithm given in the sensor datasheet.
+ 184:I2CMaster.c   **** *
+ 185:I2CMaster.c   **** * Parameters:
+ 186:I2CMaster.c   **** *  void
+ 187:I2CMaster.c   **** *
+ 188:I2CMaster.c   **** * Return:
+ 189:I2CMaster.c   **** *  void
+ 190:I2CMaster.c   **** *
+ 191:I2CMaster.c   **** ***************************************************************************************************
+ 192:I2CMaster.c   **** void ReadAndCalculateSensorData(void)
+ 193:I2CMaster.c   **** {
+ 475              		.loc 1 193 0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 1, uses_anonymous_args = 0
+ 479 0000 B0B5     		push	{r4, r5, r7, lr}
+ 480              		.cfi_def_cfa_offset 16
+ 481              		.cfi_offset 4, -16
+ 482              		.cfi_offset 5, -12
+ 483              		.cfi_offset 7, -8
+ 484              		.cfi_offset 14, -4
+ 485 0002 00AF     		add	r7, sp, #0
+ 486              		.cfi_def_cfa_register 7
+ 194:I2CMaster.c   ****     /* Read the sensor calibration data if not already available */
+ 195:I2CMaster.c   **** 	if(!CalibrationDataAvailable)
+ 487              		.loc 1 195 0
+ 488 0004 A74B     		ldr	r3, .L23
+ 489 0006 1B78     		ldrb	r3, [r3]
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 13
+
+
+ 490 0008 002B     		cmp	r3, #0
+ 491 000a 01D1     		bne	.L19
+ 196:I2CMaster.c   ****     {
+ 197:I2CMaster.c   ****         ReadSensorCalibrationData(); //Read sensor calibration data
+ 492              		.loc 1 197 0
+ 493 000c FFF7FEFF 		bl	ReadSensorCalibrationData
+ 494              	.L19:
+ 198:I2CMaster.c   ****     }
+ 199:I2CMaster.c   ****     
+ 200:I2CMaster.c   ****     ReadUncompensatedTemperature(); //Read the uncompensated temperature value
+ 495              		.loc 1 200 0
+ 496 0010 FFF7FEFF 		bl	ReadUncompensatedTemperature
+ 201:I2CMaster.c   ****     ReadUncompensatedPressure(); //Read the uncompensated pressure value
+ 497              		.loc 1 201 0
+ 498 0014 FFF7FEFF 		bl	ReadUncompensatedPressure
+ 202:I2CMaster.c   ****     
+ 203:I2CMaster.c   ****     /* Calculate the true temperature as described in sensor datasheet */
+ 204:I2CMaster.c   ****     X1 = (UT - AC6) * AC5 / pow(2, 15);
+ 499              		.loc 1 204 0
+ 500 0018 A34B     		ldr	r3, .L23+4
+ 501 001a 1B68     		ldr	r3, [r3]
+ 502 001c A34A     		ldr	r2, .L23+8
+ 503 001e 1288     		ldrh	r2, [r2]
+ 504 0020 9B1A     		subs	r3, r3, r2
+ 505 0022 A34A     		ldr	r2, .L23+12
+ 506 0024 1288     		ldrh	r2, [r2]
+ 507 0026 5343     		muls	r3, r2
+ 508 0028 1800     		movs	r0, r3
+ 509 002a FFF7FEFF 		bl	__aeabi_i2d
+ 510 002e 0022     		movs	r2, #0
+ 511 0030 A04B     		ldr	r3, .L23+16
+ 512 0032 FFF7FEFF 		bl	__aeabi_ddiv
+ 513 0036 0300     		movs	r3, r0
+ 514 0038 0C00     		movs	r4, r1
+ 515 003a 1800     		movs	r0, r3
+ 516 003c 2100     		movs	r1, r4
+ 517 003e FFF7FEFF 		bl	__aeabi_d2iz
+ 518 0042 0200     		movs	r2, r0
+ 519 0044 9C4B     		ldr	r3, .L23+20
+ 520 0046 1A60     		str	r2, [r3]
+ 205:I2CMaster.c   ****     X2 = MC * pow(2, 11) / (X1 + MD);
+ 521              		.loc 1 205 0
+ 522 0048 9C4B     		ldr	r3, .L23+24
+ 523 004a 0022     		movs	r2, #0
+ 524 004c 9B5E     		ldrsh	r3, [r3, r2]
+ 525 004e 1800     		movs	r0, r3
+ 526 0050 FFF7FEFF 		bl	__aeabi_i2d
+ 527 0054 0022     		movs	r2, #0
+ 528 0056 9A4B     		ldr	r3, .L23+28
+ 529 0058 FFF7FEFF 		bl	__aeabi_dmul
+ 530 005c 0300     		movs	r3, r0
+ 531 005e 0C00     		movs	r4, r1
+ 532 0060 2500     		movs	r5, r4
+ 533 0062 1C00     		movs	r4, r3
+ 534 0064 974B     		ldr	r3, .L23+32
+ 535 0066 0022     		movs	r2, #0
+ 536 0068 9B5E     		ldrsh	r3, [r3, r2]
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 14
+
+
+ 537 006a 1A00     		movs	r2, r3
+ 538 006c 924B     		ldr	r3, .L23+20
+ 539 006e 1B68     		ldr	r3, [r3]
+ 540 0070 D318     		adds	r3, r2, r3
+ 541 0072 1800     		movs	r0, r3
+ 542 0074 FFF7FEFF 		bl	__aeabi_i2d
+ 543 0078 0200     		movs	r2, r0
+ 544 007a 0B00     		movs	r3, r1
+ 545 007c 2000     		movs	r0, r4
+ 546 007e 2900     		movs	r1, r5
+ 547 0080 FFF7FEFF 		bl	__aeabi_ddiv
+ 548 0084 0300     		movs	r3, r0
+ 549 0086 0C00     		movs	r4, r1
+ 550 0088 1800     		movs	r0, r3
+ 551 008a 2100     		movs	r1, r4
+ 552 008c FFF7FEFF 		bl	__aeabi_d2iz
+ 553 0090 0200     		movs	r2, r0
+ 554 0092 8D4B     		ldr	r3, .L23+36
+ 555 0094 1A60     		str	r2, [r3]
+ 206:I2CMaster.c   ****     B5 = X1 + X2;
+ 556              		.loc 1 206 0
+ 557 0096 884B     		ldr	r3, .L23+20
+ 558 0098 1A68     		ldr	r2, [r3]
+ 559 009a 8B4B     		ldr	r3, .L23+36
+ 560 009c 1B68     		ldr	r3, [r3]
+ 561 009e D218     		adds	r2, r2, r3
+ 562 00a0 8A4B     		ldr	r3, .L23+40
+ 563 00a2 1A60     		str	r2, [r3]
+ 207:I2CMaster.c   ****     Temperature = (B5 + 8) / pow(2, 4);
+ 564              		.loc 1 207 0
+ 565 00a4 894B     		ldr	r3, .L23+40
+ 566 00a6 1B68     		ldr	r3, [r3]
+ 567 00a8 0833     		adds	r3, r3, #8
+ 568 00aa 1800     		movs	r0, r3
+ 569 00ac FFF7FEFF 		bl	__aeabi_i2d
+ 570 00b0 0022     		movs	r2, #0
+ 571 00b2 874B     		ldr	r3, .L23+44
+ 572 00b4 FFF7FEFF 		bl	__aeabi_ddiv
+ 573 00b8 0300     		movs	r3, r0
+ 574 00ba 0C00     		movs	r4, r1
+ 575 00bc 1800     		movs	r0, r3
+ 576 00be 2100     		movs	r1, r4
+ 577 00c0 FFF7FEFF 		bl	__aeabi_d2iz
+ 578 00c4 0200     		movs	r2, r0
+ 579 00c6 834B     		ldr	r3, .L23+48
+ 580 00c8 1A60     		str	r2, [r3]
+ 208:I2CMaster.c   ****     
+ 209:I2CMaster.c   ****     /* Calculate the true barometric pressure as described in sensor datasheet */
+ 210:I2CMaster.c   ****     B6 = B5 - 4000;
+ 581              		.loc 1 210 0
+ 582 00ca 804B     		ldr	r3, .L23+40
+ 583 00cc 1B68     		ldr	r3, [r3]
+ 584 00ce 824A     		ldr	r2, .L23+52
+ 585 00d0 9A18     		adds	r2, r3, r2
+ 586 00d2 824B     		ldr	r3, .L23+56
+ 587 00d4 1A60     		str	r2, [r3]
+ 211:I2CMaster.c   ****     X1 = (B2 * (B6 * B6 / pow(2, 12))) / pow(2, 11);
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 15
+
+
+ 588              		.loc 1 211 0
+ 589 00d6 824B     		ldr	r3, .L23+60
+ 590 00d8 0022     		movs	r2, #0
+ 591 00da 9B5E     		ldrsh	r3, [r3, r2]
+ 592 00dc 1800     		movs	r0, r3
+ 593 00de FFF7FEFF 		bl	__aeabi_i2d
+ 594 00e2 0400     		movs	r4, r0
+ 595 00e4 0D00     		movs	r5, r1
+ 596 00e6 7D4B     		ldr	r3, .L23+56
+ 597 00e8 1A68     		ldr	r2, [r3]
+ 598 00ea 7C4B     		ldr	r3, .L23+56
+ 599 00ec 1B68     		ldr	r3, [r3]
+ 600 00ee 5343     		muls	r3, r2
+ 601 00f0 1800     		movs	r0, r3
+ 602 00f2 FFF7FEFF 		bl	__aeabi_i2d
+ 603 00f6 0022     		movs	r2, #0
+ 604 00f8 7A4B     		ldr	r3, .L23+64
+ 605 00fa FFF7FEFF 		bl	__aeabi_ddiv
+ 606 00fe 0200     		movs	r2, r0
+ 607 0100 0B00     		movs	r3, r1
+ 608 0102 2000     		movs	r0, r4
+ 609 0104 2900     		movs	r1, r5
+ 610 0106 FFF7FEFF 		bl	__aeabi_dmul
+ 611 010a 0300     		movs	r3, r0
+ 612 010c 0C00     		movs	r4, r1
+ 613 010e 1800     		movs	r0, r3
+ 614 0110 2100     		movs	r1, r4
+ 615 0112 0022     		movs	r2, #0
+ 616 0114 6A4B     		ldr	r3, .L23+28
+ 617 0116 FFF7FEFF 		bl	__aeabi_ddiv
+ 618 011a 0300     		movs	r3, r0
+ 619 011c 0C00     		movs	r4, r1
+ 620 011e 1800     		movs	r0, r3
+ 621 0120 2100     		movs	r1, r4
+ 622 0122 FFF7FEFF 		bl	__aeabi_d2iz
+ 623 0126 0200     		movs	r2, r0
+ 624 0128 634B     		ldr	r3, .L23+20
+ 625 012a 1A60     		str	r2, [r3]
+ 212:I2CMaster.c   ****     X2 = AC2 * B6 / pow(2, 11);
+ 626              		.loc 1 212 0
+ 627 012c 6E4B     		ldr	r3, .L23+68
+ 628 012e 0022     		movs	r2, #0
+ 629 0130 9B5E     		ldrsh	r3, [r3, r2]
+ 630 0132 1A00     		movs	r2, r3
+ 631 0134 694B     		ldr	r3, .L23+56
+ 632 0136 1B68     		ldr	r3, [r3]
+ 633 0138 5343     		muls	r3, r2
+ 634 013a 1800     		movs	r0, r3
+ 635 013c FFF7FEFF 		bl	__aeabi_i2d
+ 636 0140 0022     		movs	r2, #0
+ 637 0142 5F4B     		ldr	r3, .L23+28
+ 638 0144 FFF7FEFF 		bl	__aeabi_ddiv
+ 639 0148 0300     		movs	r3, r0
+ 640 014a 0C00     		movs	r4, r1
+ 641 014c 1800     		movs	r0, r3
+ 642 014e 2100     		movs	r1, r4
+ 643 0150 FFF7FEFF 		bl	__aeabi_d2iz
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 16
+
+
+ 644 0154 0200     		movs	r2, r0
+ 645 0156 5C4B     		ldr	r3, .L23+36
+ 646 0158 1A60     		str	r2, [r3]
+ 213:I2CMaster.c   ****     X3 = X1 + X2;
+ 647              		.loc 1 213 0
+ 648 015a 574B     		ldr	r3, .L23+20
+ 649 015c 1A68     		ldr	r2, [r3]
+ 650 015e 5A4B     		ldr	r3, .L23+36
+ 651 0160 1B68     		ldr	r3, [r3]
+ 652 0162 D218     		adds	r2, r2, r3
+ 653 0164 614B     		ldr	r3, .L23+72
+ 654 0166 1A60     		str	r2, [r3]
+ 214:I2CMaster.c   ****     B3 = (((AC1 * 4 + X3) << OSS) + 2) / 4;
+ 655              		.loc 1 214 0
+ 656 0168 614B     		ldr	r3, .L23+76
+ 657 016a 0022     		movs	r2, #0
+ 658 016c 9B5E     		ldrsh	r3, [r3, r2]
+ 659 016e 9A00     		lsls	r2, r3, #2
+ 660 0170 5E4B     		ldr	r3, .L23+72
+ 661 0172 1B68     		ldr	r3, [r3]
+ 662 0174 D318     		adds	r3, r2, r3
+ 663 0176 DB00     		lsls	r3, r3, #3
+ 664 0178 0233     		adds	r3, r3, #2
+ 665 017a 002B     		cmp	r3, #0
+ 666 017c 00DA     		bge	.L20
+ 667 017e 0333     		adds	r3, r3, #3
+ 668              	.L20:
+ 669 0180 9B10     		asrs	r3, r3, #2
+ 670 0182 1A00     		movs	r2, r3
+ 671 0184 5B4B     		ldr	r3, .L23+80
+ 672 0186 1A60     		str	r2, [r3]
+ 215:I2CMaster.c   ****     X1 = AC3 * B6 / pow(2, 13);
+ 673              		.loc 1 215 0
+ 674 0188 5B4B     		ldr	r3, .L23+84
+ 675 018a 0022     		movs	r2, #0
+ 676 018c 9B5E     		ldrsh	r3, [r3, r2]
+ 677 018e 1A00     		movs	r2, r3
+ 678 0190 524B     		ldr	r3, .L23+56
+ 679 0192 1B68     		ldr	r3, [r3]
+ 680 0194 5343     		muls	r3, r2
+ 681 0196 1800     		movs	r0, r3
+ 682 0198 FFF7FEFF 		bl	__aeabi_i2d
+ 683 019c 0022     		movs	r2, #0
+ 684 019e 574B     		ldr	r3, .L23+88
+ 685 01a0 FFF7FEFF 		bl	__aeabi_ddiv
+ 686 01a4 0300     		movs	r3, r0
+ 687 01a6 0C00     		movs	r4, r1
+ 688 01a8 1800     		movs	r0, r3
+ 689 01aa 2100     		movs	r1, r4
+ 690 01ac FFF7FEFF 		bl	__aeabi_d2iz
+ 691 01b0 0200     		movs	r2, r0
+ 692 01b2 414B     		ldr	r3, .L23+20
+ 693 01b4 1A60     		str	r2, [r3]
+ 216:I2CMaster.c   ****     X2 = (B1 * (B6 * B6 / pow(2, 12))) / pow(2, 16);
+ 694              		.loc 1 216 0
+ 695 01b6 524B     		ldr	r3, .L23+92
+ 696 01b8 0022     		movs	r2, #0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 17
+
+
+ 697 01ba 9B5E     		ldrsh	r3, [r3, r2]
+ 698 01bc 1800     		movs	r0, r3
+ 699 01be FFF7FEFF 		bl	__aeabi_i2d
+ 700 01c2 0400     		movs	r4, r0
+ 701 01c4 0D00     		movs	r5, r1
+ 702 01c6 454B     		ldr	r3, .L23+56
+ 703 01c8 1A68     		ldr	r2, [r3]
+ 704 01ca 444B     		ldr	r3, .L23+56
+ 705 01cc 1B68     		ldr	r3, [r3]
+ 706 01ce 5343     		muls	r3, r2
+ 707 01d0 1800     		movs	r0, r3
+ 708 01d2 FFF7FEFF 		bl	__aeabi_i2d
+ 709 01d6 0022     		movs	r2, #0
+ 710 01d8 424B     		ldr	r3, .L23+64
+ 711 01da FFF7FEFF 		bl	__aeabi_ddiv
+ 712 01de 0200     		movs	r2, r0
+ 713 01e0 0B00     		movs	r3, r1
+ 714 01e2 2000     		movs	r0, r4
+ 715 01e4 2900     		movs	r1, r5
+ 716 01e6 FFF7FEFF 		bl	__aeabi_dmul
+ 717 01ea 0300     		movs	r3, r0
+ 718 01ec 0C00     		movs	r4, r1
+ 719 01ee 1800     		movs	r0, r3
+ 720 01f0 2100     		movs	r1, r4
+ 721 01f2 0022     		movs	r2, #0
+ 722 01f4 434B     		ldr	r3, .L23+96
+ 723 01f6 FFF7FEFF 		bl	__aeabi_ddiv
+ 724 01fa 0300     		movs	r3, r0
+ 725 01fc 0C00     		movs	r4, r1
+ 726 01fe 1800     		movs	r0, r3
+ 727 0200 2100     		movs	r1, r4
+ 728 0202 FFF7FEFF 		bl	__aeabi_d2iz
+ 729 0206 0200     		movs	r2, r0
+ 730 0208 2F4B     		ldr	r3, .L23+36
+ 731 020a 1A60     		str	r2, [r3]
+ 217:I2CMaster.c   ****     X3 = ((X1 + X2) + 2) / pow(2, 2);
+ 732              		.loc 1 217 0
+ 733 020c 2A4B     		ldr	r3, .L23+20
+ 734 020e 1A68     		ldr	r2, [r3]
+ 735 0210 2D4B     		ldr	r3, .L23+36
+ 736 0212 1B68     		ldr	r3, [r3]
+ 737 0214 D318     		adds	r3, r2, r3
+ 738 0216 0233     		adds	r3, r3, #2
+ 739 0218 1800     		movs	r0, r3
+ 740 021a FFF7FEFF 		bl	__aeabi_i2d
+ 741 021e 0022     		movs	r2, #0
+ 742 0220 394B     		ldr	r3, .L23+100
+ 743 0222 FFF7FEFF 		bl	__aeabi_ddiv
+ 744 0226 0300     		movs	r3, r0
+ 745 0228 0C00     		movs	r4, r1
+ 746 022a 1800     		movs	r0, r3
+ 747 022c 2100     		movs	r1, r4
+ 748 022e FFF7FEFF 		bl	__aeabi_d2iz
+ 749 0232 0200     		movs	r2, r0
+ 750 0234 2D4B     		ldr	r3, .L23+72
+ 751 0236 1A60     		str	r2, [r3]
+ 218:I2CMaster.c   ****     B4 = (AC4 * (unsigned long)(X3 + 32768)) / pow(2, 15);
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 18
+
+
+ 752              		.loc 1 218 0
+ 753 0238 344B     		ldr	r3, .L23+104
+ 754 023a 1B88     		ldrh	r3, [r3]
+ 755 023c 1A00     		movs	r2, r3
+ 756 023e 2B4B     		ldr	r3, .L23+72
+ 757 0240 1B68     		ldr	r3, [r3]
+ 758 0242 8021     		movs	r1, #128
+ 759 0244 0902     		lsls	r1, r1, #8
+ 760 0246 8C46     		mov	ip, r1
+ 761 0248 6344     		add	r3, r3, ip
+ 762 024a 5343     		muls	r3, r2
+ 763 024c 1800     		movs	r0, r3
+ 764 024e FFF7FEFF 		bl	__aeabi_ui2d
+ 765 0252 0022     		movs	r2, #0
+ 766 0254 174B     		ldr	r3, .L23+16
+ 767 0256 FFF7FEFF 		bl	__aeabi_ddiv
+ 768 025a 0300     		movs	r3, r0
+ 769 025c 0C00     		movs	r4, r1
+ 770 025e 1800     		movs	r0, r3
+ 771 0260 2100     		movs	r1, r4
+ 772 0262 FFF7FEFF 		bl	__aeabi_d2uiz
+ 773 0266 0200     		movs	r2, r0
+ 774 0268 294B     		ldr	r3, .L23+108
+ 775 026a 1A60     		str	r2, [r3]
+ 219:I2CMaster.c   ****     B7 = ((unsigned long)UP - B3) * (50000 >> OSS);
+ 776              		.loc 1 219 0
+ 777 026c 294B     		ldr	r3, .L23+112
+ 778 026e 1B68     		ldr	r3, [r3]
+ 779 0270 1A00     		movs	r2, r3
+ 780 0272 204B     		ldr	r3, .L23+80
+ 781 0274 1B68     		ldr	r3, [r3]
+ 782 0276 D31A     		subs	r3, r2, r3
+ 783 0278 274A     		ldr	r2, .L23+116
+ 784 027a 5A43     		muls	r2, r3
+ 785 027c 274B     		ldr	r3, .L23+120
+ 786 027e 1A60     		str	r2, [r3]
+ 220:I2CMaster.c   ****     if(B7 < 0x80000000)
+ 787              		.loc 1 220 0
+ 788 0280 264B     		ldr	r3, .L23+120
+ 789 0282 1B68     		ldr	r3, [r3]
+ 790 0284 002B     		cmp	r3, #0
+ 791 0286 4DDB     		blt	.L21
+ 221:I2CMaster.c   ****     {
+ 222:I2CMaster.c   ****         Pressure = (B7 *2) / B4;
+ 792              		.loc 1 222 0
+ 793 0288 244B     		ldr	r3, .L23+120
+ 794 028a 1B68     		ldr	r3, [r3]
+ 795 028c 5A00     		lsls	r2, r3, #1
+ 796 028e 204B     		ldr	r3, .L23+108
+ 797 0290 1B68     		ldr	r3, [r3]
+ 798 0292 1900     		movs	r1, r3
+ 799 0294 1000     		movs	r0, r2
+ 800 0296 FFF7FEFF 		bl	__aeabi_uidiv
+ 801 029a 0300     		movs	r3, r0
+ 802 029c 1A00     		movs	r2, r3
+ 803 029e 204B     		ldr	r3, .L23+124
+ 804 02a0 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 19
+
+
+ 805 02a2 4CE0     		b	.L22
+ 806              	.L24:
+ 807              		.align	2
+ 808              	.L23:
+ 809 02a4 00000000 		.word	CalibrationDataAvailable
+ 810 02a8 00000000 		.word	UT
+ 811 02ac 00000000 		.word	AC6
+ 812 02b0 00000000 		.word	AC5
+ 813 02b4 0000E040 		.word	1088421888
+ 814 02b8 00000000 		.word	X1
+ 815 02bc 00000000 		.word	MC
+ 816 02c0 0000A040 		.word	1084227584
+ 817 02c4 00000000 		.word	MD
+ 818 02c8 00000000 		.word	X2
+ 819 02cc 00000000 		.word	B5
+ 820 02d0 00003040 		.word	1076887552
+ 821 02d4 00000000 		.word	Temperature
+ 822 02d8 60F0FFFF 		.word	-4000
+ 823 02dc 00000000 		.word	B6
+ 824 02e0 00000000 		.word	B2
+ 825 02e4 0000B040 		.word	1085276160
+ 826 02e8 00000000 		.word	AC2
+ 827 02ec 00000000 		.word	X3
+ 828 02f0 00000000 		.word	AC1
+ 829 02f4 00000000 		.word	B3
+ 830 02f8 00000000 		.word	AC3
+ 831 02fc 0000C040 		.word	1086324736
+ 832 0300 00000000 		.word	B1
+ 833 0304 0000F040 		.word	1089470464
+ 834 0308 00001040 		.word	1074790400
+ 835 030c 00000000 		.word	AC4
+ 836 0310 00000000 		.word	B4
+ 837 0314 00000000 		.word	UP
+ 838 0318 6A180000 		.word	6250
+ 839 031c 00000000 		.word	B7
+ 840 0320 00000000 		.word	Pressure
+ 841              	.L21:
+ 223:I2CMaster.c   ****     }
+ 224:I2CMaster.c   ****     else 
+ 225:I2CMaster.c   ****     {
+ 226:I2CMaster.c   ****         Pressure = (B7 / B4) *2;
+ 842              		.loc 1 226 0
+ 843 0324 584B     		ldr	r3, .L25
+ 844 0326 1A68     		ldr	r2, [r3]
+ 845 0328 584B     		ldr	r3, .L25+4
+ 846 032a 1B68     		ldr	r3, [r3]
+ 847 032c 1900     		movs	r1, r3
+ 848 032e 1000     		movs	r0, r2
+ 849 0330 FFF7FEFF 		bl	__aeabi_uidiv
+ 850 0334 0300     		movs	r3, r0
+ 851 0336 5B00     		lsls	r3, r3, #1
+ 852 0338 1A00     		movs	r2, r3
+ 853 033a 554B     		ldr	r3, .L25+8
+ 854 033c 1A60     		str	r2, [r3]
+ 855              	.L22:
+ 227:I2CMaster.c   ****     }
+ 228:I2CMaster.c   ****     X1 = (Pressure / pow(2, 8)) * (Pressure / pow(2, 8));
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 20
+
+
+ 856              		.loc 1 228 0
+ 857 033e 544B     		ldr	r3, .L25+8
+ 858 0340 1B68     		ldr	r3, [r3]
+ 859 0342 1800     		movs	r0, r3
+ 860 0344 FFF7FEFF 		bl	__aeabi_i2d
+ 861 0348 0022     		movs	r2, #0
+ 862 034a 524B     		ldr	r3, .L25+12
+ 863 034c FFF7FEFF 		bl	__aeabi_ddiv
+ 864 0350 0300     		movs	r3, r0
+ 865 0352 0C00     		movs	r4, r1
+ 866 0354 2500     		movs	r5, r4
+ 867 0356 1C00     		movs	r4, r3
+ 868 0358 4D4B     		ldr	r3, .L25+8
+ 869 035a 1B68     		ldr	r3, [r3]
+ 870 035c 1800     		movs	r0, r3
+ 871 035e FFF7FEFF 		bl	__aeabi_i2d
+ 872 0362 0022     		movs	r2, #0
+ 873 0364 4B4B     		ldr	r3, .L25+12
+ 874 0366 FFF7FEFF 		bl	__aeabi_ddiv
+ 875 036a 0200     		movs	r2, r0
+ 876 036c 0B00     		movs	r3, r1
+ 877 036e 2000     		movs	r0, r4
+ 878 0370 2900     		movs	r1, r5
+ 879 0372 FFF7FEFF 		bl	__aeabi_dmul
+ 880 0376 0300     		movs	r3, r0
+ 881 0378 0C00     		movs	r4, r1
+ 882 037a 1800     		movs	r0, r3
+ 883 037c 2100     		movs	r1, r4
+ 884 037e FFF7FEFF 		bl	__aeabi_d2iz
+ 885 0382 0200     		movs	r2, r0
+ 886 0384 444B     		ldr	r3, .L25+16
+ 887 0386 1A60     		str	r2, [r3]
+ 229:I2CMaster.c   ****     X1 = (X1 * 3038) / pow(2, 16);
+ 888              		.loc 1 229 0
+ 889 0388 434B     		ldr	r3, .L25+16
+ 890 038a 1B68     		ldr	r3, [r3]
+ 891 038c 434A     		ldr	r2, .L25+20
+ 892 038e 5343     		muls	r3, r2
+ 893 0390 1800     		movs	r0, r3
+ 894 0392 FFF7FEFF 		bl	__aeabi_i2d
+ 895 0396 0022     		movs	r2, #0
+ 896 0398 414B     		ldr	r3, .L25+24
+ 897 039a FFF7FEFF 		bl	__aeabi_ddiv
+ 898 039e 0300     		movs	r3, r0
+ 899 03a0 0C00     		movs	r4, r1
+ 900 03a2 1800     		movs	r0, r3
+ 901 03a4 2100     		movs	r1, r4
+ 902 03a6 FFF7FEFF 		bl	__aeabi_d2iz
+ 903 03aa 0200     		movs	r2, r0
+ 904 03ac 3A4B     		ldr	r3, .L25+16
+ 905 03ae 1A60     		str	r2, [r3]
+ 230:I2CMaster.c   ****     X2 = (-7357 * Pressure) / pow(2, 16);
+ 906              		.loc 1 230 0
+ 907 03b0 374B     		ldr	r3, .L25+8
+ 908 03b2 1B68     		ldr	r3, [r3]
+ 909 03b4 3B4A     		ldr	r2, .L25+28
+ 910 03b6 5343     		muls	r3, r2
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 21
+
+
+ 911 03b8 1800     		movs	r0, r3
+ 912 03ba FFF7FEFF 		bl	__aeabi_i2d
+ 913 03be 0022     		movs	r2, #0
+ 914 03c0 374B     		ldr	r3, .L25+24
+ 915 03c2 FFF7FEFF 		bl	__aeabi_ddiv
+ 916 03c6 0300     		movs	r3, r0
+ 917 03c8 0C00     		movs	r4, r1
+ 918 03ca 1800     		movs	r0, r3
+ 919 03cc 2100     		movs	r1, r4
+ 920 03ce FFF7FEFF 		bl	__aeabi_d2iz
+ 921 03d2 0200     		movs	r2, r0
+ 922 03d4 344B     		ldr	r3, .L25+32
+ 923 03d6 1A60     		str	r2, [r3]
+ 231:I2CMaster.c   ****     Pressure = Pressure + (X1 + X2 + 3791) / pow(2, 4);
+ 924              		.loc 1 231 0
+ 925 03d8 2D4B     		ldr	r3, .L25+8
+ 926 03da 1B68     		ldr	r3, [r3]
+ 927 03dc 1800     		movs	r0, r3
+ 928 03de FFF7FEFF 		bl	__aeabi_i2d
+ 929 03e2 0400     		movs	r4, r0
+ 930 03e4 0D00     		movs	r5, r1
+ 931 03e6 2C4B     		ldr	r3, .L25+16
+ 932 03e8 1A68     		ldr	r2, [r3]
+ 933 03ea 2F4B     		ldr	r3, .L25+32
+ 934 03ec 1B68     		ldr	r3, [r3]
+ 935 03ee D318     		adds	r3, r2, r3
+ 936 03f0 2E4A     		ldr	r2, .L25+36
+ 937 03f2 9446     		mov	ip, r2
+ 938 03f4 6344     		add	r3, r3, ip
+ 939 03f6 1800     		movs	r0, r3
+ 940 03f8 FFF7FEFF 		bl	__aeabi_i2d
+ 941 03fc 0022     		movs	r2, #0
+ 942 03fe 2C4B     		ldr	r3, .L25+40
+ 943 0400 FFF7FEFF 		bl	__aeabi_ddiv
+ 944 0404 0200     		movs	r2, r0
+ 945 0406 0B00     		movs	r3, r1
+ 946 0408 2000     		movs	r0, r4
+ 947 040a 2900     		movs	r1, r5
+ 948 040c FFF7FEFF 		bl	__aeabi_dadd
+ 949 0410 0300     		movs	r3, r0
+ 950 0412 0C00     		movs	r4, r1
+ 951 0414 1800     		movs	r0, r3
+ 952 0416 2100     		movs	r1, r4
+ 953 0418 FFF7FEFF 		bl	__aeabi_d2iz
+ 954 041c 0200     		movs	r2, r0
+ 955 041e 1C4B     		ldr	r3, .L25+8
+ 956 0420 1A60     		str	r2, [r3]
+ 232:I2CMaster.c   ****     
+ 233:I2CMaster.c   ****     /* Calculate the true altitude based on pressure at sea level as described in sensor datasheet 
+ 234:I2CMaster.c   ****     Altitude = 44330 * (1 - (pow(Pressure/PressureAtSeaLevel, 1/5.255)));
+ 957              		.loc 1 234 0
+ 958 0422 1B4B     		ldr	r3, .L25+8
+ 959 0424 1B68     		ldr	r3, [r3]
+ 960 0426 1800     		movs	r0, r3
+ 961 0428 FFF7FEFF 		bl	__aeabi_i2d
+ 962 042c 214B     		ldr	r3, .L25+44
+ 963 042e 5C68     		ldr	r4, [r3, #4]
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 22
+
+
+ 964 0430 1B68     		ldr	r3, [r3]
+ 965 0432 1A00     		movs	r2, r3
+ 966 0434 2300     		movs	r3, r4
+ 967 0436 FFF7FEFF 		bl	__aeabi_ddiv
+ 968 043a 0300     		movs	r3, r0
+ 969 043c 0C00     		movs	r4, r1
+ 970 043e 1800     		movs	r0, r3
+ 971 0440 2100     		movs	r1, r4
+ 972 0442 1D4B     		ldr	r3, .L25+48
+ 973 0444 1D4C     		ldr	r4, .L25+52
+ 974 0446 1A00     		movs	r2, r3
+ 975 0448 2300     		movs	r3, r4
+ 976 044a FFF7FEFF 		bl	pow
+ 977 044e 0300     		movs	r3, r0
+ 978 0450 0C00     		movs	r4, r1
+ 979 0452 1A00     		movs	r2, r3
+ 980 0454 2300     		movs	r3, r4
+ 981 0456 0020     		movs	r0, #0
+ 982 0458 1949     		ldr	r1, .L25+56
+ 983 045a FFF7FEFF 		bl	__aeabi_dsub
+ 984 045e 0300     		movs	r3, r0
+ 985 0460 0C00     		movs	r4, r1
+ 986 0462 1800     		movs	r0, r3
+ 987 0464 2100     		movs	r1, r4
+ 988 0466 0022     		movs	r2, #0
+ 989 0468 164B     		ldr	r3, .L25+60
+ 990 046a FFF7FEFF 		bl	__aeabi_dmul
+ 991 046e 0300     		movs	r3, r0
+ 992 0470 0C00     		movs	r4, r1
+ 993 0472 1800     		movs	r0, r3
+ 994 0474 2100     		movs	r1, r4
+ 995 0476 FFF7FEFF 		bl	__aeabi_d2iz
+ 996 047a 0200     		movs	r2, r0
+ 997 047c 124B     		ldr	r3, .L25+64
+ 998 047e 1A60     		str	r2, [r3]
+ 235:I2CMaster.c   **** }
+ 999              		.loc 1 235 0
+ 1000 0480 C046     		nop
+ 1001 0482 BD46     		mov	sp, r7
+ 1002              		@ sp needed
+ 1003 0484 B0BD     		pop	{r4, r5, r7, pc}
+ 1004              	.L26:
+ 1005 0486 C046     		.align	2
+ 1006              	.L25:
+ 1007 0488 00000000 		.word	B7
+ 1008 048c 00000000 		.word	B4
+ 1009 0490 00000000 		.word	Pressure
+ 1010 0494 00007040 		.word	1081081856
+ 1011 0498 00000000 		.word	X1
+ 1012 049c DE0B0000 		.word	3038
+ 1013 04a0 0000F040 		.word	1089470464
+ 1014 04a4 43E3FFFF 		.word	-7357
+ 1015 04a8 00000000 		.word	X2
+ 1016 04ac CF0E0000 		.word	3791
+ 1017 04b0 00003040 		.word	1076887552
+ 1018 04b4 00000000 		.word	PressureAtSeaLevel
+ 1019 04b8 6C45D9CC 		.word	-858176148
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 23
+
+
+ 1020 04bc 955BC83F 		.word	1070095253
+ 1021 04c0 0000F03F 		.word	1072693248
+ 1022 04c4 40A5E540 		.word	1088791872
+ 1023 04c8 00000000 		.word	Altitude
+ 1024              		.cfi_endproc
+ 1025              	.LFE38:
+ 1026              		.size	ReadAndCalculateSensorData, .-ReadAndCalculateSensorData
+ 1027              		.data
+ 1028              		.align	2
+ 1029              		.type	I2CWriteBuffer.7778, %object
+ 1030              		.size	I2CWriteBuffer.7778, 1
+ 1031              	I2CWriteBuffer.7778:
+ 1032 0008 AA       		.byte	-86
+ 1033 0009 000000   		.align	2
+ 1034              		.type	I2CWriteBuffer.7789, %object
+ 1035              		.size	I2CWriteBuffer.7789, 2
+ 1036              	I2CWriteBuffer.7789:
+ 1037 000c F4       		.byte	-12
+ 1038 000d 2E       		.byte	46
+ 1039 000e 0000     		.align	2
+ 1040              		.type	SetReadAddressBuffer.7790, %object
+ 1041              		.size	SetReadAddressBuffer.7790, 1
+ 1042              	SetReadAddressBuffer.7790:
+ 1043 0010 F6       		.byte	-10
+ 1044              		.bss
+ 1045 0001 000000   		.align	2
+ 1046              	I2CReadBuffer.7788:
+ 1047 0004 0000     		.space	2
+ 1048              		.data
+ 1049 0011 000000   		.align	2
+ 1050              		.type	I2CWriteBuffer.7804, %object
+ 1051              		.size	I2CWriteBuffer.7804, 2
+ 1052              	I2CWriteBuffer.7804:
+ 1053 0014 F4       		.byte	-12
+ 1054 0015 F4       		.byte	-12
+ 1055 0016 0000     		.align	2
+ 1056              		.type	SetReadAddressBuffer.7805, %object
+ 1057              		.size	SetReadAddressBuffer.7805, 1
+ 1058              	SetReadAddressBuffer.7805:
+ 1059 0018 F6       		.byte	-10
+ 1060              		.bss
+ 1061 0006 0000     		.align	2
+ 1062              	I2CReadBuffer.7803:
+ 1063 0008 000000   		.space	3
+ 1064              		.text
+ 1065              	.Letext0:
+ 1066              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 1067              		.file 3 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 1068              		.section	.debug_info,"",%progbits
+ 1069              	.Ldebug_info0:
+ 1070 0000 41050000 		.4byte	0x541
+ 1071 0004 0300     		.2byte	0x3
+ 1072 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1073 000a 04       		.byte	0x4
+ 1074 000b 01       		.uleb128 0x1
+ 1075 000c 65040000 		.4byte	.LASF100
+ 1076 0010 0C       		.byte	0xc
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 24
+
+
+ 1077 0011 31080000 		.4byte	.LASF101
+ 1078 0015 C70A0000 		.4byte	.LASF102
+ 1079 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1080 001d 00000000 		.4byte	0
+ 1081 0021 00000000 		.4byte	0
+ 1082 0025 00000000 		.4byte	.Ldebug_line0
+ 1083 0029 02       		.uleb128 0x2
+ 1084 002a 01       		.byte	0x1
+ 1085 002b 06       		.byte	0x6
+ 1086 002c F5050000 		.4byte	.LASF0
+ 1087 0030 02       		.uleb128 0x2
+ 1088 0031 01       		.byte	0x1
+ 1089 0032 08       		.byte	0x8
+ 1090 0033 CC050000 		.4byte	.LASF1
+ 1091 0037 02       		.uleb128 0x2
+ 1092 0038 02       		.byte	0x2
+ 1093 0039 05       		.byte	0x5
+ 1094 003a D2000000 		.4byte	.LASF2
+ 1095 003e 02       		.uleb128 0x2
+ 1096 003f 02       		.byte	0x2
+ 1097 0040 07       		.byte	0x7
+ 1098 0041 FA070000 		.4byte	.LASF3
+ 1099 0045 02       		.uleb128 0x2
+ 1100 0046 04       		.byte	0x4
+ 1101 0047 05       		.byte	0x5
+ 1102 0048 5B030000 		.4byte	.LASF4
+ 1103 004c 02       		.uleb128 0x2
+ 1104 004d 04       		.byte	0x4
+ 1105 004e 07       		.byte	0x7
+ 1106 004f 9C060000 		.4byte	.LASF5
+ 1107 0053 02       		.uleb128 0x2
+ 1108 0054 08       		.byte	0x8
+ 1109 0055 05       		.byte	0x5
+ 1110 0056 47010000 		.4byte	.LASF6
+ 1111 005a 02       		.uleb128 0x2
+ 1112 005b 08       		.byte	0x8
+ 1113 005c 07       		.byte	0x7
+ 1114 005d 0E030000 		.4byte	.LASF7
+ 1115 0061 03       		.uleb128 0x3
+ 1116 0062 04       		.byte	0x4
+ 1117 0063 05       		.byte	0x5
+ 1118 0064 696E7400 		.ascii	"int\000"
+ 1119 0068 02       		.uleb128 0x2
+ 1120 0069 04       		.byte	0x4
+ 1121 006a 07       		.byte	0x7
+ 1122 006b 5E060000 		.4byte	.LASF8
+ 1123 006f 04       		.uleb128 0x4
+ 1124 0070 0D080000 		.4byte	.LASF9
+ 1125 0074 02       		.byte	0x2
+ 1126 0075 D201     		.2byte	0x1d2
+ 1127 0077 30000000 		.4byte	0x30
+ 1128 007b 04       		.uleb128 0x4
+ 1129 007c FF010000 		.4byte	.LASF10
+ 1130 0080 02       		.byte	0x2
+ 1131 0081 D301     		.2byte	0x1d3
+ 1132 0083 3E000000 		.4byte	0x3e
+ 1133 0087 02       		.uleb128 0x2
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 25
+
+
+ 1134 0088 04       		.byte	0x4
+ 1135 0089 04       		.byte	0x4
+ 1136 008a A5020000 		.4byte	.LASF11
+ 1137 008e 02       		.uleb128 0x2
+ 1138 008f 08       		.byte	0x8
+ 1139 0090 04       		.byte	0x4
+ 1140 0091 BC080000 		.4byte	.LASF12
+ 1141 0095 02       		.uleb128 0x2
+ 1142 0096 01       		.byte	0x1
+ 1143 0097 08       		.byte	0x8
+ 1144 0098 D9070000 		.4byte	.LASF13
+ 1145 009c 02       		.uleb128 0x2
+ 1146 009d 08       		.byte	0x8
+ 1147 009e 04       		.byte	0x4
+ 1148 009f 00000000 		.4byte	.LASF14
+ 1149 00a3 02       		.uleb128 0x2
+ 1150 00a4 04       		.byte	0x4
+ 1151 00a5 07       		.byte	0x7
+ 1152 00a6 14010000 		.4byte	.LASF15
+ 1153 00aa 05       		.uleb128 0x5
+ 1154 00ab 01       		.byte	0x1
+ 1155 00ac 30000000 		.4byte	0x30
+ 1156 00b0 03       		.byte	0x3
+ 1157 00b1 3501     		.2byte	0x135
+ 1158 00b3 68020000 		.4byte	0x268
+ 1159 00b7 06       		.uleb128 0x6
+ 1160 00b8 4F020000 		.4byte	.LASF16
+ 1161 00bc 00       		.byte	0
+ 1162 00bd 06       		.uleb128 0x6
+ 1163 00be 99010000 		.4byte	.LASF17
+ 1164 00c2 01       		.byte	0x1
+ 1165 00c3 06       		.uleb128 0x6
+ 1166 00c4 FD090000 		.4byte	.LASF18
+ 1167 00c8 02       		.byte	0x2
+ 1168 00c9 06       		.uleb128 0x6
+ 1169 00ca 03090000 		.4byte	.LASF19
+ 1170 00ce 03       		.byte	0x3
+ 1171 00cf 06       		.uleb128 0x6
+ 1172 00d0 63010000 		.4byte	.LASF20
+ 1173 00d4 04       		.byte	0x4
+ 1174 00d5 06       		.uleb128 0x6
+ 1175 00d6 06040000 		.4byte	.LASF21
+ 1176 00da 05       		.byte	0x5
+ 1177 00db 06       		.uleb128 0x6
+ 1178 00dc 69000000 		.4byte	.LASF22
+ 1179 00e0 06       		.byte	0x6
+ 1180 00e1 06       		.uleb128 0x6
+ 1181 00e2 21050000 		.4byte	.LASF23
+ 1182 00e6 20       		.byte	0x20
+ 1183 00e7 06       		.uleb128 0x6
+ 1184 00e8 AE060000 		.4byte	.LASF24
+ 1185 00ec 21       		.byte	0x21
+ 1186 00ed 06       		.uleb128 0x6
+ 1187 00ee 0C000000 		.4byte	.LASF25
+ 1188 00f2 22       		.byte	0x22
+ 1189 00f3 06       		.uleb128 0x6
+ 1190 00f4 3F040000 		.4byte	.LASF26
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 26
+
+
+ 1191 00f8 23       		.byte	0x23
+ 1192 00f9 06       		.uleb128 0x6
+ 1193 00fa 42060000 		.4byte	.LASF27
+ 1194 00fe 24       		.byte	0x24
+ 1195 00ff 06       		.uleb128 0x6
+ 1196 0100 DC000000 		.4byte	.LASF28
+ 1197 0104 25       		.byte	0x25
+ 1198 0105 06       		.uleb128 0x6
+ 1199 0106 BD030000 		.4byte	.LASF29
+ 1200 010a 26       		.byte	0x26
+ 1201 010b 06       		.uleb128 0x6
+ 1202 010c 9E030000 		.4byte	.LASF30
+ 1203 0110 27       		.byte	0x27
+ 1204 0111 06       		.uleb128 0x6
+ 1205 0112 A50A0000 		.4byte	.LASF31
+ 1206 0116 28       		.byte	0x28
+ 1207 0117 06       		.uleb128 0x6
+ 1208 0118 E6060000 		.4byte	.LASF32
+ 1209 011c 29       		.byte	0x29
+ 1210 011d 06       		.uleb128 0x6
+ 1211 011e 89070000 		.4byte	.LASF33
+ 1212 0122 2A       		.byte	0x2a
+ 1213 0123 06       		.uleb128 0x6
+ 1214 0124 5C080000 		.4byte	.LASF34
+ 1215 0128 2B       		.byte	0x2b
+ 1216 0129 06       		.uleb128 0x6
+ 1217 012a 3E070000 		.4byte	.LASF35
+ 1218 012e 2C       		.byte	0x2c
+ 1219 012f 06       		.uleb128 0x6
+ 1220 0130 C4020000 		.4byte	.LASF36
+ 1221 0134 2D       		.byte	0x2d
+ 1222 0135 06       		.uleb128 0x6
+ 1223 0136 AE000000 		.4byte	.LASF37
+ 1224 013a 2E       		.byte	0x2e
+ 1225 013b 06       		.uleb128 0x6
+ 1226 013c 5A0B0000 		.4byte	.LASF38
+ 1227 0140 2F       		.byte	0x2f
+ 1228 0141 06       		.uleb128 0x6
+ 1229 0142 1D010000 		.4byte	.LASF39
+ 1230 0146 30       		.byte	0x30
+ 1231 0147 06       		.uleb128 0x6
+ 1232 0148 63050000 		.4byte	.LASF40
+ 1233 014c 31       		.byte	0x31
+ 1234 014d 06       		.uleb128 0x6
+ 1235 014e ED020000 		.4byte	.LASF41
+ 1236 0152 32       		.byte	0x32
+ 1237 0153 06       		.uleb128 0x6
+ 1238 0154 B2070000 		.4byte	.LASF42
+ 1239 0158 33       		.byte	0x33
+ 1240 0159 06       		.uleb128 0x6
+ 1241 015a 03070000 		.4byte	.LASF43
+ 1242 015e 34       		.byte	0x34
+ 1243 015f 06       		.uleb128 0x6
+ 1244 0160 E6080000 		.4byte	.LASF44
+ 1245 0164 35       		.byte	0x35
+ 1246 0165 06       		.uleb128 0x6
+ 1247 0166 3A030000 		.4byte	.LASF45
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 27
+
+
+ 1248 016a 36       		.byte	0x36
+ 1249 016b 06       		.uleb128 0x6
+ 1250 016c AC010000 		.4byte	.LASF46
+ 1251 0170 37       		.byte	0x37
+ 1252 0171 06       		.uleb128 0x6
+ 1253 0172 82000000 		.4byte	.LASF47
+ 1254 0176 40       		.byte	0x40
+ 1255 0177 06       		.uleb128 0x6
+ 1256 0178 81060000 		.4byte	.LASF48
+ 1257 017c 41       		.byte	0x41
+ 1258 017d 06       		.uleb128 0x6
+ 1259 017e F6000000 		.4byte	.LASF49
+ 1260 0182 42       		.byte	0x42
+ 1261 0183 06       		.uleb128 0x6
+ 1262 0184 E1010000 		.4byte	.LASF50
+ 1263 0188 43       		.byte	0x43
+ 1264 0189 06       		.uleb128 0x6
+ 1265 018a D3090000 		.4byte	.LASF51
+ 1266 018e 44       		.byte	0x44
+ 1267 018f 06       		.uleb128 0x6
+ 1268 0190 8E090000 		.4byte	.LASF52
+ 1269 0194 45       		.byte	0x45
+ 1270 0195 06       		.uleb128 0x6
+ 1271 0196 78010000 		.4byte	.LASF53
+ 1272 019a 46       		.byte	0x46
+ 1273 019b 06       		.uleb128 0x6
+ 1274 019c 460A0000 		.4byte	.LASF54
+ 1275 01a0 47       		.byte	0x47
+ 1276 01a1 06       		.uleb128 0x6
+ 1277 01a2 1B060000 		.4byte	.LASF55
+ 1278 01a6 48       		.byte	0x48
+ 1279 01a7 06       		.uleb128 0x6
+ 1280 01a8 AB020000 		.4byte	.LASF56
+ 1281 01ac 49       		.byte	0x49
+ 1282 01ad 06       		.uleb128 0x6
+ 1283 01ae 13080000 		.4byte	.LASF57
+ 1284 01b2 4A       		.byte	0x4a
+ 1285 01b3 06       		.uleb128 0x6
+ 1286 01b4 0F020000 		.4byte	.LASF58
+ 1287 01b8 4B       		.byte	0x4b
+ 1288 01b9 06       		.uleb128 0x6
+ 1289 01ba 01060000 		.4byte	.LASF59
+ 1290 01be 4C       		.byte	0x4c
+ 1291 01bf 06       		.uleb128 0x6
+ 1292 01c0 4F000000 		.4byte	.LASF60
+ 1293 01c4 4D       		.byte	0x4d
+ 1294 01c5 06       		.uleb128 0x6
+ 1295 01c6 B5090000 		.4byte	.LASF61
+ 1296 01ca 4E       		.byte	0x4e
+ 1297 01cb 06       		.uleb128 0x6
+ 1298 01cc 30000000 		.4byte	.LASF62
+ 1299 01d0 4F       		.byte	0x4f
+ 1300 01d1 06       		.uleb128 0x6
+ 1301 01d2 860A0000 		.4byte	.LASF63
+ 1302 01d6 50       		.byte	0x50
+ 1303 01d7 06       		.uleb128 0x6
+ 1304 01d8 3D080000 		.4byte	.LASF64
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 28
+
+
+ 1305 01dc 51       		.byte	0x51
+ 1306 01dd 06       		.uleb128 0x6
+ 1307 01de E5030000 		.4byte	.LASF65
+ 1308 01e2 52       		.byte	0x52
+ 1309 01e3 06       		.uleb128 0x6
+ 1310 01e4 64030000 		.4byte	.LASF66
+ 1311 01e8 53       		.byte	0x53
+ 1312 01e9 06       		.uleb128 0x6
+ 1313 01ea 2E020000 		.4byte	.LASF67
+ 1314 01ee 54       		.byte	0x54
+ 1315 01ef 06       		.uleb128 0x6
+ 1316 01f0 1C0B0000 		.4byte	.LASF68
+ 1317 01f4 55       		.byte	0x55
+ 1318 01f5 06       		.uleb128 0x6
+ 1319 01f6 640A0000 		.4byte	.LASF69
+ 1320 01fa 56       		.byte	0x56
+ 1321 01fb 06       		.uleb128 0x6
+ 1322 01fc 1D0A0000 		.4byte	.LASF70
+ 1323 0200 57       		.byte	0x57
+ 1324 0201 06       		.uleb128 0x6
+ 1325 0202 1B070000 		.4byte	.LASF71
+ 1326 0206 58       		.byte	0x58
+ 1327 0207 06       		.uleb128 0x6
+ 1328 0208 A6050000 		.4byte	.LASF72
+ 1329 020c 70       		.byte	0x70
+ 1330 020d 06       		.uleb128 0x6
+ 1331 020e 3B090000 		.4byte	.LASF73
+ 1332 0212 71       		.byte	0x71
+ 1333 0213 06       		.uleb128 0x6
+ 1334 0214 DE070000 		.4byte	.LASF74
+ 1335 0218 72       		.byte	0x72
+ 1336 0219 06       		.uleb128 0x6
+ 1337 021a 66020000 		.4byte	.LASF75
+ 1338 021e 73       		.byte	0x73
+ 1339 021f 06       		.uleb128 0x6
+ 1340 0220 45050000 		.4byte	.LASF76
+ 1341 0224 74       		.byte	0x74
+ 1342 0225 06       		.uleb128 0x6
+ 1343 0226 C5060000 		.4byte	.LASF77
+ 1344 022a 75       		.byte	0x75
+ 1345 022b 06       		.uleb128 0x6
+ 1346 022c 84020000 		.4byte	.LASF78
+ 1347 0230 76       		.byte	0x76
+ 1348 0231 06       		.uleb128 0x6
+ 1349 0232 1C090000 		.4byte	.LASF79
+ 1350 0236 77       		.byte	0x77
+ 1351 0237 06       		.uleb128 0x6
+ 1352 0238 99080000 		.4byte	.LASF80
+ 1353 023c 78       		.byte	0x78
+ 1354 023d 06       		.uleb128 0x6
+ 1355 023e C3080000 		.4byte	.LASF81
+ 1356 0242 79       		.byte	0x79
+ 1357 0243 06       		.uleb128 0x6
+ 1358 0244 FD040000 		.4byte	.LASF82
+ 1359 0248 7A       		.byte	0x7a
+ 1360 0249 06       		.uleb128 0x6
+ 1361 024a 7B080000 		.4byte	.LASF83
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 29
+
+
+ 1362 024e FA       		.byte	0xfa
+ 1363 024f 06       		.uleb128 0x6
+ 1364 0250 87050000 		.4byte	.LASF84
+ 1365 0254 FB       		.byte	0xfb
+ 1366 0255 06       		.uleb128 0x6
+ 1367 0256 9C000000 		.4byte	.LASF85
+ 1368 025a FC       		.byte	0xfc
+ 1369 025b 06       		.uleb128 0x6
+ 1370 025c 71070000 		.4byte	.LASF86
+ 1371 0260 FD       		.byte	0xfd
+ 1372 0261 06       		.uleb128 0x6
+ 1373 0262 0F0A0000 		.4byte	.LASF87
+ 1374 0266 FF       		.byte	0xff
+ 1375 0267 00       		.byte	0
+ 1376 0268 07       		.uleb128 0x7
+ 1377 0269 01       		.byte	0x1
+ 1378 026a 61090000 		.4byte	.LASF88
+ 1379 026e 01       		.byte	0x1
+ 1380 026f 45       		.byte	0x45
+ 1381 0270 01       		.byte	0x1
+ 1382 0271 00000000 		.4byte	.LFB35
+ 1383 0275 64010000 		.4byte	.LFE35
+ 1384 0279 01       		.byte	0x1
+ 1385 027a 9C       		.byte	0x9c
+ 1386 027b 01       		.byte	0x1
+ 1387 027c 92020000 		.4byte	0x292
+ 1388 0280 08       		.uleb128 0x8
+ 1389 0281 62070000 		.4byte	.LASF90
+ 1390 0285 01       		.byte	0x1
+ 1391 0286 47       		.byte	0x47
+ 1392 0287 92020000 		.4byte	0x292
+ 1393 028b 05       		.byte	0x5
+ 1394 028c 03       		.byte	0x3
+ 1395 028d 08000000 		.4byte	I2CWriteBuffer.7778
+ 1396 0291 00       		.byte	0
+ 1397 0292 09       		.uleb128 0x9
+ 1398 0293 6F000000 		.4byte	0x6f
+ 1399 0297 A2020000 		.4byte	0x2a2
+ 1400 029b 0A       		.uleb128 0xa
+ 1401 029c A3000000 		.4byte	0xa3
+ 1402 02a0 00       		.byte	0
+ 1403 02a1 00       		.byte	0
+ 1404 02a2 07       		.uleb128 0x7
+ 1405 02a3 01       		.byte	0x1
+ 1406 02a4 22040000 		.4byte	.LASF89
+ 1407 02a8 01       		.byte	0x1
+ 1408 02a9 70       		.byte	0x70
+ 1409 02aa 01       		.byte	0x1
+ 1410 02ab 00000000 		.4byte	.LFB36
+ 1411 02af 8C000000 		.4byte	.LFE36
+ 1412 02b3 01       		.byte	0x1
+ 1413 02b4 9C       		.byte	0x9c
+ 1414 02b5 01       		.byte	0x1
+ 1415 02b6 EE020000 		.4byte	0x2ee
+ 1416 02ba 08       		.uleb128 0x8
+ 1417 02bb 55010000 		.4byte	.LASF91
+ 1418 02bf 01       		.byte	0x1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 30
+
+
+ 1419 02c0 72       		.byte	0x72
+ 1420 02c1 EE020000 		.4byte	0x2ee
+ 1421 02c5 05       		.byte	0x5
+ 1422 02c6 03       		.byte	0x3
+ 1423 02c7 04000000 		.4byte	I2CReadBuffer.7788
+ 1424 02cb 08       		.uleb128 0x8
+ 1425 02cc 62070000 		.4byte	.LASF90
+ 1426 02d0 01       		.byte	0x1
+ 1427 02d1 73       		.byte	0x73
+ 1428 02d2 EE020000 		.4byte	0x2ee
+ 1429 02d6 05       		.byte	0x5
+ 1430 02d7 03       		.byte	0x3
+ 1431 02d8 0C000000 		.4byte	I2CWriteBuffer.7789
+ 1432 02dc 08       		.uleb128 0x8
+ 1433 02dd 25030000 		.4byte	.LASF92
+ 1434 02e1 01       		.byte	0x1
+ 1435 02e2 74       		.byte	0x74
+ 1436 02e3 92020000 		.4byte	0x292
+ 1437 02e7 05       		.byte	0x5
+ 1438 02e8 03       		.byte	0x3
+ 1439 02e9 10000000 		.4byte	SetReadAddressBuffer.7790
+ 1440 02ed 00       		.byte	0
+ 1441 02ee 09       		.uleb128 0x9
+ 1442 02ef 6F000000 		.4byte	0x6f
+ 1443 02f3 FE020000 		.4byte	0x2fe
+ 1444 02f7 0A       		.uleb128 0xa
+ 1445 02f8 A3000000 		.4byte	0xa3
+ 1446 02fc 01       		.byte	0x1
+ 1447 02fd 00       		.byte	0
+ 1448 02fe 07       		.uleb128 0x7
+ 1449 02ff 01       		.byte	0x1
+ 1450 0300 400B0000 		.4byte	.LASF93
+ 1451 0304 01       		.byte	0x1
+ 1452 0305 98       		.byte	0x98
+ 1453 0306 01       		.byte	0x1
+ 1454 0307 00000000 		.4byte	.LFB37
+ 1455 030b 94000000 		.4byte	.LFE37
+ 1456 030f 01       		.byte	0x1
+ 1457 0310 9C       		.byte	0x9c
+ 1458 0311 01       		.byte	0x1
+ 1459 0312 4A030000 		.4byte	0x34a
+ 1460 0316 08       		.uleb128 0x8
+ 1461 0317 55010000 		.4byte	.LASF91
+ 1462 031b 01       		.byte	0x1
+ 1463 031c 9A       		.byte	0x9a
+ 1464 031d 4A030000 		.4byte	0x34a
+ 1465 0321 05       		.byte	0x5
+ 1466 0322 03       		.byte	0x3
+ 1467 0323 08000000 		.4byte	I2CReadBuffer.7803
+ 1468 0327 08       		.uleb128 0x8
+ 1469 0328 62070000 		.4byte	.LASF90
+ 1470 032c 01       		.byte	0x1
+ 1471 032d 9B       		.byte	0x9b
+ 1472 032e EE020000 		.4byte	0x2ee
+ 1473 0332 05       		.byte	0x5
+ 1474 0333 03       		.byte	0x3
+ 1475 0334 14000000 		.4byte	I2CWriteBuffer.7804
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 31
+
+
+ 1476 0338 08       		.uleb128 0x8
+ 1477 0339 25030000 		.4byte	.LASF92
+ 1478 033d 01       		.byte	0x1
+ 1479 033e 9C       		.byte	0x9c
+ 1480 033f 92020000 		.4byte	0x292
+ 1481 0343 05       		.byte	0x5
+ 1482 0344 03       		.byte	0x3
+ 1483 0345 18000000 		.4byte	SetReadAddressBuffer.7805
+ 1484 0349 00       		.byte	0
+ 1485 034a 09       		.uleb128 0x9
+ 1486 034b 6F000000 		.4byte	0x6f
+ 1487 034f 5A030000 		.4byte	0x35a
+ 1488 0353 0A       		.uleb128 0xa
+ 1489 0354 A3000000 		.4byte	0xa3
+ 1490 0358 02       		.byte	0x2
+ 1491 0359 00       		.byte	0
+ 1492 035a 0B       		.uleb128 0xb
+ 1493 035b 01       		.byte	0x1
+ 1494 035c DA050000 		.4byte	.LASF103
+ 1495 0360 01       		.byte	0x1
+ 1496 0361 C0       		.byte	0xc0
+ 1497 0362 01       		.byte	0x1
+ 1498 0363 00000000 		.4byte	.LFB38
+ 1499 0367 CC040000 		.4byte	.LFE38
+ 1500 036b 01       		.byte	0x1
+ 1501 036c 9C       		.byte	0x9c
+ 1502 036d 01       		.byte	0x1
+ 1503 036e 09       		.uleb128 0x9
+ 1504 036f 6F000000 		.4byte	0x6f
+ 1505 0373 7E030000 		.4byte	0x37e
+ 1506 0377 0A       		.uleb128 0xa
+ 1507 0378 A3000000 		.4byte	0xa3
+ 1508 037c 15       		.byte	0x15
+ 1509 037d 00       		.byte	0
+ 1510 037e 0C       		.uleb128 0xc
+ 1511 037f 6B060000 		.4byte	.LASF94
+ 1512 0383 01       		.byte	0x1
+ 1513 0384 2D       		.byte	0x2d
+ 1514 0385 6E030000 		.4byte	0x36e
+ 1515 0389 01       		.byte	0x1
+ 1516 038a 05       		.byte	0x5
+ 1517 038b 03       		.byte	0x3
+ 1518 038c 00000000 		.4byte	SensorCalibrationData
+ 1519 0390 0D       		.uleb128 0xd
+ 1520 0391 583100   		.ascii	"X1\000"
+ 1521 0394 01       		.byte	0x1
+ 1522 0395 2E       		.byte	0x2e
+ 1523 0396 45000000 		.4byte	0x45
+ 1524 039a 01       		.byte	0x1
+ 1525 039b 05       		.byte	0x5
+ 1526 039c 03       		.byte	0x3
+ 1527 039d 00000000 		.4byte	X1
+ 1528 03a1 0D       		.uleb128 0xd
+ 1529 03a2 583200   		.ascii	"X2\000"
+ 1530 03a5 01       		.byte	0x1
+ 1531 03a6 2E       		.byte	0x2e
+ 1532 03a7 45000000 		.4byte	0x45
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 32
+
+
+ 1533 03ab 01       		.byte	0x1
+ 1534 03ac 05       		.byte	0x5
+ 1535 03ad 03       		.byte	0x3
+ 1536 03ae 00000000 		.4byte	X2
+ 1537 03b2 0D       		.uleb128 0xd
+ 1538 03b3 583300   		.ascii	"X3\000"
+ 1539 03b6 01       		.byte	0x1
+ 1540 03b7 2E       		.byte	0x2e
+ 1541 03b8 45000000 		.4byte	0x45
+ 1542 03bc 01       		.byte	0x1
+ 1543 03bd 05       		.byte	0x5
+ 1544 03be 03       		.byte	0x3
+ 1545 03bf 00000000 		.4byte	X3
+ 1546 03c3 0D       		.uleb128 0xd
+ 1547 03c4 423300   		.ascii	"B3\000"
+ 1548 03c7 01       		.byte	0x1
+ 1549 03c8 2E       		.byte	0x2e
+ 1550 03c9 45000000 		.4byte	0x45
+ 1551 03cd 01       		.byte	0x1
+ 1552 03ce 05       		.byte	0x5
+ 1553 03cf 03       		.byte	0x3
+ 1554 03d0 00000000 		.4byte	B3
+ 1555 03d4 0D       		.uleb128 0xd
+ 1556 03d5 423500   		.ascii	"B5\000"
+ 1557 03d8 01       		.byte	0x1
+ 1558 03d9 2E       		.byte	0x2e
+ 1559 03da 45000000 		.4byte	0x45
+ 1560 03de 01       		.byte	0x1
+ 1561 03df 05       		.byte	0x5
+ 1562 03e0 03       		.byte	0x3
+ 1563 03e1 00000000 		.4byte	B5
+ 1564 03e5 0D       		.uleb128 0xd
+ 1565 03e6 423600   		.ascii	"B6\000"
+ 1566 03e9 01       		.byte	0x1
+ 1567 03ea 2E       		.byte	0x2e
+ 1568 03eb 45000000 		.4byte	0x45
+ 1569 03ef 01       		.byte	0x1
+ 1570 03f0 05       		.byte	0x5
+ 1571 03f1 03       		.byte	0x3
+ 1572 03f2 00000000 		.4byte	B6
+ 1573 03f6 0D       		.uleb128 0xd
+ 1574 03f7 555400   		.ascii	"UT\000"
+ 1575 03fa 01       		.byte	0x1
+ 1576 03fb 32       		.byte	0x32
+ 1577 03fc 45000000 		.4byte	0x45
+ 1578 0400 01       		.byte	0x1
+ 1579 0401 05       		.byte	0x5
+ 1580 0402 03       		.byte	0x3
+ 1581 0403 00000000 		.4byte	UT
+ 1582 0407 0D       		.uleb128 0xd
+ 1583 0408 555000   		.ascii	"UP\000"
+ 1584 040b 01       		.byte	0x1
+ 1585 040c 32       		.byte	0x32
+ 1586 040d 45000000 		.4byte	0x45
+ 1587 0411 01       		.byte	0x1
+ 1588 0412 05       		.byte	0x5
+ 1589 0413 03       		.byte	0x3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 33
+
+
+ 1590 0414 00000000 		.4byte	UP
+ 1591 0418 0D       		.uleb128 0xd
+ 1592 0419 423400   		.ascii	"B4\000"
+ 1593 041c 01       		.byte	0x1
+ 1594 041d 2F       		.byte	0x2f
+ 1595 041e 4C000000 		.4byte	0x4c
+ 1596 0422 01       		.byte	0x1
+ 1597 0423 05       		.byte	0x5
+ 1598 0424 03       		.byte	0x3
+ 1599 0425 00000000 		.4byte	B4
+ 1600 0429 0D       		.uleb128 0xd
+ 1601 042a 423700   		.ascii	"B7\000"
+ 1602 042d 01       		.byte	0x1
+ 1603 042e 2F       		.byte	0x2f
+ 1604 042f 4C000000 		.4byte	0x4c
+ 1605 0433 01       		.byte	0x1
+ 1606 0434 05       		.byte	0x5
+ 1607 0435 03       		.byte	0x3
+ 1608 0436 00000000 		.4byte	B7
+ 1609 043a 0D       		.uleb128 0xd
+ 1610 043b 41433100 		.ascii	"AC1\000"
+ 1611 043f 01       		.byte	0x1
+ 1612 0440 30       		.byte	0x30
+ 1613 0441 37000000 		.4byte	0x37
+ 1614 0445 01       		.byte	0x1
+ 1615 0446 05       		.byte	0x5
+ 1616 0447 03       		.byte	0x3
+ 1617 0448 00000000 		.4byte	AC1
+ 1618 044c 0D       		.uleb128 0xd
+ 1619 044d 41433200 		.ascii	"AC2\000"
+ 1620 0451 01       		.byte	0x1
+ 1621 0452 30       		.byte	0x30
+ 1622 0453 37000000 		.4byte	0x37
+ 1623 0457 01       		.byte	0x1
+ 1624 0458 05       		.byte	0x5
+ 1625 0459 03       		.byte	0x3
+ 1626 045a 00000000 		.4byte	AC2
+ 1627 045e 0D       		.uleb128 0xd
+ 1628 045f 41433300 		.ascii	"AC3\000"
+ 1629 0463 01       		.byte	0x1
+ 1630 0464 30       		.byte	0x30
+ 1631 0465 37000000 		.4byte	0x37
+ 1632 0469 01       		.byte	0x1
+ 1633 046a 05       		.byte	0x5
+ 1634 046b 03       		.byte	0x3
+ 1635 046c 00000000 		.4byte	AC3
+ 1636 0470 0D       		.uleb128 0xd
+ 1637 0471 423100   		.ascii	"B1\000"
+ 1638 0474 01       		.byte	0x1
+ 1639 0475 30       		.byte	0x30
+ 1640 0476 37000000 		.4byte	0x37
+ 1641 047a 01       		.byte	0x1
+ 1642 047b 05       		.byte	0x5
+ 1643 047c 03       		.byte	0x3
+ 1644 047d 00000000 		.4byte	B1
+ 1645 0481 0D       		.uleb128 0xd
+ 1646 0482 423200   		.ascii	"B2\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 34
+
+
+ 1647 0485 01       		.byte	0x1
+ 1648 0486 30       		.byte	0x30
+ 1649 0487 37000000 		.4byte	0x37
+ 1650 048b 01       		.byte	0x1
+ 1651 048c 05       		.byte	0x5
+ 1652 048d 03       		.byte	0x3
+ 1653 048e 00000000 		.4byte	B2
+ 1654 0492 0D       		.uleb128 0xd
+ 1655 0493 4D4300   		.ascii	"MC\000"
+ 1656 0496 01       		.byte	0x1
+ 1657 0497 30       		.byte	0x30
+ 1658 0498 37000000 		.4byte	0x37
+ 1659 049c 01       		.byte	0x1
+ 1660 049d 05       		.byte	0x5
+ 1661 049e 03       		.byte	0x3
+ 1662 049f 00000000 		.4byte	MC
+ 1663 04a3 0D       		.uleb128 0xd
+ 1664 04a4 4D4400   		.ascii	"MD\000"
+ 1665 04a7 01       		.byte	0x1
+ 1666 04a8 30       		.byte	0x30
+ 1667 04a9 37000000 		.4byte	0x37
+ 1668 04ad 01       		.byte	0x1
+ 1669 04ae 05       		.byte	0x5
+ 1670 04af 03       		.byte	0x3
+ 1671 04b0 00000000 		.4byte	MD
+ 1672 04b4 0D       		.uleb128 0xd
+ 1673 04b5 41433400 		.ascii	"AC4\000"
+ 1674 04b9 01       		.byte	0x1
+ 1675 04ba 31       		.byte	0x31
+ 1676 04bb 3E000000 		.4byte	0x3e
+ 1677 04bf 01       		.byte	0x1
+ 1678 04c0 05       		.byte	0x5
+ 1679 04c1 03       		.byte	0x3
+ 1680 04c2 00000000 		.4byte	AC4
+ 1681 04c6 0D       		.uleb128 0xd
+ 1682 04c7 41433500 		.ascii	"AC5\000"
+ 1683 04cb 01       		.byte	0x1
+ 1684 04cc 31       		.byte	0x31
+ 1685 04cd 3E000000 		.4byte	0x3e
+ 1686 04d1 01       		.byte	0x1
+ 1687 04d2 05       		.byte	0x5
+ 1688 04d3 03       		.byte	0x3
+ 1689 04d4 00000000 		.4byte	AC5
+ 1690 04d8 0D       		.uleb128 0xd
+ 1691 04d9 41433600 		.ascii	"AC6\000"
+ 1692 04dd 01       		.byte	0x1
+ 1693 04de 31       		.byte	0x31
+ 1694 04df 3E000000 		.4byte	0x3e
+ 1695 04e3 01       		.byte	0x1
+ 1696 04e4 05       		.byte	0x5
+ 1697 04e5 03       		.byte	0x3
+ 1698 04e6 00000000 		.4byte	AC6
+ 1699 04ea 0C       		.uleb128 0xc
+ 1700 04eb F1090000 		.4byte	.LASF95
+ 1701 04ef 01       		.byte	0x1
+ 1702 04f0 33       		.byte	0x33
+ 1703 04f1 45000000 		.4byte	0x45
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 35
+
+
+ 1704 04f5 01       		.byte	0x1
+ 1705 04f6 05       		.byte	0x5
+ 1706 04f7 03       		.byte	0x3
+ 1707 04f8 00000000 		.4byte	Temperature
+ 1708 04fc 0C       		.uleb128 0xc
+ 1709 04fd 3E010000 		.4byte	.LASF96
+ 1710 0501 01       		.byte	0x1
+ 1711 0502 33       		.byte	0x33
+ 1712 0503 45000000 		.4byte	0x45
+ 1713 0507 01       		.byte	0x1
+ 1714 0508 05       		.byte	0x5
+ 1715 0509 03       		.byte	0x3
+ 1716 050a 00000000 		.4byte	Pressure
+ 1717 050e 0C       		.uleb128 0xc
+ 1718 050f 06020000 		.4byte	.LASF97
+ 1719 0513 01       		.byte	0x1
+ 1720 0514 33       		.byte	0x33
+ 1721 0515 45000000 		.4byte	0x45
+ 1722 0519 01       		.byte	0x1
+ 1723 051a 05       		.byte	0x5
+ 1724 051b 03       		.byte	0x3
+ 1725 051c 00000000 		.4byte	Altitude
+ 1726 0520 0C       		.uleb128 0xc
+ 1727 0521 7B090000 		.4byte	.LASF98
+ 1728 0525 01       		.byte	0x1
+ 1729 0526 34       		.byte	0x34
+ 1730 0527 8E000000 		.4byte	0x8e
+ 1731 052b 01       		.byte	0x1
+ 1732 052c 05       		.byte	0x5
+ 1733 052d 03       		.byte	0x3
+ 1734 052e 00000000 		.4byte	PressureAtSeaLevel
+ 1735 0532 0C       		.uleb128 0xc
+ 1736 0533 85030000 		.4byte	.LASF99
+ 1737 0537 01       		.byte	0x1
+ 1738 0538 35       		.byte	0x35
+ 1739 0539 6F000000 		.4byte	0x6f
+ 1740 053d 01       		.byte	0x1
+ 1741 053e 05       		.byte	0x5
+ 1742 053f 03       		.byte	0x3
+ 1743 0540 00000000 		.4byte	CalibrationDataAvailable
+ 1744 0544 00       		.byte	0
+ 1745              		.section	.debug_abbrev,"",%progbits
+ 1746              	.Ldebug_abbrev0:
+ 1747 0000 01       		.uleb128 0x1
+ 1748 0001 11       		.uleb128 0x11
+ 1749 0002 01       		.byte	0x1
+ 1750 0003 25       		.uleb128 0x25
+ 1751 0004 0E       		.uleb128 0xe
+ 1752 0005 13       		.uleb128 0x13
+ 1753 0006 0B       		.uleb128 0xb
+ 1754 0007 03       		.uleb128 0x3
+ 1755 0008 0E       		.uleb128 0xe
+ 1756 0009 1B       		.uleb128 0x1b
+ 1757 000a 0E       		.uleb128 0xe
+ 1758 000b 55       		.uleb128 0x55
+ 1759 000c 06       		.uleb128 0x6
+ 1760 000d 11       		.uleb128 0x11
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 36
+
+
+ 1761 000e 01       		.uleb128 0x1
+ 1762 000f 52       		.uleb128 0x52
+ 1763 0010 01       		.uleb128 0x1
+ 1764 0011 10       		.uleb128 0x10
+ 1765 0012 06       		.uleb128 0x6
+ 1766 0013 00       		.byte	0
+ 1767 0014 00       		.byte	0
+ 1768 0015 02       		.uleb128 0x2
+ 1769 0016 24       		.uleb128 0x24
+ 1770 0017 00       		.byte	0
+ 1771 0018 0B       		.uleb128 0xb
+ 1772 0019 0B       		.uleb128 0xb
+ 1773 001a 3E       		.uleb128 0x3e
+ 1774 001b 0B       		.uleb128 0xb
+ 1775 001c 03       		.uleb128 0x3
+ 1776 001d 0E       		.uleb128 0xe
+ 1777 001e 00       		.byte	0
+ 1778 001f 00       		.byte	0
+ 1779 0020 03       		.uleb128 0x3
+ 1780 0021 24       		.uleb128 0x24
+ 1781 0022 00       		.byte	0
+ 1782 0023 0B       		.uleb128 0xb
+ 1783 0024 0B       		.uleb128 0xb
+ 1784 0025 3E       		.uleb128 0x3e
+ 1785 0026 0B       		.uleb128 0xb
+ 1786 0027 03       		.uleb128 0x3
+ 1787 0028 08       		.uleb128 0x8
+ 1788 0029 00       		.byte	0
+ 1789 002a 00       		.byte	0
+ 1790 002b 04       		.uleb128 0x4
+ 1791 002c 16       		.uleb128 0x16
+ 1792 002d 00       		.byte	0
+ 1793 002e 03       		.uleb128 0x3
+ 1794 002f 0E       		.uleb128 0xe
+ 1795 0030 3A       		.uleb128 0x3a
+ 1796 0031 0B       		.uleb128 0xb
+ 1797 0032 3B       		.uleb128 0x3b
+ 1798 0033 05       		.uleb128 0x5
+ 1799 0034 49       		.uleb128 0x49
+ 1800 0035 13       		.uleb128 0x13
+ 1801 0036 00       		.byte	0
+ 1802 0037 00       		.byte	0
+ 1803 0038 05       		.uleb128 0x5
+ 1804 0039 04       		.uleb128 0x4
+ 1805 003a 01       		.byte	0x1
+ 1806 003b 0B       		.uleb128 0xb
+ 1807 003c 0B       		.uleb128 0xb
+ 1808 003d 49       		.uleb128 0x49
+ 1809 003e 13       		.uleb128 0x13
+ 1810 003f 3A       		.uleb128 0x3a
+ 1811 0040 0B       		.uleb128 0xb
+ 1812 0041 3B       		.uleb128 0x3b
+ 1813 0042 05       		.uleb128 0x5
+ 1814 0043 01       		.uleb128 0x1
+ 1815 0044 13       		.uleb128 0x13
+ 1816 0045 00       		.byte	0
+ 1817 0046 00       		.byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 37
+
+
+ 1818 0047 06       		.uleb128 0x6
+ 1819 0048 28       		.uleb128 0x28
+ 1820 0049 00       		.byte	0
+ 1821 004a 03       		.uleb128 0x3
+ 1822 004b 0E       		.uleb128 0xe
+ 1823 004c 1C       		.uleb128 0x1c
+ 1824 004d 0B       		.uleb128 0xb
+ 1825 004e 00       		.byte	0
+ 1826 004f 00       		.byte	0
+ 1827 0050 07       		.uleb128 0x7
+ 1828 0051 2E       		.uleb128 0x2e
+ 1829 0052 01       		.byte	0x1
+ 1830 0053 3F       		.uleb128 0x3f
+ 1831 0054 0C       		.uleb128 0xc
+ 1832 0055 03       		.uleb128 0x3
+ 1833 0056 0E       		.uleb128 0xe
+ 1834 0057 3A       		.uleb128 0x3a
+ 1835 0058 0B       		.uleb128 0xb
+ 1836 0059 3B       		.uleb128 0x3b
+ 1837 005a 0B       		.uleb128 0xb
+ 1838 005b 27       		.uleb128 0x27
+ 1839 005c 0C       		.uleb128 0xc
+ 1840 005d 11       		.uleb128 0x11
+ 1841 005e 01       		.uleb128 0x1
+ 1842 005f 12       		.uleb128 0x12
+ 1843 0060 01       		.uleb128 0x1
+ 1844 0061 40       		.uleb128 0x40
+ 1845 0062 0A       		.uleb128 0xa
+ 1846 0063 9642     		.uleb128 0x2116
+ 1847 0065 0C       		.uleb128 0xc
+ 1848 0066 01       		.uleb128 0x1
+ 1849 0067 13       		.uleb128 0x13
+ 1850 0068 00       		.byte	0
+ 1851 0069 00       		.byte	0
+ 1852 006a 08       		.uleb128 0x8
+ 1853 006b 34       		.uleb128 0x34
+ 1854 006c 00       		.byte	0
+ 1855 006d 03       		.uleb128 0x3
+ 1856 006e 0E       		.uleb128 0xe
+ 1857 006f 3A       		.uleb128 0x3a
+ 1858 0070 0B       		.uleb128 0xb
+ 1859 0071 3B       		.uleb128 0x3b
+ 1860 0072 0B       		.uleb128 0xb
+ 1861 0073 49       		.uleb128 0x49
+ 1862 0074 13       		.uleb128 0x13
+ 1863 0075 02       		.uleb128 0x2
+ 1864 0076 0A       		.uleb128 0xa
+ 1865 0077 00       		.byte	0
+ 1866 0078 00       		.byte	0
+ 1867 0079 09       		.uleb128 0x9
+ 1868 007a 01       		.uleb128 0x1
+ 1869 007b 01       		.byte	0x1
+ 1870 007c 49       		.uleb128 0x49
+ 1871 007d 13       		.uleb128 0x13
+ 1872 007e 01       		.uleb128 0x1
+ 1873 007f 13       		.uleb128 0x13
+ 1874 0080 00       		.byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 38
+
+
+ 1875 0081 00       		.byte	0
+ 1876 0082 0A       		.uleb128 0xa
+ 1877 0083 21       		.uleb128 0x21
+ 1878 0084 00       		.byte	0
+ 1879 0085 49       		.uleb128 0x49
+ 1880 0086 13       		.uleb128 0x13
+ 1881 0087 2F       		.uleb128 0x2f
+ 1882 0088 0B       		.uleb128 0xb
+ 1883 0089 00       		.byte	0
+ 1884 008a 00       		.byte	0
+ 1885 008b 0B       		.uleb128 0xb
+ 1886 008c 2E       		.uleb128 0x2e
+ 1887 008d 00       		.byte	0
+ 1888 008e 3F       		.uleb128 0x3f
+ 1889 008f 0C       		.uleb128 0xc
+ 1890 0090 03       		.uleb128 0x3
+ 1891 0091 0E       		.uleb128 0xe
+ 1892 0092 3A       		.uleb128 0x3a
+ 1893 0093 0B       		.uleb128 0xb
+ 1894 0094 3B       		.uleb128 0x3b
+ 1895 0095 0B       		.uleb128 0xb
+ 1896 0096 27       		.uleb128 0x27
+ 1897 0097 0C       		.uleb128 0xc
+ 1898 0098 11       		.uleb128 0x11
+ 1899 0099 01       		.uleb128 0x1
+ 1900 009a 12       		.uleb128 0x12
+ 1901 009b 01       		.uleb128 0x1
+ 1902 009c 40       		.uleb128 0x40
+ 1903 009d 0A       		.uleb128 0xa
+ 1904 009e 9642     		.uleb128 0x2116
+ 1905 00a0 0C       		.uleb128 0xc
+ 1906 00a1 00       		.byte	0
+ 1907 00a2 00       		.byte	0
+ 1908 00a3 0C       		.uleb128 0xc
+ 1909 00a4 34       		.uleb128 0x34
+ 1910 00a5 00       		.byte	0
+ 1911 00a6 03       		.uleb128 0x3
+ 1912 00a7 0E       		.uleb128 0xe
+ 1913 00a8 3A       		.uleb128 0x3a
+ 1914 00a9 0B       		.uleb128 0xb
+ 1915 00aa 3B       		.uleb128 0x3b
+ 1916 00ab 0B       		.uleb128 0xb
+ 1917 00ac 49       		.uleb128 0x49
+ 1918 00ad 13       		.uleb128 0x13
+ 1919 00ae 3F       		.uleb128 0x3f
+ 1920 00af 0C       		.uleb128 0xc
+ 1921 00b0 02       		.uleb128 0x2
+ 1922 00b1 0A       		.uleb128 0xa
+ 1923 00b2 00       		.byte	0
+ 1924 00b3 00       		.byte	0
+ 1925 00b4 0D       		.uleb128 0xd
+ 1926 00b5 34       		.uleb128 0x34
+ 1927 00b6 00       		.byte	0
+ 1928 00b7 03       		.uleb128 0x3
+ 1929 00b8 08       		.uleb128 0x8
+ 1930 00b9 3A       		.uleb128 0x3a
+ 1931 00ba 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 39
+
+
+ 1932 00bb 3B       		.uleb128 0x3b
+ 1933 00bc 0B       		.uleb128 0xb
+ 1934 00bd 49       		.uleb128 0x49
+ 1935 00be 13       		.uleb128 0x13
+ 1936 00bf 3F       		.uleb128 0x3f
+ 1937 00c0 0C       		.uleb128 0xc
+ 1938 00c1 02       		.uleb128 0x2
+ 1939 00c2 0A       		.uleb128 0xa
+ 1940 00c3 00       		.byte	0
+ 1941 00c4 00       		.byte	0
+ 1942 00c5 00       		.byte	0
+ 1943              		.section	.debug_aranges,"",%progbits
+ 1944 0000 34000000 		.4byte	0x34
+ 1945 0004 0200     		.2byte	0x2
+ 1946 0006 00000000 		.4byte	.Ldebug_info0
+ 1947 000a 04       		.byte	0x4
+ 1948 000b 00       		.byte	0
+ 1949 000c 0000     		.2byte	0
+ 1950 000e 0000     		.2byte	0
+ 1951 0010 00000000 		.4byte	.LFB35
+ 1952 0014 64010000 		.4byte	.LFE35-.LFB35
+ 1953 0018 00000000 		.4byte	.LFB36
+ 1954 001c 8C000000 		.4byte	.LFE36-.LFB36
+ 1955 0020 00000000 		.4byte	.LFB37
+ 1956 0024 94000000 		.4byte	.LFE37-.LFB37
+ 1957 0028 00000000 		.4byte	.LFB38
+ 1958 002c CC040000 		.4byte	.LFE38-.LFB38
+ 1959 0030 00000000 		.4byte	0
+ 1960 0034 00000000 		.4byte	0
+ 1961              		.section	.debug_ranges,"",%progbits
+ 1962              	.Ldebug_ranges0:
+ 1963 0000 00000000 		.4byte	.LFB35
+ 1964 0004 64010000 		.4byte	.LFE35
+ 1965 0008 00000000 		.4byte	.LFB36
+ 1966 000c 8C000000 		.4byte	.LFE36
+ 1967 0010 00000000 		.4byte	.LFB37
+ 1968 0014 94000000 		.4byte	.LFE37
+ 1969 0018 00000000 		.4byte	.LFB38
+ 1970 001c CC040000 		.4byte	.LFE38
+ 1971 0020 00000000 		.4byte	0
+ 1972 0024 00000000 		.4byte	0
+ 1973              		.section	.debug_line,"",%progbits
+ 1974              	.Ldebug_line0:
+ 1975 0000 2E010000 		.section	.debug_str,"MS",%progbits,1
+ 1975      02005500 
+ 1975      00000201 
+ 1975      FB0E0D00 
+ 1975      01010101 
+ 1976              	.LASF14:
+ 1977 0000 6C6F6E67 		.ascii	"long double\000"
+ 1977      20646F75 
+ 1977      626C6500 
+ 1978              	.LASF25:
+ 1979 000c 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 1979      455F4556 
+ 1979      545F4741 
+ 1979      505F5041 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 40
+
+
+ 1979      53534B45 
+ 1980              	.LASF62:
+ 1981 0030 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 1981      455F4556 
+ 1981      545F4741 
+ 1981      5454535F 
+ 1981      50524550 
+ 1982              	.LASF60:
+ 1983 004f 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 1983      455F4556 
+ 1983      545F4741 
+ 1983      5454435F 
+ 1983      57524954 
+ 1984              	.LASF22:
+ 1985 0069 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 1985      455F4556 
+ 1985      545F4D45 
+ 1985      4D4F5259 
+ 1985      5F524551 
+ 1986              	.LASF47:
+ 1987 0082 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 1987      455F4556 
+ 1987      545F4741 
+ 1987      5454435F 
+ 1987      4552524F 
+ 1988              	.LASF85:
+ 1989 009c 4359424C 		.ascii	"CYBLE_EVT_HCI_PKT\000"
+ 1989      455F4556 
+ 1989      545F4843 
+ 1989      495F504B 
+ 1989      5400
+ 1990              	.LASF37:
+ 1991 00ae 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 1991      455F4556 
+ 1991      545F4741 
+ 1991      505F4B45 
+ 1991      59505245 
+ 1992              	.LASF2:
+ 1993 00d2 73686F72 		.ascii	"short int\000"
+ 1993      7420696E 
+ 1993      7400
+ 1994              	.LASF28:
+ 1995 00dc 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 1995      455F4556 
+ 1995      545F4741 
+ 1995      505F4155 
+ 1995      54485F46 
+ 1996              	.LASF49:
+ 1997 00f6 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 1997      455F4556 
+ 1997      545F4741 
+ 1997      54545F44 
+ 1997      4953434F 
+ 1998              	.LASF15:
+ 1999 0114 73697A65 		.ascii	"sizetype\000"
+ 1999      74797065 
+ 1999      00
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 41
+
+
+ 2000              	.LASF39:
+ 2001 011d 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 2001      455F4556 
+ 2001      545F4741 
+ 2001      505F4441 
+ 2001      54415F4C 
+ 2002              	.LASF96:
+ 2003 013e 50726573 		.ascii	"Pressure\000"
+ 2003      73757265 
+ 2003      00
+ 2004              	.LASF6:
+ 2005 0147 6C6F6E67 		.ascii	"long long int\000"
+ 2005      206C6F6E 
+ 2005      6720696E 
+ 2005      7400
+ 2006              	.LASF91:
+ 2007 0155 49324352 		.ascii	"I2CReadBuffer\000"
+ 2007      65616442 
+ 2007      75666665 
+ 2007      7200
+ 2008              	.LASF20:
+ 2009 0163 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 2009      455F4556 
+ 2009      545F4843 
+ 2009      495F5354 
+ 2009      41545553 
+ 2010              	.LASF53:
+ 2011 0178 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 2011      455F4556 
+ 2011      545F4741 
+ 2011      5454435F 
+ 2011      52454144 
+ 2012              	.LASF17:
+ 2013 0199 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 2013      455F4556 
+ 2013      545F5354 
+ 2013      41434B5F 
+ 2013      4F4E00
+ 2014              	.LASF46:
+ 2015 01ac 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_LOC_P256_KEYS_GEN_AND_SET_COMPLET"
+ 2015      455F4556 
+ 2015      545F4741 
+ 2015      505F534D 
+ 2015      505F4C4F 
+ 2016 01df 4500     		.ascii	"E\000"
+ 2017              	.LASF50:
+ 2018 01e1 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 2018      455F4556 
+ 2018      545F4741 
+ 2018      5454535F 
+ 2018      58434E48 
+ 2019              	.LASF10:
+ 2020 01ff 75696E74 		.ascii	"uint16\000"
+ 2020      313600
+ 2021              	.LASF97:
+ 2022 0206 416C7469 		.ascii	"Altitude\000"
+ 2022      74756465 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 42
+
+
+ 2022      00
+ 2023              	.LASF58:
+ 2024 020f 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 2024      455F4556 
+ 2024      545F4741 
+ 2024      5454435F 
+ 2024      52454144 
+ 2025              	.LASF67:
+ 2026 022e 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 2026      455F4556 
+ 2026      545F4741 
+ 2026      5454535F 
+ 2026      48414E44 
+ 2027              	.LASF16:
+ 2028 024f 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 2028      455F4556 
+ 2028      545F484F 
+ 2028      53545F49 
+ 2028      4E56414C 
+ 2029              	.LASF75:
+ 2030 0266 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 2030      455F4556 
+ 2030      545F4C32 
+ 2030      4341505F 
+ 2030      43424643 
+ 2031              	.LASF78:
+ 2032 0284 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 2032      455F4556 
+ 2032      545F4C32 
+ 2032      4341505F 
+ 2032      43424643 
+ 2033              	.LASF11:
+ 2034 02a5 666C6F61 		.ascii	"float\000"
+ 2034      7400
+ 2035              	.LASF56:
+ 2036 02ab 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 2036      455F4556 
+ 2036      545F4741 
+ 2036      5454435F 
+ 2036      52454144 
+ 2037              	.LASF36:
+ 2038 02c4 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 2038      455F4556 
+ 2038      545F4741 
+ 2038      505F4E55 
+ 2038      4D455249 
+ 2039              	.LASF41:
+ 2040 02ed 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 2040      455F4556 
+ 2040      545F4741 
+ 2040      50435F44 
+ 2040      49524543 
+ 2041              	.LASF7:
+ 2042 030e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2042      206C6F6E 
+ 2042      6720756E 
+ 2042      7369676E 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 43
+
+
+ 2042      65642069 
+ 2043              	.LASF92:
+ 2044 0325 53657452 		.ascii	"SetReadAddressBuffer\000"
+ 2044      65616441 
+ 2044      64647265 
+ 2044      73734275 
+ 2044      66666572 
+ 2045              	.LASF45:
+ 2046 033a 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ_REPLY_ERR\000"
+ 2046      455F4556 
+ 2046      545F4741 
+ 2046      505F4155 
+ 2046      54485F52 
+ 2047              	.LASF4:
+ 2048 035b 6C6F6E67 		.ascii	"long int\000"
+ 2048      20696E74 
+ 2048      00
+ 2049              	.LASF66:
+ 2050 0364 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 2050      455F4556 
+ 2050      545F4741 
+ 2050      5454435F 
+ 2050      48414E44 
+ 2051              	.LASF99:
+ 2052 0385 43616C69 		.ascii	"CalibrationDataAvailable\000"
+ 2052      62726174 
+ 2052      696F6E44 
+ 2052      61746141 
+ 2052      7661696C 
+ 2053              	.LASF30:
+ 2054 039e 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 2054      455F4556 
+ 2054      545F4741 
+ 2054      505F4445 
+ 2054      56494345 
+ 2055              	.LASF29:
+ 2056 03bd 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 2056      455F4556 
+ 2056      545F4741 
+ 2056      50505F41 
+ 2056      44564552 
+ 2057              	.LASF65:
+ 2058 03e5 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 2058      455F4556 
+ 2058      545F4741 
+ 2058      5454435F 
+ 2058      48414E44 
+ 2059              	.LASF21:
+ 2060 0406 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 2060      455F4556 
+ 2060      545F5354 
+ 2060      41434B5F 
+ 2060      42555359 
+ 2061              	.LASF89:
+ 2062 0422 52656164 		.ascii	"ReadUncompensatedTemperature\000"
+ 2062      556E636F 
+ 2062      6D70656E 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 44
+
+
+ 2062      73617465 
+ 2062      6454656D 
+ 2063              	.LASF26:
+ 2064 043f 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 2064      455F4556 
+ 2064      545F4741 
+ 2064      505F5041 
+ 2064      53534B45 
+ 2065              	.LASF100:
+ 2066 0465 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2066      43313120 
+ 2066      352E342E 
+ 2066      31203230 
+ 2066      31363036 
+ 2067 0498 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -g"
+ 2067      20726576 
+ 2067      6973696F 
+ 2067      6E203233 
+ 2067      37373135 
+ 2068 04cb 64776172 		.ascii	"dwarf-3 -O0 -ffunction-sections -ffat-lto-objects\000"
+ 2068      662D3320 
+ 2068      2D4F3020 
+ 2068      2D666675 
+ 2068      6E637469 
+ 2069              	.LASF82:
+ 2070 04fd 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 2070      455F4556 
+ 2070      545F4C32 
+ 2070      4341505F 
+ 2070      43424643 
+ 2071              	.LASF23:
+ 2072 0521 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 2072      455F4556 
+ 2072      545F4741 
+ 2072      50435F53 
+ 2072      43414E5F 
+ 2073              	.LASF76:
+ 2074 0545 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 2074      455F4556 
+ 2074      545F4C32 
+ 2074      4341505F 
+ 2074      43424643 
+ 2075              	.LASF40:
+ 2076 0563 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 2076      455F4556 
+ 2076      545F4741 
+ 2076      505F454E 
+ 2076      48414E43 
+ 2077              	.LASF84:
+ 2078 0587 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 2078      455F4556 
+ 2078      545F4C45 
+ 2078      5F50494E 
+ 2078      475F4155 
+ 2079              	.LASF72:
+ 2080 05a6 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 2080      455F4556 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 45
+
+
+ 2080      545F4C32 
+ 2080      4341505F 
+ 2080      434F4E4E 
+ 2081              	.LASF1:
+ 2082 05cc 756E7369 		.ascii	"unsigned char\000"
+ 2082      676E6564 
+ 2082      20636861 
+ 2082      7200
+ 2083              	.LASF103:
+ 2084 05da 52656164 		.ascii	"ReadAndCalculateSensorData\000"
+ 2084      416E6443 
+ 2084      616C6375 
+ 2084      6C617465 
+ 2084      53656E73 
+ 2085              	.LASF0:
+ 2086 05f5 7369676E 		.ascii	"signed char\000"
+ 2086      65642063 
+ 2086      68617200 
+ 2087              	.LASF59:
+ 2088 0601 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 2088      455F4556 
+ 2088      545F4741 
+ 2088      5454535F 
+ 2088      57524954 
+ 2089              	.LASF55:
+ 2090 061b 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 2090      455F4556 
+ 2090      545F4741 
+ 2090      5454435F 
+ 2090      46494E44 
+ 2091              	.LASF27:
+ 2092 0642 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 2092      455F4556 
+ 2092      545F4741 
+ 2092      505F4155 
+ 2092      54485F43 
+ 2093              	.LASF8:
+ 2094 065e 756E7369 		.ascii	"unsigned int\000"
+ 2094      676E6564 
+ 2094      20696E74 
+ 2094      00
+ 2095              	.LASF94:
+ 2096 066b 53656E73 		.ascii	"SensorCalibrationData\000"
+ 2096      6F724361 
+ 2096      6C696272 
+ 2096      6174696F 
+ 2096      6E446174 
+ 2097              	.LASF48:
+ 2098 0681 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 2098      455F4556 
+ 2098      545F4741 
+ 2098      54545F43 
+ 2098      4F4E4E45 
+ 2099              	.LASF5:
+ 2100 069c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2100      20756E73 
+ 2100      69676E65 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 46
+
+
+ 2100      6420696E 
+ 2100      7400
+ 2101              	.LASF24:
+ 2102 06ae 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 2102      455F4556 
+ 2102      545F4741 
+ 2102      505F4155 
+ 2102      54485F52 
+ 2103              	.LASF77:
+ 2104 06c5 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 2104      455F4556 
+ 2104      545F4C32 
+ 2104      4341505F 
+ 2104      43424643 
+ 2105              	.LASF32:
+ 2106 06e6 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 2106      455F4556 
+ 2106      545F4741 
+ 2106      505F454E 
+ 2106      43525950 
+ 2107              	.LASF43:
+ 2108 0703 4359424C 		.ascii	"CYBLE_EVT_GAP_CONN_ESTB\000"
+ 2108      455F4556 
+ 2108      545F4741 
+ 2108      505F434F 
+ 2108      4E4E5F45 
+ 2109              	.LASF71:
+ 2110 071b 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 2110      455F4556 
+ 2110      545F4741 
+ 2110      5454435F 
+ 2110      4C4F4E47 
+ 2111              	.LASF35:
+ 2112 073e 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 2112      455F4556 
+ 2112      545F4741 
+ 2112      505F4B45 
+ 2112      59494E46 
+ 2113              	.LASF90:
+ 2114 0762 49324357 		.ascii	"I2CWriteBuffer\000"
+ 2114      72697465 
+ 2114      42756666 
+ 2114      657200
+ 2115              	.LASF86:
+ 2116 0771 4359424C 		.ascii	"CYBLE_EVT_FLASH_CORRUPT\000"
+ 2116      455F4556 
+ 2116      545F464C 
+ 2116      4153485F 
+ 2116      434F5252 
+ 2117              	.LASF33:
+ 2118 0789 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 2118      455F4556 
+ 2118      545F4741 
+ 2118      505F434F 
+ 2118      4E4E4543 
+ 2119              	.LASF42:
+ 2120 07b2 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 47
+
+
+ 2120      455F4556 
+ 2120      545F4741 
+ 2120      505F534D 
+ 2120      505F4E45 
+ 2121              	.LASF13:
+ 2122 07d9 63686172 		.ascii	"char\000"
+ 2122      00
+ 2123              	.LASF74:
+ 2124 07de 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 2124      455F4556 
+ 2124      545F4C32 
+ 2124      4341505F 
+ 2124      434F4D4D 
+ 2125              	.LASF3:
+ 2126 07fa 73686F72 		.ascii	"short unsigned int\000"
+ 2126      7420756E 
+ 2126      7369676E 
+ 2126      65642069 
+ 2126      6E7400
+ 2127              	.LASF9:
+ 2128 080d 75696E74 		.ascii	"uint8\000"
+ 2128      3800
+ 2129              	.LASF57:
+ 2130 0813 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 2130      455F4556 
+ 2130      545F4741 
+ 2130      5454435F 
+ 2130      52454144 
+ 2131              	.LASF101:
+ 2132 0831 4932434D 		.ascii	"I2CMaster.c\000"
+ 2132      61737465 
+ 2132      722E6300 
+ 2133              	.LASF64:
+ 2134 083d 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 2134      455F4556 
+ 2134      545F4741 
+ 2134      5454435F 
+ 2134      45584543 
+ 2135              	.LASF34:
+ 2136 085c 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 2136      455F4556 
+ 2136      545F4741 
+ 2136      50435F53 
+ 2136      43414E5F 
+ 2137              	.LASF83:
+ 2138 087b 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 2138      455F4556 
+ 2138      545F5045 
+ 2138      4E44494E 
+ 2138      475F464C 
+ 2139              	.LASF80:
+ 2140 0899 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 2140      455F4556 
+ 2140      545F4C32 
+ 2140      4341505F 
+ 2140      43424643 
+ 2141              	.LASF12:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 48
+
+
+ 2142 08bc 646F7562 		.ascii	"double\000"
+ 2142      6C6500
+ 2143              	.LASF81:
+ 2144 08c3 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 2144      455F4556 
+ 2144      545F4C32 
+ 2144      4341505F 
+ 2144      43424643 
+ 2145              	.LASF44:
+ 2146 08e6 4359424C 		.ascii	"CYBLE_EVT_GAP_SCAN_REQ_RECVD\000"
+ 2146      455F4556 
+ 2146      545F4741 
+ 2146      505F5343 
+ 2146      414E5F52 
+ 2147              	.LASF19:
+ 2148 0903 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 2148      455F4556 
+ 2148      545F4841 
+ 2148      52445741 
+ 2148      52455F45 
+ 2149              	.LASF79:
+ 2150 091c 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 2150      455F4556 
+ 2150      545F4C32 
+ 2150      4341505F 
+ 2150      43424643 
+ 2151              	.LASF73:
+ 2152 093b 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 2152      455F4556 
+ 2152      545F4C32 
+ 2152      4341505F 
+ 2152      434F4E4E 
+ 2153              	.LASF88:
+ 2154 0961 52656164 		.ascii	"ReadSensorCalibrationData\000"
+ 2154      53656E73 
+ 2154      6F724361 
+ 2154      6C696272 
+ 2154      6174696F 
+ 2155              	.LASF98:
+ 2156 097b 50726573 		.ascii	"PressureAtSeaLevel\000"
+ 2156      73757265 
+ 2156      41745365 
+ 2156      614C6576 
+ 2156      656C00
+ 2157              	.LASF52:
+ 2158 098e 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 2158      455F4556 
+ 2158      545F4741 
+ 2158      5454435F 
+ 2158      52454144 
+ 2159              	.LASF61:
+ 2160 09b5 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 2160      455F4556 
+ 2160      545F4741 
+ 2160      5454535F 
+ 2160      57524954 
+ 2161              	.LASF51:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 49
+
+
+ 2162 09d3 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 2162      455F4556 
+ 2162      545F4741 
+ 2162      5454435F 
+ 2162      5843484E 
+ 2163              	.LASF95:
+ 2164 09f1 54656D70 		.ascii	"Temperature\000"
+ 2164      65726174 
+ 2164      75726500 
+ 2165              	.LASF18:
+ 2166 09fd 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 2166      455F4556 
+ 2166      545F5449 
+ 2166      4D454F55 
+ 2166      5400
+ 2167              	.LASF87:
+ 2168 0a0f 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 2168      455F4556 
+ 2168      545F4D41 
+ 2168      5800
+ 2169              	.LASF70:
+ 2170 0a1d 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 2170      455F4556 
+ 2170      545F4741 
+ 2170      5454535F 
+ 2170      52454144 
+ 2171              	.LASF54:
+ 2172 0a46 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 2172      455F4556 
+ 2172      545F4741 
+ 2172      5454435F 
+ 2172      46494E44 
+ 2173              	.LASF69:
+ 2174 0a64 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 2174      455F4556 
+ 2174      545F4741 
+ 2174      5454435F 
+ 2174      53544F50 
+ 2175              	.LASF63:
+ 2176 0a86 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 2176      455F4556 
+ 2176      545F4741 
+ 2176      5454535F 
+ 2176      45584543 
+ 2177              	.LASF31:
+ 2178 0aa5 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 2178      455F4556 
+ 2178      545F4741 
+ 2178      505F4445 
+ 2178      56494345 
+ 2179              	.LASF102:
+ 2180 0ac7 433A5C55 		.ascii	"C:\\Users\\hasur\\Documents\\PSoC_4_BLE_Pressure_Se"
+ 2180      73657273 
+ 2180      5C686173 
+ 2180      75725C44 
+ 2180      6F63756D 
+ 2181 0af6 6E736F72 		.ascii	"nsor\\PSoC_4_BLE_Pressure_Sensor.cydsn\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\cceDQduE.s 			page 50
+
+
+ 2181      5C50536F 
+ 2181      435F345F 
+ 2181      424C455F 
+ 2181      50726573 
+ 2182              	.LASF68:
+ 2183 0b1c 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 2183      455F4556 
+ 2183      545F4741 
+ 2183      5454535F 
+ 2183      44415441 
+ 2184              	.LASF93:
+ 2185 0b40 52656164 		.ascii	"ReadUncompensatedPressure\000"
+ 2185      556E636F 
+ 2185      6D70656E 
+ 2185      73617465 
+ 2185      64507265 
+ 2186              	.LASF38:
+ 2187 0b5a 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 2187      455F4556 
+ 2187      545F4741 
+ 2187      505F4F4F 
+ 2187      425F4745 
+ 2188              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

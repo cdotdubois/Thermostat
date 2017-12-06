@@ -1,0 +1,2922 @@
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CyFlash.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              		.align	2
+  21              	cySysFlashBackup:
+  22 0000 00000000 		.space	20
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23              		.section	.text.CySysFlashWriteRow,"ax",%progbits
+  24              		.align	2
+  25              		.global	CySysFlashWriteRow
+  26              		.code	16
+  27              		.thumb_func
+  28              		.type	CySysFlashWriteRow, %function
+  29              	CySysFlashWriteRow:
+  30              	.LFB2:
+  31              		.file 1 "Generated_Source\\PSoC4\\CyFlash.c"
+   1:Generated_Source\PSoC4/CyFlash.c **** /***************************************************************************//**
+   2:Generated_Source\PSoC4/CyFlash.c **** * \file CyFlash.c
+   3:Generated_Source\PSoC4/CyFlash.c **** * \version 5.60
+   4:Generated_Source\PSoC4/CyFlash.c **** *
+   5:Generated_Source\PSoC4/CyFlash.c **** * \brief Provides an API for the FLASH.
+   6:Generated_Source\PSoC4/CyFlash.c **** *
+   7:Generated_Source\PSoC4/CyFlash.c **** * \note This code is endian agnostic.
+   8:Generated_Source\PSoC4/CyFlash.c **** *
+   9:Generated_Source\PSoC4/CyFlash.c **** * \note Documentation of the API's in this file is located in the System
+  10:Generated_Source\PSoC4/CyFlash.c **** * Reference Guide provided with PSoC Creator.
+  11:Generated_Source\PSoC4/CyFlash.c **** *
+  12:Generated_Source\PSoC4/CyFlash.c **** ********************************************************************************
+  13:Generated_Source\PSoC4/CyFlash.c **** * \copyright
+  14:Generated_Source\PSoC4/CyFlash.c **** * Copyright 2010-2017, Cypress Semiconductor Corporation.  All rights reserved.
+  15:Generated_Source\PSoC4/CyFlash.c **** * You may use this file only in accordance with the license, terms, conditions,
+  16:Generated_Source\PSoC4/CyFlash.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  17:Generated_Source\PSoC4/CyFlash.c **** * the software package with which this file was provided.
+  18:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+  19:Generated_Source\PSoC4/CyFlash.c **** 
+  20:Generated_Source\PSoC4/CyFlash.c **** #include "CyFlash.h"
+  21:Generated_Source\PSoC4/CyFlash.c **** 
+  22:Generated_Source\PSoC4/CyFlash.c **** 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 2
+
+
+  23:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+  24:Generated_Source\PSoC4/CyFlash.c **** * Cypress identified a defect with the Flash write functionality of the
+  25:Generated_Source\PSoC4/CyFlash.c **** * PSoC 4000, PSoC 4000U, PSoC 4100, and PSoC 4200 devices. The 
+  26:Generated_Source\PSoC4/CyFlash.c **** * CySysFlashWriteRow() function now checks the data to be written and, if 
+  27:Generated_Source\PSoC4/CyFlash.c **** * necessary, modifies it to have a non-zero checksum. After writing to Flash, 
+  28:Generated_Source\PSoC4/CyFlash.c **** * the modified data is replaced (Flash program) with 
+  29:Generated_Source\PSoC4/CyFlash.c **** * the correct (original) data.
+  30:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+  31:Generated_Source\PSoC4/CyFlash.c **** #define CY_FLASH_CHECKSUM_WORKAROUND    (CY_PSOC4_4000 || CY_PSOC4_4100 || CY_PSOC4_4200 || CY_PSOC
+  32:Generated_Source\PSoC4/CyFlash.c **** 
+  33:Generated_Source\PSoC4/CyFlash.c **** #if (CY_IP_FM || ((!CY_PSOC4_4000) && CY_IP_SPCIF_SYNCHRONOUS) || (!CY_IP_FM) && CY_PSOC4_4000)
+  34:Generated_Source\PSoC4/CyFlash.c ****     static CY_SYS_FLASH_CLOCK_BACKUP_STRUCT cySysFlashBackup;
+  35:Generated_Source\PSoC4/CyFlash.c **** #endif /* (CY_IP_FM || ((!CY_PSOC4_4000) && CY_IP_SPCIF_SYNCHRONOUS) || (!CY_IP_FM) && CY_PSOC4_400
+  36:Generated_Source\PSoC4/CyFlash.c **** 
+  37:Generated_Source\PSoC4/CyFlash.c **** static cystatus CySysFlashClockBackup(void);
+  38:Generated_Source\PSoC4/CyFlash.c **** static cystatus CySysFlashClockRestore(void);
+  39:Generated_Source\PSoC4/CyFlash.c **** #if(CY_IP_SPCIF_SYNCHRONOUS)
+  40:Generated_Source\PSoC4/CyFlash.c ****     static cystatus CySysFlashClockConfig(void);
+  41:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
+  42:Generated_Source\PSoC4/CyFlash.c **** 
+  43:Generated_Source\PSoC4/CyFlash.c **** 
+  44:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+  45:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashWriteRow
+  46:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+  47:Generated_Source\PSoC4/CyFlash.c **** *
+  48:Generated_Source\PSoC4/CyFlash.c **** * Erases a row of Flash and programs it with the new data.
+  49:Generated_Source\PSoC4/CyFlash.c **** *
+  50:Generated_Source\PSoC4/CyFlash.c **** * The IMO must be enabled before calling this function. The operation of the
+  51:Generated_Source\PSoC4/CyFlash.c **** * flash writing hardware is dependent on the IMO.
+  52:Generated_Source\PSoC4/CyFlash.c **** *
+  53:Generated_Source\PSoC4/CyFlash.c **** * For PSoC 4000, PSoC 4100 BLE and PSoC 4200 BLE devices (PSoC 4100 BLE and
+  54:Generated_Source\PSoC4/CyFlash.c **** * PSoC 4200 BLE devices with 256K of Flash memory are not affected), this API
+  55:Generated_Source\PSoC4/CyFlash.c **** * will automatically modify the clock settings for the device. Writing to
+  56:Generated_Source\PSoC4/CyFlash.c **** * flash requires that changes be made to the IMO and HFCLK settings. The
+  57:Generated_Source\PSoC4/CyFlash.c **** * configuration is restored before returning. This will impact the operation
+  58:Generated_Source\PSoC4/CyFlash.c **** * of most of the hardware in the device.
+  59:Generated_Source\PSoC4/CyFlash.c **** *
+  60:Generated_Source\PSoC4/CyFlash.c **** * For PSoC 4000 devices this API will automatically modify the clock settings
+  61:Generated_Source\PSoC4/CyFlash.c **** * for the device. Writing to flash requires that changes be made to the IMO
+  62:Generated_Source\PSoC4/CyFlash.c **** * and HFCLK settings. The configuration is restored before returning. HFCLK
+  63:Generated_Source\PSoC4/CyFlash.c **** * will have several frequency changes during the operation of this API between
+  64:Generated_Source\PSoC4/CyFlash.c **** * a minimum frequency of the current IMO frequency divided by 8 and a maximum
+  65:Generated_Source\PSoC4/CyFlash.c **** * frequency of 12 MHz. This will impact the operation of most of the hardware
+  66:Generated_Source\PSoC4/CyFlash.c **** * in the device.
+  67:Generated_Source\PSoC4/CyFlash.c **** *
+  68:Generated_Source\PSoC4/CyFlash.c **** * \param rowNum The flash row number. The number of the flash rows is defined by
+  69:Generated_Source\PSoC4/CyFlash.c **** * the \ref CY_FLASH_NUMBER_ROWS macro for the selected device. Refer to the
+  70:Generated_Source\PSoC4/CyFlash.c **** * device datasheet for the details.
+  71:Generated_Source\PSoC4/CyFlash.c **** * \note The target flash array is calculated based on the specified flash row.
+  72:Generated_Source\PSoC4/CyFlash.c **** *
+  73:Generated_Source\PSoC4/CyFlash.c **** * \param rowData Array of bytes to write. The size of the array must be equal to
+  74:Generated_Source\PSoC4/CyFlash.c **** * the flash row size. The flash row size for the selected device is defined by
+  75:Generated_Source\PSoC4/CyFlash.c **** * the \ref CY_FLASH_SIZEOF_ROW macro. Refer to the device datasheet for the
+  76:Generated_Source\PSoC4/CyFlash.c **** * details.
+  77:Generated_Source\PSoC4/CyFlash.c **** *
+  78:Generated_Source\PSoC4/CyFlash.c **** * \return \ref group_flash_status_codes
+  79:Generated_Source\PSoC4/CyFlash.c **** *
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 3
+
+
+  80:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+  81:Generated_Source\PSoC4/CyFlash.c **** uint32 CySysFlashWriteRow(uint32 rowNum, const uint8 rowData[])
+  82:Generated_Source\PSoC4/CyFlash.c **** {
+  32              		.loc 1 82 0
+  33              		.cfi_startproc
+  34              		@ args = 0, pretend = 0, frame = 160
+  35              		@ frame_needed = 1, uses_anonymous_args = 0
+  36 0000 90B5     		push	{r4, r7, lr}
+  37              		.cfi_def_cfa_offset 12
+  38              		.cfi_offset 4, -12
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 A9B0     		sub	sp, sp, #164
+  42              		.cfi_def_cfa_offset 176
+  43 0004 00AF     		add	r7, sp, #0
+  44              		.cfi_def_cfa_register 7
+  45 0006 7860     		str	r0, [r7, #4]
+  46 0008 3960     		str	r1, [r7]
+  83:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 retValue = CY_SYS_FLASH_SUCCESS;
+  47              		.loc 1 83 0
+  48 000a 0023     		movs	r3, #0
+  49 000c 9822     		movs	r2, #152
+  50 000e BA18     		adds	r2, r7, r2
+  51 0010 1360     		str	r3, [r2]
+  84:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 clkCnfRetValue = CY_SYS_FLASH_SUCCESS;
+  52              		.loc 1 84 0
+  53 0012 0023     		movs	r3, #0
+  54 0014 9422     		movs	r2, #148
+  55 0016 BA18     		adds	r2, r7, r2
+  56 0018 1360     		str	r3, [r2]
+  85:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 parameters[(CY_FLASH_SIZEOF_ROW + CY_FLASH_SRAM_ROM_DATA) / sizeof(uint32)];
+  86:Generated_Source\PSoC4/CyFlash.c ****     uint8  interruptState;
+  87:Generated_Source\PSoC4/CyFlash.c **** 
+  88:Generated_Source\PSoC4/CyFlash.c ****     #if (CY_FLASH_CHECKSUM_WORKAROUND)
+  89:Generated_Source\PSoC4/CyFlash.c ****         uint32 needChecksumWorkaround = 0u;
+  90:Generated_Source\PSoC4/CyFlash.c ****         uint32 savedIndex = 0u;
+  91:Generated_Source\PSoC4/CyFlash.c ****         uint32 savedValue = 0u;
+  92:Generated_Source\PSoC4/CyFlash.c ****         uint32 checksum = 0u;
+  93:Generated_Source\PSoC4/CyFlash.c ****         uint32 bits = 0u;
+  94:Generated_Source\PSoC4/CyFlash.c ****         uint32 i;
+  95:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* (CY_FLASH_CHECKSUM_WORKAROUND) */
+  96:Generated_Source\PSoC4/CyFlash.c **** 
+  97:Generated_Source\PSoC4/CyFlash.c ****     if ((rowNum < CY_FLASH_NUMBER_ROWS) && (rowData != 0u))
+  57              		.loc 1 97 0
+  58 001a 7B68     		ldr	r3, [r7, #4]
+  59 001c 604A     		ldr	r2, .L19
+  60 001e 9342     		cmp	r3, r2
+  61 0020 00D9     		bls	.LCB26
+  62 0022 B1E0     		b	.L2	@long jump
+  63              	.LCB26:
+  64              		.loc 1 97 0 is_stmt 0 discriminator 1
+  65 0024 3B68     		ldr	r3, [r7]
+  66 0026 002B     		cmp	r3, #0
+  67 0028 00D1     		bne	.LCB29
+  68 002a ADE0     		b	.L2	@long jump
+  69              	.LCB29:
+  98:Generated_Source\PSoC4/CyFlash.c ****     {
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 4
+
+
+  99:Generated_Source\PSoC4/CyFlash.c ****         /* Copy data to be written into internal variable */
+ 100:Generated_Source\PSoC4/CyFlash.c ****         (void)memcpy((void *)&parameters[2u], rowData, CY_FLASH_SIZEOF_ROW);
+  70              		.loc 1 100 0 is_stmt 1
+  71 002c 3968     		ldr	r1, [r7]
+  72 002e 0C23     		movs	r3, #12
+  73 0030 FB18     		adds	r3, r7, r3
+  74 0032 0833     		adds	r3, r3, #8
+  75 0034 8022     		movs	r2, #128
+  76 0036 1800     		movs	r0, r3
+  77 0038 FFF7FEFF 		bl	memcpy
+ 101:Generated_Source\PSoC4/CyFlash.c **** 
+ 102:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_FLASH_CHECKSUM_WORKAROUND)
+ 103:Generated_Source\PSoC4/CyFlash.c **** 
+ 104:Generated_Source\PSoC4/CyFlash.c ****             for (i = 2u; i < ((CY_FLASH_SIZEOF_ROW / sizeof(uint32)) + 2u); i++)
+ 105:Generated_Source\PSoC4/CyFlash.c ****             {
+ 106:Generated_Source\PSoC4/CyFlash.c ****                 uint32 tmp = parameters[i];
+ 107:Generated_Source\PSoC4/CyFlash.c ****                 if (tmp != 0u)
+ 108:Generated_Source\PSoC4/CyFlash.c ****                 {
+ 109:Generated_Source\PSoC4/CyFlash.c ****                     checksum += tmp;
+ 110:Generated_Source\PSoC4/CyFlash.c ****                     bits |= tmp;
+ 111:Generated_Source\PSoC4/CyFlash.c ****                     savedIndex = i;
+ 112:Generated_Source\PSoC4/CyFlash.c ****                 }
+ 113:Generated_Source\PSoC4/CyFlash.c ****             }
+ 114:Generated_Source\PSoC4/CyFlash.c **** 
+ 115:Generated_Source\PSoC4/CyFlash.c ****             needChecksumWorkaround = ((checksum == 0u) && (bits != 0u)) ? 1u : 0u;
+ 116:Generated_Source\PSoC4/CyFlash.c ****             if (needChecksumWorkaround != 0u)
+ 117:Generated_Source\PSoC4/CyFlash.c ****             {
+ 118:Generated_Source\PSoC4/CyFlash.c ****                 savedValue = parameters[savedIndex];
+ 119:Generated_Source\PSoC4/CyFlash.c ****                 parameters[savedIndex] = 0u;
+ 120:Generated_Source\PSoC4/CyFlash.c ****             }
+ 121:Generated_Source\PSoC4/CyFlash.c ****         #endif  /* (CY_FLASH_CHECKSUM_WORKAROUND) */
+ 122:Generated_Source\PSoC4/CyFlash.c **** 
+ 123:Generated_Source\PSoC4/CyFlash.c ****         /* Load Flash Bytes */
+ 124:Generated_Source\PSoC4/CyFlash.c ****         parameters[0u] = (uint32) (CY_FLASH_GET_MACRO_FROM_ROW(rowNum)        << CY_FLASH_PARAM_MAC
+ 125:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLASH_PARAM_ADD
+ 126:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_LOAD) << CY_FLASH_PARAM_KEY
+  78              		.loc 1 126 0
+  79 003c 7B68     		ldr	r3, [r7, #4]
+  80 003e 594A     		ldr	r2, .L19+4
+  81 0040 9342     		cmp	r3, r2
+  82 0042 01D9     		bls	.L3
+  83              		.loc 1 126 0 is_stmt 0 discriminator 1
+  84 0044 584A     		ldr	r2, .L19+8
+  85 0046 00E0     		b	.L4
+  86              	.L3:
+  87              		.loc 1 126 0 discriminator 2
+  88 0048 584A     		ldr	r2, .L19+12
+  89              	.L4:
+ 124:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLASH_PARAM_ADD
+  90              		.loc 1 124 0 is_stmt 1
+  91 004a 0C23     		movs	r3, #12
+  92 004c FB18     		adds	r3, r7, r3
+  93 004e 1A60     		str	r2, [r3]
+ 127:Generated_Source\PSoC4/CyFlash.c ****                          CY_FLASH_KEY_ONE;
+ 128:Generated_Source\PSoC4/CyFlash.c ****         parameters[1u] = CY_FLASH_SIZEOF_ROW - 1u;
+  94              		.loc 1 128 0
+  95 0050 0C23     		movs	r3, #12
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 5
+
+
+  96 0052 FB18     		adds	r3, r7, r3
+  97 0054 7F22     		movs	r2, #127
+  98 0056 5A60     		str	r2, [r3, #4]
+ 129:Generated_Source\PSoC4/CyFlash.c **** 
+ 130:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+  99              		.loc 1 130 0
+ 100 0058 554B     		ldr	r3, .L19+16
+ 101 005a 0C22     		movs	r2, #12
+ 102 005c BA18     		adds	r2, r7, r2
+ 103 005e 1A60     		str	r2, [r3]
+ 131:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_LOAD;
+ 104              		.loc 1 131 0
+ 105 0060 544B     		ldr	r3, .L19+20
+ 106 0062 554A     		ldr	r2, .L19+24
+ 107 0064 1A60     		str	r2, [r3]
+ 132:Generated_Source\PSoC4/CyFlash.c ****         CY_NOP;
+ 108              		.loc 1 132 0
+ 109              		.syntax divided
+ 110              	@ 132 "Generated_Source\PSoC4\CyFlash.c" 1
+ 111 0066 C046     		NOP
+ 112              	
+ 113              	@ 0 "" 2
+ 133:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_FLASH_API_RETURN;
+ 114              		.loc 1 133 0
+ 115              		.thumb
+ 116              		.syntax unified
+ 117 0068 514B     		ldr	r3, .L19+16
+ 118 006a 1B68     		ldr	r3, [r3]
+ 119 006c 1B0F     		lsrs	r3, r3, #28
+ 120 006e 1A07     		lsls	r2, r3, #28
+ 121 0070 F023     		movs	r3, #240
+ 122 0072 1B06     		lsls	r3, r3, #24
+ 123 0074 9A42     		cmp	r2, r3
+ 124 0076 04D1     		bne	.L5
+ 125              		.loc 1 133 0 is_stmt 0 discriminator 1
+ 126 0078 4D4B     		ldr	r3, .L19+16
+ 127 007a 1B68     		ldr	r3, [r3]
+ 128 007c FF22     		movs	r2, #255
+ 129 007e 1340     		ands	r3, r2
+ 130 0080 0DE0     		b	.L6
+ 131              	.L5:
+ 132              		.loc 1 133 0 discriminator 2
+ 133 0082 4B4B     		ldr	r3, .L19+16
+ 134 0084 1B68     		ldr	r3, [r3]
+ 135 0086 1B0F     		lsrs	r3, r3, #28
+ 136 0088 1A07     		lsls	r2, r3, #28
+ 137 008a A023     		movs	r3, #160
+ 138 008c 1B06     		lsls	r3, r3, #24
+ 139 008e 9A42     		cmp	r2, r3
+ 140 0090 04D0     		beq	.L7
+ 141              		.loc 1 133 0 discriminator 4
+ 142 0092 474B     		ldr	r3, .L19+16
+ 143 0094 1B68     		ldr	r3, [r3]
+ 144 0096 FF22     		movs	r2, #255
+ 145 0098 1340     		ands	r3, r2
+ 146 009a 00E0     		b	.L6
+ 147              	.L7:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 6
+
+
+ 148              		.loc 1 133 0 discriminator 5
+ 149 009c 0023     		movs	r3, #0
+ 150              	.L6:
+ 151              		.loc 1 133 0 discriminator 8
+ 152 009e 9822     		movs	r2, #152
+ 153 00a0 BA18     		adds	r2, r7, r2
+ 154 00a2 1360     		str	r3, [r2]
+ 134:Generated_Source\PSoC4/CyFlash.c **** 
+ 135:Generated_Source\PSoC4/CyFlash.c ****         if(retValue == CY_SYS_FLASH_SUCCESS)
+ 155              		.loc 1 135 0 is_stmt 1 discriminator 8
+ 156 00a4 9823     		movs	r3, #152
+ 157 00a6 FB18     		adds	r3, r7, r3
+ 158 00a8 1B68     		ldr	r3, [r3]
+ 159 00aa 002B     		cmp	r3, #0
+ 160 00ac 00D0     		beq	.LCB106
+ 161 00ae 6FE0     		b	.L17	@long jump
+ 162              	.LCB106:
+ 136:Generated_Source\PSoC4/CyFlash.c ****         {
+ 137:Generated_Source\PSoC4/CyFlash.c ****             /***************************************************************
+ 138:Generated_Source\PSoC4/CyFlash.c ****             * Mask all the exceptions to guarantee that Flash write will
+ 139:Generated_Source\PSoC4/CyFlash.c ****             * occur in the atomic way. It will not affect system call
+ 140:Generated_Source\PSoC4/CyFlash.c ****             * execution (flash row write) since it is executed in the NMI
+ 141:Generated_Source\PSoC4/CyFlash.c ****             * context.
+ 142:Generated_Source\PSoC4/CyFlash.c ****             ***************************************************************/
+ 143:Generated_Source\PSoC4/CyFlash.c ****             interruptState = CyEnterCriticalSection();
+ 163              		.loc 1 143 0
+ 164 00b0 9F23     		movs	r3, #159
+ 165 00b2 FC18     		adds	r4, r7, r3
+ 166 00b4 FFF7FEFF 		bl	CyEnterCriticalSection
+ 167 00b8 0300     		movs	r3, r0
+ 168 00ba 2370     		strb	r3, [r4]
+ 144:Generated_Source\PSoC4/CyFlash.c **** 
+ 145:Generated_Source\PSoC4/CyFlash.c ****             clkCnfRetValue = CySysFlashClockBackup();
+ 169              		.loc 1 145 0
+ 170 00bc FFF7FEFF 		bl	CySysFlashClockBackup
+ 171 00c0 0300     		movs	r3, r0
+ 172 00c2 9422     		movs	r2, #148
+ 173 00c4 BA18     		adds	r2, r7, r2
+ 174 00c6 1360     		str	r3, [r2]
+ 146:Generated_Source\PSoC4/CyFlash.c **** 
+ 147:Generated_Source\PSoC4/CyFlash.c ****         #if(CY_IP_SPCIF_SYNCHRONOUS)
+ 148:Generated_Source\PSoC4/CyFlash.c ****             if(clkCnfRetValue == CY_SYS_FLASH_SUCCESS)
+ 175              		.loc 1 148 0
+ 176 00c8 9423     		movs	r3, #148
+ 177 00ca FB18     		adds	r3, r7, r3
+ 178 00cc 1B68     		ldr	r3, [r3]
+ 179 00ce 002B     		cmp	r3, #0
+ 180 00d0 05D1     		bne	.L10
+ 149:Generated_Source\PSoC4/CyFlash.c ****             {
+ 150:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CySysFlashClockConfig();
+ 181              		.loc 1 150 0
+ 182 00d2 FFF7FEFF 		bl	CySysFlashClockConfig
+ 183 00d6 0300     		movs	r3, r0
+ 184 00d8 9822     		movs	r2, #152
+ 185 00da BA18     		adds	r2, r7, r2
+ 186 00dc 1360     		str	r3, [r2]
+ 187              	.L10:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 7
+
+
+ 151:Generated_Source\PSoC4/CyFlash.c ****             }
+ 152:Generated_Source\PSoC4/CyFlash.c ****         #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 153:Generated_Source\PSoC4/CyFlash.c **** 
+ 154:Generated_Source\PSoC4/CyFlash.c ****             if(retValue == CY_SYS_FLASH_SUCCESS)
+ 188              		.loc 1 154 0
+ 189 00de 9823     		movs	r3, #152
+ 190 00e0 FB18     		adds	r3, r7, r3
+ 191 00e2 1B68     		ldr	r3, [r3]
+ 192 00e4 002B     		cmp	r3, #0
+ 193 00e6 32D1     		bne	.L11
+ 155:Generated_Source\PSoC4/CyFlash.c ****             {
+ 156:Generated_Source\PSoC4/CyFlash.c ****                 /* Write Row */
+ 157:Generated_Source\PSoC4/CyFlash.c ****                 parameters[0u]  = (uint32) (((uint32) CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_WRITE_RO
+ 194              		.loc 1 157 0
+ 195 00e8 0C23     		movs	r3, #12
+ 196 00ea FB18     		adds	r3, r7, r3
+ 197 00ec 334A     		ldr	r2, .L19+28
+ 198 00ee 1A60     		str	r2, [r3]
+ 158:Generated_Source\PSoC4/CyFlash.c ****                 parameters[0u] |= (uint32)(rowNum << 16u);
+ 199              		.loc 1 158 0
+ 200 00f0 0C23     		movs	r3, #12
+ 201 00f2 FB18     		adds	r3, r7, r3
+ 202 00f4 1A68     		ldr	r2, [r3]
+ 203 00f6 7B68     		ldr	r3, [r7, #4]
+ 204 00f8 1B04     		lsls	r3, r3, #16
+ 205 00fa 1A43     		orrs	r2, r3
+ 206 00fc 0C23     		movs	r3, #12
+ 207 00fe FB18     		adds	r3, r7, r3
+ 208 0100 1A60     		str	r2, [r3]
+ 159:Generated_Source\PSoC4/CyFlash.c **** 
+ 160:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 209              		.loc 1 160 0
+ 210 0102 2B4B     		ldr	r3, .L19+16
+ 211 0104 0C22     		movs	r2, #12
+ 212 0106 BA18     		adds	r2, r7, r2
+ 213 0108 1A60     		str	r2, [r3]
+ 161:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_WRITE_RO
+ 214              		.loc 1 161 0
+ 215 010a 2A4B     		ldr	r3, .L19+20
+ 216 010c 2C4A     		ldr	r2, .L19+32
+ 217 010e 1A60     		str	r2, [r3]
+ 162:Generated_Source\PSoC4/CyFlash.c ****                 CY_NOP;
+ 218              		.loc 1 162 0
+ 219              		.syntax divided
+ 220              	@ 162 "Generated_Source\PSoC4\CyFlash.c" 1
+ 221 0110 C046     		NOP
+ 222              	
+ 223              	@ 0 "" 2
+ 163:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CY_FLASH_API_RETURN;
+ 224              		.loc 1 163 0
+ 225              		.thumb
+ 226              		.syntax unified
+ 227 0112 274B     		ldr	r3, .L19+16
+ 228 0114 1B68     		ldr	r3, [r3]
+ 229 0116 1B0F     		lsrs	r3, r3, #28
+ 230 0118 1A07     		lsls	r2, r3, #28
+ 231 011a F023     		movs	r3, #240
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 8
+
+
+ 232 011c 1B06     		lsls	r3, r3, #24
+ 233 011e 9A42     		cmp	r2, r3
+ 234 0120 04D1     		bne	.L12
+ 235              		.loc 1 163 0 is_stmt 0 discriminator 1
+ 236 0122 234B     		ldr	r3, .L19+16
+ 237 0124 1B68     		ldr	r3, [r3]
+ 238 0126 FF22     		movs	r2, #255
+ 239 0128 1340     		ands	r3, r2
+ 240 012a 0DE0     		b	.L13
+ 241              	.L12:
+ 242              		.loc 1 163 0 discriminator 2
+ 243 012c 204B     		ldr	r3, .L19+16
+ 244 012e 1B68     		ldr	r3, [r3]
+ 245 0130 1B0F     		lsrs	r3, r3, #28
+ 246 0132 1A07     		lsls	r2, r3, #28
+ 247 0134 A023     		movs	r3, #160
+ 248 0136 1B06     		lsls	r3, r3, #24
+ 249 0138 9A42     		cmp	r2, r3
+ 250 013a 04D0     		beq	.L14
+ 251              		.loc 1 163 0 discriminator 4
+ 252 013c 1C4B     		ldr	r3, .L19+16
+ 253 013e 1B68     		ldr	r3, [r3]
+ 254 0140 FF22     		movs	r2, #255
+ 255 0142 1340     		ands	r3, r2
+ 256 0144 00E0     		b	.L13
+ 257              	.L14:
+ 258              		.loc 1 163 0 discriminator 5
+ 259 0146 0023     		movs	r3, #0
+ 260              	.L13:
+ 261              		.loc 1 163 0 discriminator 8
+ 262 0148 9822     		movs	r2, #152
+ 263 014a BA18     		adds	r2, r7, r2
+ 264 014c 1360     		str	r3, [r2]
+ 265              	.L11:
+ 164:Generated_Source\PSoC4/CyFlash.c ****             }
+ 165:Generated_Source\PSoC4/CyFlash.c **** 
+ 166:Generated_Source\PSoC4/CyFlash.c ****             #if (CY_FLASH_CHECKSUM_WORKAROUND)
+ 167:Generated_Source\PSoC4/CyFlash.c **** 
+ 168:Generated_Source\PSoC4/CyFlash.c ****                 if ((retValue == CYRET_SUCCESS) && (needChecksumWorkaround != 0u))
+ 169:Generated_Source\PSoC4/CyFlash.c ****                 {
+ 170:Generated_Source\PSoC4/CyFlash.c ****                     (void)memset((void *)&parameters[2u], 0, CY_FLASH_SIZEOF_ROW);
+ 171:Generated_Source\PSoC4/CyFlash.c ****                     parameters[savedIndex] = savedValue;
+ 172:Generated_Source\PSoC4/CyFlash.c **** 
+ 173:Generated_Source\PSoC4/CyFlash.c ****                     /* Load Flash Bytes */
+ 174:Generated_Source\PSoC4/CyFlash.c ****                     parameters[0u] = (uint32) (CY_FLASH_GET_MACRO_FROM_ROW(rowNum)        << CY_FLA
+ 175:Generated_Source\PSoC4/CyFlash.c ****                                      (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLA
+ 176:Generated_Source\PSoC4/CyFlash.c ****                                      (uint32) (CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_LOAD) << CY_FLA
+ 177:Generated_Source\PSoC4/CyFlash.c ****                                      CY_FLASH_KEY_ONE;
+ 178:Generated_Source\PSoC4/CyFlash.c ****                     parameters[1u] = CY_FLASH_SIZEOF_ROW - 1u;
+ 179:Generated_Source\PSoC4/CyFlash.c **** 
+ 180:Generated_Source\PSoC4/CyFlash.c ****                     CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 181:Generated_Source\PSoC4/CyFlash.c ****                     CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_LOAD
+ 182:Generated_Source\PSoC4/CyFlash.c ****                     CY_NOP;
+ 183:Generated_Source\PSoC4/CyFlash.c ****                     retValue = CY_FLASH_API_RETURN;
+ 184:Generated_Source\PSoC4/CyFlash.c **** 
+ 185:Generated_Source\PSoC4/CyFlash.c **** 
+ 186:Generated_Source\PSoC4/CyFlash.c ****                     if(retValue == CY_SYS_FLASH_SUCCESS)
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 9
+
+
+ 187:Generated_Source\PSoC4/CyFlash.c ****                     {
+ 188:Generated_Source\PSoC4/CyFlash.c ****                         /* Program Row */
+ 189:Generated_Source\PSoC4/CyFlash.c ****                         parameters[0u]  =
+ 190:Generated_Source\PSoC4/CyFlash.c ****                             (uint32) (((uint32) CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_PROGRAM_ROW) <
+ 191:Generated_Source\PSoC4/CyFlash.c ****                                                     CY_FLASH_PARAM_KEY_TWO_OFFSET) | CY_FLASH_KEY_O
+ 192:Generated_Source\PSoC4/CyFlash.c ****                         parameters[0u] |= (uint32)(rowNum << 16u);
+ 193:Generated_Source\PSoC4/CyFlash.c **** 
+ 194:Generated_Source\PSoC4/CyFlash.c ****                         CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 195:Generated_Source\PSoC4/CyFlash.c ****                         CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_
+ 196:Generated_Source\PSoC4/CyFlash.c ****                         CY_NOP;
+ 197:Generated_Source\PSoC4/CyFlash.c ****                         retValue = CY_FLASH_API_RETURN;
+ 198:Generated_Source\PSoC4/CyFlash.c ****                     }
+ 199:Generated_Source\PSoC4/CyFlash.c ****                 }
+ 200:Generated_Source\PSoC4/CyFlash.c ****             #endif  /* (CY_FLASH_CHECKSUM_WORKAROUND) */
+ 201:Generated_Source\PSoC4/CyFlash.c **** 
+ 202:Generated_Source\PSoC4/CyFlash.c ****             if(clkCnfRetValue == CY_SYS_FLASH_SUCCESS)
+ 266              		.loc 1 202 0 is_stmt 1
+ 267 014e 9423     		movs	r3, #148
+ 268 0150 FB18     		adds	r3, r7, r3
+ 269 0152 1B68     		ldr	r3, [r3]
+ 270 0154 002B     		cmp	r3, #0
+ 271 0156 10D1     		bne	.L16
+ 203:Generated_Source\PSoC4/CyFlash.c ****             {
+ 204:Generated_Source\PSoC4/CyFlash.c ****                 clkCnfRetValue = CySysFlashClockRestore();
+ 272              		.loc 1 204 0
+ 273 0158 FFF7FEFF 		bl	CySysFlashClockRestore
+ 274 015c 0300     		movs	r3, r0
+ 275 015e 9422     		movs	r2, #148
+ 276 0160 BA18     		adds	r2, r7, r2
+ 277 0162 1360     		str	r3, [r2]
+ 205:Generated_Source\PSoC4/CyFlash.c **** 
+ 206:Generated_Source\PSoC4/CyFlash.c ****                 if(clkCnfRetValue != CY_SYS_FLASH_SUCCESS)
+ 278              		.loc 1 206 0
+ 279 0164 9423     		movs	r3, #148
+ 280 0166 FB18     		adds	r3, r7, r3
+ 281 0168 1B68     		ldr	r3, [r3]
+ 282 016a 002B     		cmp	r3, #0
+ 283 016c 05D0     		beq	.L16
+ 207:Generated_Source\PSoC4/CyFlash.c ****                 {
+ 208:Generated_Source\PSoC4/CyFlash.c ****                     retValue = clkCnfRetValue;
+ 284              		.loc 1 208 0
+ 285 016e 9423     		movs	r3, #148
+ 286 0170 FB18     		adds	r3, r7, r3
+ 287 0172 1B68     		ldr	r3, [r3]
+ 288 0174 9822     		movs	r2, #152
+ 289 0176 BA18     		adds	r2, r7, r2
+ 290 0178 1360     		str	r3, [r2]
+ 291              	.L16:
+ 209:Generated_Source\PSoC4/CyFlash.c ****                 }
+ 210:Generated_Source\PSoC4/CyFlash.c ****             }
+ 211:Generated_Source\PSoC4/CyFlash.c **** 
+ 212:Generated_Source\PSoC4/CyFlash.c ****             CyExitCriticalSection(interruptState);
+ 292              		.loc 1 212 0
+ 293 017a 9F23     		movs	r3, #159
+ 294 017c FB18     		adds	r3, r7, r3
+ 295 017e 1B78     		ldrb	r3, [r3]
+ 296 0180 1800     		movs	r0, r3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 10
+
+
+ 297 0182 FFF7FEFF 		bl	CyExitCriticalSection
+ 135:Generated_Source\PSoC4/CyFlash.c ****         {
+ 298              		.loc 1 135 0
+ 299 0186 03E0     		b	.L17
+ 300              	.L2:
+ 213:Generated_Source\PSoC4/CyFlash.c ****         }
+ 214:Generated_Source\PSoC4/CyFlash.c ****     }
+ 215:Generated_Source\PSoC4/CyFlash.c ****     else
+ 216:Generated_Source\PSoC4/CyFlash.c ****     {
+ 217:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_SYS_FLASH_INVALID_ADDR;
+ 301              		.loc 1 217 0
+ 302 0188 0423     		movs	r3, #4
+ 303 018a 9822     		movs	r2, #152
+ 304 018c BA18     		adds	r2, r7, r2
+ 305 018e 1360     		str	r3, [r2]
+ 306              	.L17:
+ 218:Generated_Source\PSoC4/CyFlash.c ****     }
+ 219:Generated_Source\PSoC4/CyFlash.c **** 
+ 220:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 307              		.loc 1 220 0
+ 308 0190 9823     		movs	r3, #152
+ 309 0192 FB18     		adds	r3, r7, r3
+ 310 0194 1B68     		ldr	r3, [r3]
+ 221:Generated_Source\PSoC4/CyFlash.c **** }
+ 311              		.loc 1 221 0
+ 312 0196 1800     		movs	r0, r3
+ 313 0198 BD46     		mov	sp, r7
+ 314 019a 29B0     		add	sp, sp, #164
+ 315              		@ sp needed
+ 316 019c 90BD     		pop	{r4, r7, pc}
+ 317              	.L20:
+ 318 019e C046     		.align	2
+ 319              	.L19:
+ 320 01a0 FF030000 		.word	1023
+ 321 01a4 FF010000 		.word	511
+ 322 01a8 B6D70001 		.word	16832438
+ 323 01ac B6D70000 		.word	55222
+ 324 01b0 08001040 		.word	1074790408
+ 325 01b4 04001040 		.word	1074790404
+ 326 01b8 04000080 		.word	-2147483644
+ 327 01bc B6D80000 		.word	55478
+ 328 01c0 05000080 		.word	-2147483643
+ 329              		.cfi_endproc
+ 330              	.LFE2:
+ 331              		.size	CySysFlashWriteRow, .-CySysFlashWriteRow
+ 332              		.section	.text.CySysFlashSetWaitCycles,"ax",%progbits
+ 333              		.align	2
+ 334              		.global	CySysFlashSetWaitCycles
+ 335              		.code	16
+ 336              		.thumb_func
+ 337              		.type	CySysFlashSetWaitCycles, %function
+ 338              	CySysFlashSetWaitCycles:
+ 339              	.LFB3:
+ 222:Generated_Source\PSoC4/CyFlash.c **** 
+ 223:Generated_Source\PSoC4/CyFlash.c **** 
+ 224:Generated_Source\PSoC4/CyFlash.c **** 
+ 225:Generated_Source\PSoC4/CyFlash.c **** #if (CY_IP_FLASH_PARALLEL_PGM_EN && (CY_IP_FLASH_MACROS > 1u))
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 11
+
+
+ 226:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 227:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashStartWriteRow
+ 228:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 229:Generated_Source\PSoC4/CyFlash.c **** *
+ 230:Generated_Source\PSoC4/CyFlash.c **** * Initiates a write to a row of Flash. A call to this API is non-blocking. 
+ 231:Generated_Source\PSoC4/CyFlash.c **** * Use CySysFlashResumeWriteRow() to resume flash writes and 
+ 232:Generated_Source\PSoC4/CyFlash.c **** * CySysFlashGetWriteRowStatus() to ascertain status of the write operation.
+ 233:Generated_Source\PSoC4/CyFlash.c **** *
+ 234:Generated_Source\PSoC4/CyFlash.c **** * The devices require HFCLK to be sourced by 48 MHz IMO during flash write.
+ 235:Generated_Source\PSoC4/CyFlash.c **** * This API will modify IMO configuration; it can be later restored to original
+ 236:Generated_Source\PSoC4/CyFlash.c **** * configuration by calling \ref CySysFlashGetWriteRowStatus().
+ 237:Generated_Source\PSoC4/CyFlash.c **** *
+ 238:Generated_Source\PSoC4/CyFlash.c **** * \note The non-blocking operation does not return success status 
+ 239:Generated_Source\PSoC4/CyFlash.c **** * CY_SYS_FLASH_SUCCESS until the last \ref CySysFlashResumeWriteRow API 
+ 240:Generated_Source\PSoC4/CyFlash.c **** * is complete. The CPUSS_SYSARG register will be reflecting the SRAM address 
+ 241:Generated_Source\PSoC4/CyFlash.c **** * during an ongoing non-blocking operation.
+ 242:Generated_Source\PSoC4/CyFlash.c **** *    
+ 243:Generated_Source\PSoC4/CyFlash.c **** * \param rowNum The flash row number. The number of the flash rows is defined by
+ 244:Generated_Source\PSoC4/CyFlash.c **** * the \ref CY_FLASH_NUMBER_ROWS macro for the selected device. Refer to the
+ 245:Generated_Source\PSoC4/CyFlash.c **** * device datasheet for the details.
+ 246:Generated_Source\PSoC4/CyFlash.c **** * \note The target flash array is calculated based on the specified flash row.
+ 247:Generated_Source\PSoC4/CyFlash.c **** *
+ 248:Generated_Source\PSoC4/CyFlash.c **** * \param rowData Array of bytes to write. The size of the array must be equal to
+ 249:Generated_Source\PSoC4/CyFlash.c **** * the flash row size. The flash row size for the selected device is defined by
+ 250:Generated_Source\PSoC4/CyFlash.c **** * the \ref CY_FLASH_SIZEOF_ROW macro. Refer to the device datasheet for the
+ 251:Generated_Source\PSoC4/CyFlash.c **** * details.
+ 252:Generated_Source\PSoC4/CyFlash.c **** *
+ 253:Generated_Source\PSoC4/CyFlash.c **** * \return \ref group_flash_status_codes
+ 254:Generated_Source\PSoC4/CyFlash.c **** *
+ 255:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 256:Generated_Source\PSoC4/CyFlash.c **** uint32 CySysFlashStartWriteRow(uint32 rowNum, const uint8 rowData[])
+ 257:Generated_Source\PSoC4/CyFlash.c **** {
+ 258:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 retValue = CY_SYS_FLASH_SUCCESS;
+ 259:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 parameters[(CY_FLASH_SIZEOF_ROW + CY_FLASH_SRAM_ROM_DATA) / sizeof(uint32)];
+ 260:Generated_Source\PSoC4/CyFlash.c ****     uint8  interruptState;
+ 261:Generated_Source\PSoC4/CyFlash.c **** 
+ 262:Generated_Source\PSoC4/CyFlash.c **** #if(CY_IP_SPCIF_SYNCHRONOUS)
+ 263:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 clkCnfRetValue = CY_SYS_FLASH_SUCCESS;
+ 264:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */    
+ 265:Generated_Source\PSoC4/CyFlash.c **** 
+ 266:Generated_Source\PSoC4/CyFlash.c ****     if ((rowNum < CY_FLASH_NUMBER_ROWS) && (rowData != 0u))
+ 267:Generated_Source\PSoC4/CyFlash.c ****     {
+ 268:Generated_Source\PSoC4/CyFlash.c ****         /* Copy data to be written into internal variable */
+ 269:Generated_Source\PSoC4/CyFlash.c ****         (void)memcpy((void *)&parameters[2u], rowData, CY_FLASH_SIZEOF_ROW);
+ 270:Generated_Source\PSoC4/CyFlash.c **** 
+ 271:Generated_Source\PSoC4/CyFlash.c ****         /* Load Flash Bytes */
+ 272:Generated_Source\PSoC4/CyFlash.c ****         parameters[0u] = (uint32) (CY_FLASH_GET_MACRO_FROM_ROW(rowNum)        << CY_FLASH_PARAM_MAC
+ 273:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLASH_PARAM_ADD
+ 274:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_LOAD) << CY_FLASH_PARAM_KEY
+ 275:Generated_Source\PSoC4/CyFlash.c ****                          CY_FLASH_KEY_ONE;
+ 276:Generated_Source\PSoC4/CyFlash.c ****         parameters[1u] = CY_FLASH_SIZEOF_ROW - 1u;
+ 277:Generated_Source\PSoC4/CyFlash.c **** 
+ 278:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 279:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_LOAD;
+ 280:Generated_Source\PSoC4/CyFlash.c ****         CY_NOP;
+ 281:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_FLASH_API_RETURN;
+ 282:Generated_Source\PSoC4/CyFlash.c **** 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 12
+
+
+ 283:Generated_Source\PSoC4/CyFlash.c ****         if(retValue == CY_SYS_FLASH_SUCCESS)
+ 284:Generated_Source\PSoC4/CyFlash.c ****         {
+ 285:Generated_Source\PSoC4/CyFlash.c ****             /***************************************************************
+ 286:Generated_Source\PSoC4/CyFlash.c ****             * Mask all the exceptions to guarantee that Flash write will
+ 287:Generated_Source\PSoC4/CyFlash.c ****             * occur in the atomic way. It will not affect system call
+ 288:Generated_Source\PSoC4/CyFlash.c ****             * execution (flash row write) since it is executed in the NMI
+ 289:Generated_Source\PSoC4/CyFlash.c ****             * context.
+ 290:Generated_Source\PSoC4/CyFlash.c ****             ***************************************************************/
+ 291:Generated_Source\PSoC4/CyFlash.c ****             interruptState = CyEnterCriticalSection();
+ 292:Generated_Source\PSoC4/CyFlash.c **** 
+ 293:Generated_Source\PSoC4/CyFlash.c ****         #if(CY_IP_SPCIF_SYNCHRONOUS)
+ 294:Generated_Source\PSoC4/CyFlash.c ****             clkCnfRetValue = CySysFlashClockBackup();
+ 295:Generated_Source\PSoC4/CyFlash.c ****             
+ 296:Generated_Source\PSoC4/CyFlash.c ****             if(clkCnfRetValue == CY_SYS_FLASH_SUCCESS)
+ 297:Generated_Source\PSoC4/CyFlash.c ****             {
+ 298:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CySysFlashClockConfig();
+ 299:Generated_Source\PSoC4/CyFlash.c ****             }
+ 300:Generated_Source\PSoC4/CyFlash.c ****         #else
+ 301:Generated_Source\PSoC4/CyFlash.c ****             (void)CySysFlashClockBackup();
+ 302:Generated_Source\PSoC4/CyFlash.c ****         #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 303:Generated_Source\PSoC4/CyFlash.c **** 
+ 304:Generated_Source\PSoC4/CyFlash.c ****             if(retValue == CY_SYS_FLASH_SUCCESS)
+ 305:Generated_Source\PSoC4/CyFlash.c ****             {
+ 306:Generated_Source\PSoC4/CyFlash.c ****                 /* Non-blocking Write Row */
+ 307:Generated_Source\PSoC4/CyFlash.c ****                 parameters[0u]  = (uint32) (((uint32) CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_NON_BLOC
+ 308:Generated_Source\PSoC4/CyFlash.c ****                                                         CY_FLASH_PARAM_KEY_TWO_OFFSET) | CY_FLASH_K
+ 309:Generated_Source\PSoC4/CyFlash.c ****                 parameters[0u] |= (uint32)(rowNum << 16u);
+ 310:Generated_Source\PSoC4/CyFlash.c **** 
+ 311:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 312:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_NON_BLOC
+ 313:Generated_Source\PSoC4/CyFlash.c ****                 CY_NOP;
+ 314:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CY_FLASH_API_RETURN;
+ 315:Generated_Source\PSoC4/CyFlash.c ****             }
+ 316:Generated_Source\PSoC4/CyFlash.c **** 
+ 317:Generated_Source\PSoC4/CyFlash.c ****             CyExitCriticalSection(interruptState);
+ 318:Generated_Source\PSoC4/CyFlash.c ****         }
+ 319:Generated_Source\PSoC4/CyFlash.c ****     }
+ 320:Generated_Source\PSoC4/CyFlash.c ****     else
+ 321:Generated_Source\PSoC4/CyFlash.c ****     {
+ 322:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_SYS_FLASH_INVALID_ADDR;
+ 323:Generated_Source\PSoC4/CyFlash.c ****     }
+ 324:Generated_Source\PSoC4/CyFlash.c **** 
+ 325:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 326:Generated_Source\PSoC4/CyFlash.c **** }
+ 327:Generated_Source\PSoC4/CyFlash.c **** 
+ 328:Generated_Source\PSoC4/CyFlash.c **** 
+ 329:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 330:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashGetWriteRowStatus
+ 331:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 332:Generated_Source\PSoC4/CyFlash.c **** *
+ 333:Generated_Source\PSoC4/CyFlash.c **** * Returns the current status of the flash write operation.
+ 334:Generated_Source\PSoC4/CyFlash.c **** *
+ 335:Generated_Source\PSoC4/CyFlash.c **** ** \note The non-blocking operation does not return success status 
+ 336:Generated_Source\PSoC4/CyFlash.c **** * CY_SYS_FLASH_SUCCESS until the last \ref CySysFlashResumeWriteRow API 
+ 337:Generated_Source\PSoC4/CyFlash.c **** * is complete. The CPUSS_SYSARG register will be reflecting the SRAM address 
+ 338:Generated_Source\PSoC4/CyFlash.c **** * during an ongoing non-blocking operation.
+ 339:Generated_Source\PSoC4/CyFlash.c **** * Calling this API before starting a non-blocking write row operation 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 13
+
+
+ 340:Generated_Source\PSoC4/CyFlash.c **** * using the \ref CySysFlashStartWriteRow() API will cause improper operation.
+ 341:Generated_Source\PSoC4/CyFlash.c **** *
+ 342:Generated_Source\PSoC4/CyFlash.c **** * \return \ref group_flash_status_codes
+ 343:Generated_Source\PSoC4/CyFlash.c **** *
+ 344:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 345:Generated_Source\PSoC4/CyFlash.c **** uint32 CySysFlashGetWriteRowStatus(void)
+ 346:Generated_Source\PSoC4/CyFlash.c **** {
+ 347:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 retValue = CY_SYS_FLASH_SUCCESS;
+ 348:Generated_Source\PSoC4/CyFlash.c **** 
+ 349:Generated_Source\PSoC4/CyFlash.c ****     CY_NOP;
+ 350:Generated_Source\PSoC4/CyFlash.c ****     retValue = CY_FLASH_API_RETURN;
+ 351:Generated_Source\PSoC4/CyFlash.c **** 
+ 352:Generated_Source\PSoC4/CyFlash.c ****     (void) CySysFlashClockRestore();
+ 353:Generated_Source\PSoC4/CyFlash.c **** 
+ 354:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 355:Generated_Source\PSoC4/CyFlash.c **** }
+ 356:Generated_Source\PSoC4/CyFlash.c **** 
+ 357:Generated_Source\PSoC4/CyFlash.c **** 
+ 358:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 359:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashResumeWriteRow
+ 360:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 361:Generated_Source\PSoC4/CyFlash.c **** *
+ 362:Generated_Source\PSoC4/CyFlash.c **** * This API must be called, once the SPC interrupt is triggered to complete the
+ 363:Generated_Source\PSoC4/CyFlash.c **** * non-blocking operation. It is advised not to prolong calling this API for
+ 364:Generated_Source\PSoC4/CyFlash.c **** * more than 25 ms.
+ 365:Generated_Source\PSoC4/CyFlash.c **** *
+ 366:Generated_Source\PSoC4/CyFlash.c **** * The non-blocking write row API \ref CySysFlashStartWriteRow() requires that
+ 367:Generated_Source\PSoC4/CyFlash.c **** * this API be called 3 times to complete the write. This can be done by
+ 368:Generated_Source\PSoC4/CyFlash.c **** * configuring SPCIF interrupt and placing a call to this API.
+ 369:Generated_Source\PSoC4/CyFlash.c **** *
+ 370:Generated_Source\PSoC4/CyFlash.c **** * For CM0 based device, a non-blocking call to program a row of macro 0
+ 371:Generated_Source\PSoC4/CyFlash.c **** * requires the user to set the CPUSS_CONFIG.VECS_IN_RAM bit so that the
+ 372:Generated_Source\PSoC4/CyFlash.c **** * interrupt vector for the SPC is fetched from the SRAM rather than the FLASH.
+ 373:Generated_Source\PSoC4/CyFlash.c **** *
+ 374:Generated_Source\PSoC4/CyFlash.c **** * For CM0+ based device, if the user wants to keep the vector table in flash
+ 375:Generated_Source\PSoC4/CyFlash.c **** * when performing non-blocking flash write then they need to make sure the
+ 376:Generated_Source\PSoC4/CyFlash.c **** * vector table is placed in the flash macro which is not getting programmed by
+ 377:Generated_Source\PSoC4/CyFlash.c **** * configuring the VTOR register.
+ 378:Generated_Source\PSoC4/CyFlash.c **** *
+ 379:Generated_Source\PSoC4/CyFlash.c **** * \note The non-blocking operation does not return success status 
+ 380:Generated_Source\PSoC4/CyFlash.c **** * CY_SYS_FLASH_SUCCESS until the last Resume API is complete. 
+ 381:Generated_Source\PSoC4/CyFlash.c **** * The CPUSS_SYSARG register will be reflecting the SRAM address during an 
+ 382:Generated_Source\PSoC4/CyFlash.c **** * ongoing non-blocking operation.
+ 383:Generated_Source\PSoC4/CyFlash.c **** *
+ 384:Generated_Source\PSoC4/CyFlash.c **** * \return \ref group_flash_status_codes
+ 385:Generated_Source\PSoC4/CyFlash.c **** *
+ 386:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 387:Generated_Source\PSoC4/CyFlash.c **** uint32 CySysFlashResumeWriteRow(void)
+ 388:Generated_Source\PSoC4/CyFlash.c **** {
+ 389:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 retValue = CY_SYS_FLASH_SUCCESS;
+ 390:Generated_Source\PSoC4/CyFlash.c ****     static volatile uint32 parameters[1u];
+ 391:Generated_Source\PSoC4/CyFlash.c **** 
+ 392:Generated_Source\PSoC4/CyFlash.c ****     /* Resume */
+ 393:Generated_Source\PSoC4/CyFlash.c ****     parameters[0u] = (uint32) (((uint32) CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_RESUME_NON_BLOCKING) 
+ 394:Generated_Source\PSoC4/CyFlash.c ****                                          CY_FLASH_PARAM_KEY_TWO_OFFSET) | CY_FLASH_KEY_ONE);
+ 395:Generated_Source\PSoC4/CyFlash.c ****     CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 396:Generated_Source\PSoC4/CyFlash.c ****     CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_RESUME_NON_BLOCKING;
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 14
+
+
+ 397:Generated_Source\PSoC4/CyFlash.c ****     
+ 398:Generated_Source\PSoC4/CyFlash.c ****     CY_NOP;
+ 399:Generated_Source\PSoC4/CyFlash.c ****     retValue = CY_FLASH_API_RETURN;
+ 400:Generated_Source\PSoC4/CyFlash.c ****     
+ 401:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 402:Generated_Source\PSoC4/CyFlash.c **** }
+ 403:Generated_Source\PSoC4/CyFlash.c **** 
+ 404:Generated_Source\PSoC4/CyFlash.c **** #endif /* (CY_IP_FLASH_PARALLEL_PGM_EN && (CY_IP_FLASH_MACROS > 1u)) */
+ 405:Generated_Source\PSoC4/CyFlash.c **** 
+ 406:Generated_Source\PSoC4/CyFlash.c **** 
+ 407:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 408:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashSetWaitCycles
+ 409:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 410:Generated_Source\PSoC4/CyFlash.c **** *
+ 411:Generated_Source\PSoC4/CyFlash.c **** * Sets the number of clock cycles the cache will wait before it samples data
+ 412:Generated_Source\PSoC4/CyFlash.c **** * coming back from Flash. This function must be called before increasing the
+ 413:Generated_Source\PSoC4/CyFlash.c **** * SYSCLK clock frequency. It can optionally be called after lowering SYSCLK
+ 414:Generated_Source\PSoC4/CyFlash.c **** * clock frequency in order to improve the CPU performance.
+ 415:Generated_Source\PSoC4/CyFlash.c **** *
+ 416:Generated_Source\PSoC4/CyFlash.c **** * \param freq The System clock frequency in MHz.
+ 417:Generated_Source\PSoC4/CyFlash.c **** *
+ 418:Generated_Source\PSoC4/CyFlash.c **** * \note Invalid frequency will be ignored in Release mode and the CPU will be
+ 419:Generated_Source\PSoC4/CyFlash.c **** * halted if project is compiled in Debug mode.
+ 420:Generated_Source\PSoC4/CyFlash.c **** *
+ 421:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 422:Generated_Source\PSoC4/CyFlash.c **** void CySysFlashSetWaitCycles(uint32 freq)
+ 423:Generated_Source\PSoC4/CyFlash.c **** {
+ 340              		.loc 1 423 0
+ 341              		.cfi_startproc
+ 342              		@ args = 0, pretend = 0, frame = 16
+ 343              		@ frame_needed = 1, uses_anonymous_args = 0
+ 344 0000 90B5     		push	{r4, r7, lr}
+ 345              		.cfi_def_cfa_offset 12
+ 346              		.cfi_offset 4, -12
+ 347              		.cfi_offset 7, -8
+ 348              		.cfi_offset 14, -4
+ 349 0002 85B0     		sub	sp, sp, #20
+ 350              		.cfi_def_cfa_offset 32
+ 351 0004 00AF     		add	r7, sp, #0
+ 352              		.cfi_def_cfa_register 7
+ 353 0006 7860     		str	r0, [r7, #4]
+ 424:Generated_Source\PSoC4/CyFlash.c ****     uint8  interruptState;
+ 425:Generated_Source\PSoC4/CyFlash.c **** 
+ 426:Generated_Source\PSoC4/CyFlash.c ****     interruptState = CyEnterCriticalSection();
+ 354              		.loc 1 426 0
+ 355 0008 0F23     		movs	r3, #15
+ 356 000a FC18     		adds	r4, r7, r3
+ 357 000c FFF7FEFF 		bl	CyEnterCriticalSection
+ 358 0010 0300     		movs	r3, r0
+ 359 0012 2370     		strb	r3, [r4]
+ 427:Generated_Source\PSoC4/CyFlash.c **** 
+ 428:Generated_Source\PSoC4/CyFlash.c ****     #if (CY_IP_CPUSS)
+ 429:Generated_Source\PSoC4/CyFlash.c **** 
+ 430:Generated_Source\PSoC4/CyFlash.c ****         if ( freq <= CY_FLASH_SYSCLK_BOUNDARY_MHZ )
+ 431:Generated_Source\PSoC4/CyFlash.c ****         {
+ 432:Generated_Source\PSoC4/CyFlash.c ****             CY_SYS_CLK_SELECT_REG &= (uint32)(~CY_FLASH_WAIT_STATE_EN);
+ 433:Generated_Source\PSoC4/CyFlash.c ****         }
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 15
+
+
+ 434:Generated_Source\PSoC4/CyFlash.c ****         else
+ 435:Generated_Source\PSoC4/CyFlash.c ****         {
+ 436:Generated_Source\PSoC4/CyFlash.c ****             CY_SYS_CLK_SELECT_REG |= CY_FLASH_WAIT_STATE_EN;
+ 437:Generated_Source\PSoC4/CyFlash.c ****         }
+ 438:Generated_Source\PSoC4/CyFlash.c ****     #else
+ 439:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_IP_CPUSS_FLASHC_PRESENT)
+ 440:Generated_Source\PSoC4/CyFlash.c ****             /* CY_IP_FM and CY_IP_FS */
+ 441:Generated_Source\PSoC4/CyFlash.c ****             if (freq <= CY_FLASH_CTL_WS_0_FREQ_MAX)
+ 360              		.loc 1 441 0
+ 361 0014 7B68     		ldr	r3, [r7, #4]
+ 362 0016 102B     		cmp	r3, #16
+ 363 0018 06D8     		bhi	.L22
+ 442:Generated_Source\PSoC4/CyFlash.c ****             {
+ 443:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CTL_REG = (CY_FLASH_CTL_REG & ~CY_FLASH_CTL_WS_MASK) | CY_FLASH_CTL_WS_0_V
+ 364              		.loc 1 443 0
+ 365 001a 164B     		ldr	r3, .L26
+ 366 001c 154A     		ldr	r2, .L26
+ 367 001e 1268     		ldr	r2, [r2]
+ 368 0020 0321     		movs	r1, #3
+ 369 0022 8A43     		bics	r2, r1
+ 370 0024 1A60     		str	r2, [r3]
+ 371 0026 1AE0     		b	.L23
+ 372              	.L22:
+ 444:Generated_Source\PSoC4/CyFlash.c ****             } else
+ 445:Generated_Source\PSoC4/CyFlash.c ****             if (freq <= CY_FLASH_CTL_WS_1_FREQ_MAX)
+ 373              		.loc 1 445 0
+ 374 0028 7B68     		ldr	r3, [r7, #4]
+ 375 002a 202B     		cmp	r3, #32
+ 376 002c 08D8     		bhi	.L24
+ 446:Generated_Source\PSoC4/CyFlash.c ****             {
+ 447:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CTL_REG = (CY_FLASH_CTL_REG & ~CY_FLASH_CTL_WS_MASK) | CY_FLASH_CTL_WS_1_V
+ 377              		.loc 1 447 0
+ 378 002e 114B     		ldr	r3, .L26
+ 379 0030 104A     		ldr	r2, .L26
+ 380 0032 1268     		ldr	r2, [r2]
+ 381 0034 0321     		movs	r1, #3
+ 382 0036 8A43     		bics	r2, r1
+ 383 0038 0121     		movs	r1, #1
+ 384 003a 0A43     		orrs	r2, r1
+ 385 003c 1A60     		str	r2, [r3]
+ 386 003e 0EE0     		b	.L23
+ 387              	.L24:
+ 448:Generated_Source\PSoC4/CyFlash.c ****             } else
+ 449:Generated_Source\PSoC4/CyFlash.c ****             #if (CY_IP_FMLT || CY_IP_FSLT)
+ 450:Generated_Source\PSoC4/CyFlash.c ****                 if (freq <= CY_FLASH_CTL_WS_2_FREQ_MAX)
+ 388              		.loc 1 450 0
+ 389 0040 7B68     		ldr	r3, [r7, #4]
+ 390 0042 302B     		cmp	r3, #48
+ 391 0044 08D8     		bhi	.L25
+ 451:Generated_Source\PSoC4/CyFlash.c ****                 {
+ 452:Generated_Source\PSoC4/CyFlash.c ****                     CY_FLASH_CTL_REG = (CY_FLASH_CTL_REG & ~CY_FLASH_CTL_WS_MASK) | CY_FLASH_CTL_WS
+ 392              		.loc 1 452 0
+ 393 0046 0B4B     		ldr	r3, .L26
+ 394 0048 0A4A     		ldr	r2, .L26
+ 395 004a 1268     		ldr	r2, [r2]
+ 396 004c 0321     		movs	r1, #3
+ 397 004e 8A43     		bics	r2, r1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 16
+
+
+ 398 0050 0221     		movs	r1, #2
+ 399 0052 0A43     		orrs	r2, r1
+ 400 0054 1A60     		str	r2, [r3]
+ 401 0056 02E0     		b	.L23
+ 402              	.L25:
+ 453:Generated_Source\PSoC4/CyFlash.c ****                 }
+ 454:Generated_Source\PSoC4/CyFlash.c ****                 else
+ 455:Generated_Source\PSoC4/CyFlash.c ****             #endif  /* (CY_IP_FMLT || CY_IP_FSLT) */
+ 456:Generated_Source\PSoC4/CyFlash.c ****         #endif /* (CY_IP_CPUSS_FLASHC_PRESENT) */
+ 457:Generated_Source\PSoC4/CyFlash.c ****         {
+ 458:Generated_Source\PSoC4/CyFlash.c ****             /* Halt CPU in debug mode if frequency is invalid */
+ 459:Generated_Source\PSoC4/CyFlash.c ****             CYASSERT(0u != 0u);
+ 403              		.loc 1 459 0 discriminator 1
+ 404 0058 0020     		movs	r0, #0
+ 405 005a FFF7FEFF 		bl	CyHalt
+ 406              	.L23:
+ 460:Generated_Source\PSoC4/CyFlash.c ****         }
+ 461:Generated_Source\PSoC4/CyFlash.c **** 
+ 462:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* (CY_IP_CPUSS) */
+ 463:Generated_Source\PSoC4/CyFlash.c **** 
+ 464:Generated_Source\PSoC4/CyFlash.c ****     CyExitCriticalSection(interruptState);
+ 407              		.loc 1 464 0
+ 408 005e 0F23     		movs	r3, #15
+ 409 0060 FB18     		adds	r3, r7, r3
+ 410 0062 1B78     		ldrb	r3, [r3]
+ 411 0064 1800     		movs	r0, r3
+ 412 0066 FFF7FEFF 		bl	CyExitCriticalSection
+ 465:Generated_Source\PSoC4/CyFlash.c **** }
+ 413              		.loc 1 465 0
+ 414 006a C046     		nop
+ 415 006c BD46     		mov	sp, r7
+ 416 006e 05B0     		add	sp, sp, #20
+ 417              		@ sp needed
+ 418 0070 90BD     		pop	{r4, r7, pc}
+ 419              	.L27:
+ 420 0072 C046     		.align	2
+ 421              	.L26:
+ 422 0074 30001040 		.word	1074790448
+ 423              		.cfi_endproc
+ 424              	.LFE3:
+ 425              		.size	CySysFlashSetWaitCycles, .-CySysFlashSetWaitCycles
+ 426              		.section	.text.CySysSFlashWriteUserRow,"ax",%progbits
+ 427              		.align	2
+ 428              		.global	CySysSFlashWriteUserRow
+ 429              		.code	16
+ 430              		.thumb_func
+ 431              		.type	CySysSFlashWriteUserRow, %function
+ 432              	CySysSFlashWriteUserRow:
+ 433              	.LFB4:
+ 466:Generated_Source\PSoC4/CyFlash.c **** 
+ 467:Generated_Source\PSoC4/CyFlash.c **** 
+ 468:Generated_Source\PSoC4/CyFlash.c **** #if (CY_SFLASH_XTRA_ROWS)
+ 469:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 470:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysSFlashWriteUserRow
+ 471:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 472:Generated_Source\PSoC4/CyFlash.c **** *
+ 473:Generated_Source\PSoC4/CyFlash.c **** * Writes data to a row of SFlash user configurable area.
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 17
+
+
+ 474:Generated_Source\PSoC4/CyFlash.c **** *
+ 475:Generated_Source\PSoC4/CyFlash.c **** * This API is applicable for PSoC 4100 BLE, PSoC 4200 BLE, PSoC 4100M,
+ 476:Generated_Source\PSoC4/CyFlash.c **** * PSoC 4200M, and PSoC 4200L family of devices.
+ 477:Generated_Source\PSoC4/CyFlash.c **** *
+ 478:Generated_Source\PSoC4/CyFlash.c **** * \param rowNum The flash row number. The flash row number. The number of the
+ 479:Generated_Source\PSoC4/CyFlash.c **** * flash rows is defined by the CY_SFLASH_NUMBER_USERROWS macro for the selected
+ 480:Generated_Source\PSoC4/CyFlash.c **** * device. Valid range is 0-3. Refer to the device TRM for details.
+ 481:Generated_Source\PSoC4/CyFlash.c **** *
+ 482:Generated_Source\PSoC4/CyFlash.c **** * \param rowData Array of bytes to write. The size of the array must be equal to
+ 483:Generated_Source\PSoC4/CyFlash.c **** * the flash row size. The flash row size for the selected device is defined by
+ 484:Generated_Source\PSoC4/CyFlash.c **** * the \ref CY_SFLASH_SIZEOF_USERROW macro. Refer to the device TRM for the
+ 485:Generated_Source\PSoC4/CyFlash.c **** * details.
+ 486:Generated_Source\PSoC4/CyFlash.c **** *
+ 487:Generated_Source\PSoC4/CyFlash.c **** * \return \ref group_flash_status_codes
+ 488:Generated_Source\PSoC4/CyFlash.c **** *
+ 489:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 490:Generated_Source\PSoC4/CyFlash.c **** uint32 CySysSFlashWriteUserRow(uint32 rowNum, const uint8 rowData[])
+ 491:Generated_Source\PSoC4/CyFlash.c **** {
+ 434              		.loc 1 491 0
+ 435              		.cfi_startproc
+ 436              		@ args = 0, pretend = 0, frame = 160
+ 437              		@ frame_needed = 1, uses_anonymous_args = 0
+ 438 0000 90B5     		push	{r4, r7, lr}
+ 439              		.cfi_def_cfa_offset 12
+ 440              		.cfi_offset 4, -12
+ 441              		.cfi_offset 7, -8
+ 442              		.cfi_offset 14, -4
+ 443 0002 A9B0     		sub	sp, sp, #164
+ 444              		.cfi_def_cfa_offset 176
+ 445 0004 00AF     		add	r7, sp, #0
+ 446              		.cfi_def_cfa_register 7
+ 447 0006 7860     		str	r0, [r7, #4]
+ 448 0008 3960     		str	r1, [r7]
+ 492:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 retValue = CY_SYS_FLASH_SUCCESS;
+ 449              		.loc 1 492 0
+ 450 000a 0023     		movs	r3, #0
+ 451 000c 9822     		movs	r2, #152
+ 452 000e BA18     		adds	r2, r7, r2
+ 453 0010 1360     		str	r3, [r2]
+ 493:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 clkCnfRetValue = CY_SYS_FLASH_SUCCESS;
+ 454              		.loc 1 493 0
+ 455 0012 0023     		movs	r3, #0
+ 456 0014 9422     		movs	r2, #148
+ 457 0016 BA18     		adds	r2, r7, r2
+ 458 0018 1360     		str	r3, [r2]
+ 494:Generated_Source\PSoC4/CyFlash.c ****     volatile uint32 parameters[(CY_FLASH_SIZEOF_ROW + CY_FLASH_SRAM_ROM_DATA)/4u];
+ 495:Generated_Source\PSoC4/CyFlash.c ****     uint8  interruptState;
+ 496:Generated_Source\PSoC4/CyFlash.c **** 
+ 497:Generated_Source\PSoC4/CyFlash.c **** 
+ 498:Generated_Source\PSoC4/CyFlash.c ****     if ((rowNum < CY_SFLASH_NUMBER_USERROWS) && (rowData != 0u))
+ 459              		.loc 1 498 0
+ 460 001a 7B68     		ldr	r3, [r7, #4]
+ 461 001c 032B     		cmp	r3, #3
+ 462 001e 00D9     		bls	.LCB375
+ 463 0020 A0E0     		b	.L29	@long jump
+ 464              	.LCB375:
+ 465              		.loc 1 498 0 is_stmt 0 discriminator 1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 18
+
+
+ 466 0022 3B68     		ldr	r3, [r7]
+ 467 0024 002B     		cmp	r3, #0
+ 468 0026 00D1     		bne	.LCB378
+ 469 0028 9CE0     		b	.L29	@long jump
+ 470              	.LCB378:
+ 499:Generated_Source\PSoC4/CyFlash.c ****     {
+ 500:Generated_Source\PSoC4/CyFlash.c ****         /* Load Flash Bytes */
+ 501:Generated_Source\PSoC4/CyFlash.c ****         parameters[0u] = (uint32) (CY_FLASH_GET_MACRO_FROM_ROW(rowNum)        << CY_FLASH_PARAM_MAC
+ 502:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLASH_PARAM_ADD
+ 503:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_LOAD) << CY_FLASH_PARAM_KEY
+ 471              		.loc 1 503 0 is_stmt 1
+ 472 002a 7B68     		ldr	r3, [r7, #4]
+ 473 002c 534A     		ldr	r2, .L46
+ 474 002e 9342     		cmp	r3, r2
+ 475 0030 01D9     		bls	.L30
+ 476              		.loc 1 503 0 is_stmt 0 discriminator 1
+ 477 0032 534A     		ldr	r2, .L46+4
+ 478 0034 00E0     		b	.L31
+ 479              	.L30:
+ 480              		.loc 1 503 0 discriminator 2
+ 481 0036 534A     		ldr	r2, .L46+8
+ 482              	.L31:
+ 501:Generated_Source\PSoC4/CyFlash.c ****                          (uint32) (CY_FLASH_PAGE_LATCH_START_ADDR             << CY_FLASH_PARAM_ADD
+ 483              		.loc 1 501 0 is_stmt 1
+ 484 0038 0C23     		movs	r3, #12
+ 485 003a FB18     		adds	r3, r7, r3
+ 486 003c 1A60     		str	r2, [r3]
+ 504:Generated_Source\PSoC4/CyFlash.c ****                          CY_FLASH_KEY_ONE;
+ 505:Generated_Source\PSoC4/CyFlash.c ****         parameters[1u] = CY_FLASH_SIZEOF_ROW - 1u;
+ 487              		.loc 1 505 0
+ 488 003e 0C23     		movs	r3, #12
+ 489 0040 FB18     		adds	r3, r7, r3
+ 490 0042 7F22     		movs	r2, #127
+ 491 0044 5A60     		str	r2, [r3, #4]
+ 506:Generated_Source\PSoC4/CyFlash.c **** 
+ 507:Generated_Source\PSoC4/CyFlash.c ****         (void)memcpy((void *)&parameters[2u], rowData, CY_FLASH_SIZEOF_ROW);
+ 492              		.loc 1 507 0
+ 493 0046 3968     		ldr	r1, [r7]
+ 494 0048 0C23     		movs	r3, #12
+ 495 004a FB18     		adds	r3, r7, r3
+ 496 004c 0833     		adds	r3, r3, #8
+ 497 004e 8022     		movs	r2, #128
+ 498 0050 1800     		movs	r0, r3
+ 499 0052 FFF7FEFF 		bl	memcpy
+ 508:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 500              		.loc 1 508 0
+ 501 0056 4C4B     		ldr	r3, .L46+12
+ 502 0058 0C22     		movs	r2, #12
+ 503 005a BA18     		adds	r2, r7, r2
+ 504 005c 1A60     		str	r2, [r3]
+ 509:Generated_Source\PSoC4/CyFlash.c ****         CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_LOAD;
+ 505              		.loc 1 509 0
+ 506 005e 4B4B     		ldr	r3, .L46+16
+ 507 0060 4B4A     		ldr	r2, .L46+20
+ 508 0062 1A60     		str	r2, [r3]
+ 510:Generated_Source\PSoC4/CyFlash.c ****         CY_NOP;
+ 509              		.loc 1 510 0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 19
+
+
+ 510              		.syntax divided
+ 511              	@ 510 "Generated_Source\PSoC4\CyFlash.c" 1
+ 512 0064 C046     		NOP
+ 513              	
+ 514              	@ 0 "" 2
+ 511:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_FLASH_API_RETURN;
+ 515              		.loc 1 511 0
+ 516              		.thumb
+ 517              		.syntax unified
+ 518 0066 484B     		ldr	r3, .L46+12
+ 519 0068 1B68     		ldr	r3, [r3]
+ 520 006a 1B0F     		lsrs	r3, r3, #28
+ 521 006c 1A07     		lsls	r2, r3, #28
+ 522 006e F023     		movs	r3, #240
+ 523 0070 1B06     		lsls	r3, r3, #24
+ 524 0072 9A42     		cmp	r2, r3
+ 525 0074 04D1     		bne	.L32
+ 526              		.loc 1 511 0 is_stmt 0 discriminator 1
+ 527 0076 444B     		ldr	r3, .L46+12
+ 528 0078 1B68     		ldr	r3, [r3]
+ 529 007a FF22     		movs	r2, #255
+ 530 007c 1340     		ands	r3, r2
+ 531 007e 0DE0     		b	.L33
+ 532              	.L32:
+ 533              		.loc 1 511 0 discriminator 2
+ 534 0080 414B     		ldr	r3, .L46+12
+ 535 0082 1B68     		ldr	r3, [r3]
+ 536 0084 1B0F     		lsrs	r3, r3, #28
+ 537 0086 1A07     		lsls	r2, r3, #28
+ 538 0088 A023     		movs	r3, #160
+ 539 008a 1B06     		lsls	r3, r3, #24
+ 540 008c 9A42     		cmp	r2, r3
+ 541 008e 04D0     		beq	.L34
+ 542              		.loc 1 511 0 discriminator 4
+ 543 0090 3D4B     		ldr	r3, .L46+12
+ 544 0092 1B68     		ldr	r3, [r3]
+ 545 0094 FF22     		movs	r2, #255
+ 546 0096 1340     		ands	r3, r2
+ 547 0098 00E0     		b	.L33
+ 548              	.L34:
+ 549              		.loc 1 511 0 discriminator 5
+ 550 009a 0023     		movs	r3, #0
+ 551              	.L33:
+ 552              		.loc 1 511 0 discriminator 8
+ 553 009c 9822     		movs	r2, #152
+ 554 009e BA18     		adds	r2, r7, r2
+ 555 00a0 1360     		str	r3, [r2]
+ 512:Generated_Source\PSoC4/CyFlash.c **** 
+ 513:Generated_Source\PSoC4/CyFlash.c ****         if(retValue == CY_SYS_FLASH_SUCCESS)
+ 556              		.loc 1 513 0 is_stmt 1 discriminator 8
+ 557 00a2 9823     		movs	r3, #152
+ 558 00a4 FB18     		adds	r3, r7, r3
+ 559 00a6 1B68     		ldr	r3, [r3]
+ 560 00a8 002B     		cmp	r3, #0
+ 561 00aa 5FD1     		bne	.L44
+ 514:Generated_Source\PSoC4/CyFlash.c ****         {
+ 515:Generated_Source\PSoC4/CyFlash.c ****             /***************************************************************
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 20
+
+
+ 516:Generated_Source\PSoC4/CyFlash.c ****             * Mask all the exceptions to guarantee that Flash write will
+ 517:Generated_Source\PSoC4/CyFlash.c ****             * occur in the atomic way. It will not affect system call
+ 518:Generated_Source\PSoC4/CyFlash.c ****             * execution (flash row write) since it is executed in the NMI
+ 519:Generated_Source\PSoC4/CyFlash.c ****             * context.
+ 520:Generated_Source\PSoC4/CyFlash.c ****             ***************************************************************/
+ 521:Generated_Source\PSoC4/CyFlash.c ****             interruptState = CyEnterCriticalSection();
+ 562              		.loc 1 521 0
+ 563 00ac 9F23     		movs	r3, #159
+ 564 00ae FC18     		adds	r4, r7, r3
+ 565 00b0 FFF7FEFF 		bl	CyEnterCriticalSection
+ 566 00b4 0300     		movs	r3, r0
+ 567 00b6 2370     		strb	r3, [r4]
+ 522:Generated_Source\PSoC4/CyFlash.c **** 
+ 523:Generated_Source\PSoC4/CyFlash.c ****             clkCnfRetValue = CySysFlashClockBackup();
+ 568              		.loc 1 523 0
+ 569 00b8 FFF7FEFF 		bl	CySysFlashClockBackup
+ 570 00bc 0300     		movs	r3, r0
+ 571 00be 9422     		movs	r2, #148
+ 572 00c0 BA18     		adds	r2, r7, r2
+ 573 00c2 1360     		str	r3, [r2]
+ 524:Generated_Source\PSoC4/CyFlash.c **** 
+ 525:Generated_Source\PSoC4/CyFlash.c ****         #if(CY_IP_SPCIF_SYNCHRONOUS)
+ 526:Generated_Source\PSoC4/CyFlash.c ****             if(clkCnfRetValue == CY_SYS_FLASH_SUCCESS)
+ 574              		.loc 1 526 0
+ 575 00c4 9423     		movs	r3, #148
+ 576 00c6 FB18     		adds	r3, r7, r3
+ 577 00c8 1B68     		ldr	r3, [r3]
+ 578 00ca 002B     		cmp	r3, #0
+ 579 00cc 05D1     		bne	.L37
+ 527:Generated_Source\PSoC4/CyFlash.c ****             {
+ 528:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CySysFlashClockConfig();
+ 580              		.loc 1 528 0
+ 581 00ce FFF7FEFF 		bl	CySysFlashClockConfig
+ 582 00d2 0300     		movs	r3, r0
+ 583 00d4 9822     		movs	r2, #152
+ 584 00d6 BA18     		adds	r2, r7, r2
+ 585 00d8 1360     		str	r3, [r2]
+ 586              	.L37:
+ 529:Generated_Source\PSoC4/CyFlash.c ****             }
+ 530:Generated_Source\PSoC4/CyFlash.c ****         #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 531:Generated_Source\PSoC4/CyFlash.c **** 
+ 532:Generated_Source\PSoC4/CyFlash.c ****             if(retValue == CY_SYS_FLASH_SUCCESS)
+ 587              		.loc 1 532 0
+ 588 00da 9823     		movs	r3, #152
+ 589 00dc FB18     		adds	r3, r7, r3
+ 590 00de 1B68     		ldr	r3, [r3]
+ 591 00e0 002B     		cmp	r3, #0
+ 592 00e2 2DD1     		bne	.L38
+ 533:Generated_Source\PSoC4/CyFlash.c ****             {
+ 534:Generated_Source\PSoC4/CyFlash.c ****                 /* Write User Sflash Row */
+ 535:Generated_Source\PSoC4/CyFlash.c ****                 parameters[0u]  = (uint32) (((uint32) CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_WRITE_SF
+ 593              		.loc 1 535 0
+ 594 00e4 0C23     		movs	r3, #12
+ 595 00e6 FB18     		adds	r3, r7, r3
+ 596 00e8 2A4A     		ldr	r2, .L46+24
+ 597 00ea 1A60     		str	r2, [r3]
+ 536:Generated_Source\PSoC4/CyFlash.c ****                 parameters[1u] = (uint32) rowNum;
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 21
+
+
+ 598              		.loc 1 536 0
+ 599 00ec 0C23     		movs	r3, #12
+ 600 00ee FB18     		adds	r3, r7, r3
+ 601 00f0 7A68     		ldr	r2, [r7, #4]
+ 602 00f2 5A60     		str	r2, [r3, #4]
+ 537:Generated_Source\PSoC4/CyFlash.c **** 
+ 538:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 603              		.loc 1 538 0
+ 604 00f4 244B     		ldr	r3, .L46+12
+ 605 00f6 0C22     		movs	r2, #12
+ 606 00f8 BA18     		adds	r2, r7, r2
+ 607 00fa 1A60     		str	r2, [r3]
+ 539:Generated_Source\PSoC4/CyFlash.c ****                 CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_WRITE_SF
+ 608              		.loc 1 539 0
+ 609 00fc 234B     		ldr	r3, .L46+16
+ 610 00fe 264A     		ldr	r2, .L46+28
+ 611 0100 1A60     		str	r2, [r3]
+ 540:Generated_Source\PSoC4/CyFlash.c ****                 CY_NOP;
+ 612              		.loc 1 540 0
+ 613              		.syntax divided
+ 614              	@ 540 "Generated_Source\PSoC4\CyFlash.c" 1
+ 615 0102 C046     		NOP
+ 616              	
+ 617              	@ 0 "" 2
+ 541:Generated_Source\PSoC4/CyFlash.c ****                 retValue = CY_FLASH_API_RETURN;
+ 618              		.loc 1 541 0
+ 619              		.thumb
+ 620              		.syntax unified
+ 621 0104 204B     		ldr	r3, .L46+12
+ 622 0106 1B68     		ldr	r3, [r3]
+ 623 0108 1B0F     		lsrs	r3, r3, #28
+ 624 010a 1A07     		lsls	r2, r3, #28
+ 625 010c F023     		movs	r3, #240
+ 626 010e 1B06     		lsls	r3, r3, #24
+ 627 0110 9A42     		cmp	r2, r3
+ 628 0112 04D1     		bne	.L39
+ 629              		.loc 1 541 0 is_stmt 0 discriminator 1
+ 630 0114 1C4B     		ldr	r3, .L46+12
+ 631 0116 1B68     		ldr	r3, [r3]
+ 632 0118 FF22     		movs	r2, #255
+ 633 011a 1340     		ands	r3, r2
+ 634 011c 0DE0     		b	.L40
+ 635              	.L39:
+ 636              		.loc 1 541 0 discriminator 2
+ 637 011e 1A4B     		ldr	r3, .L46+12
+ 638 0120 1B68     		ldr	r3, [r3]
+ 639 0122 1B0F     		lsrs	r3, r3, #28
+ 640 0124 1A07     		lsls	r2, r3, #28
+ 641 0126 A023     		movs	r3, #160
+ 642 0128 1B06     		lsls	r3, r3, #24
+ 643 012a 9A42     		cmp	r2, r3
+ 644 012c 04D0     		beq	.L41
+ 645              		.loc 1 541 0 discriminator 4
+ 646 012e 164B     		ldr	r3, .L46+12
+ 647 0130 1B68     		ldr	r3, [r3]
+ 648 0132 FF22     		movs	r2, #255
+ 649 0134 1340     		ands	r3, r2
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 22
+
+
+ 650 0136 00E0     		b	.L40
+ 651              	.L41:
+ 652              		.loc 1 541 0 discriminator 5
+ 653 0138 0023     		movs	r3, #0
+ 654              	.L40:
+ 655              		.loc 1 541 0 discriminator 8
+ 656 013a 9822     		movs	r2, #152
+ 657 013c BA18     		adds	r2, r7, r2
+ 658 013e 1360     		str	r3, [r2]
+ 659              	.L38:
+ 542:Generated_Source\PSoC4/CyFlash.c ****             }
+ 543:Generated_Source\PSoC4/CyFlash.c **** 
+ 544:Generated_Source\PSoC4/CyFlash.c ****             if(clkCnfRetValue == CY_SYS_FLASH_SUCCESS)
+ 660              		.loc 1 544 0 is_stmt 1
+ 661 0140 9423     		movs	r3, #148
+ 662 0142 FB18     		adds	r3, r7, r3
+ 663 0144 1B68     		ldr	r3, [r3]
+ 664 0146 002B     		cmp	r3, #0
+ 665 0148 05D1     		bne	.L43
+ 545:Generated_Source\PSoC4/CyFlash.c ****             {
+ 546:Generated_Source\PSoC4/CyFlash.c ****                 clkCnfRetValue = CySysFlashClockRestore();
+ 666              		.loc 1 546 0
+ 667 014a FFF7FEFF 		bl	CySysFlashClockRestore
+ 668 014e 0300     		movs	r3, r0
+ 669 0150 9422     		movs	r2, #148
+ 670 0152 BA18     		adds	r2, r7, r2
+ 671 0154 1360     		str	r3, [r2]
+ 672              	.L43:
+ 547:Generated_Source\PSoC4/CyFlash.c ****             }
+ 548:Generated_Source\PSoC4/CyFlash.c ****             CyExitCriticalSection(interruptState);
+ 673              		.loc 1 548 0
+ 674 0156 9F23     		movs	r3, #159
+ 675 0158 FB18     		adds	r3, r7, r3
+ 676 015a 1B78     		ldrb	r3, [r3]
+ 677 015c 1800     		movs	r0, r3
+ 678 015e FFF7FEFF 		bl	CyExitCriticalSection
+ 513:Generated_Source\PSoC4/CyFlash.c ****         {
+ 679              		.loc 1 513 0
+ 680 0162 03E0     		b	.L44
+ 681              	.L29:
+ 549:Generated_Source\PSoC4/CyFlash.c ****         }
+ 550:Generated_Source\PSoC4/CyFlash.c ****     }
+ 551:Generated_Source\PSoC4/CyFlash.c ****     else
+ 552:Generated_Source\PSoC4/CyFlash.c ****     {
+ 553:Generated_Source\PSoC4/CyFlash.c ****         retValue = CY_SYS_FLASH_INVALID_ADDR;
+ 682              		.loc 1 553 0
+ 683 0164 0423     		movs	r3, #4
+ 684 0166 9822     		movs	r2, #152
+ 685 0168 BA18     		adds	r2, r7, r2
+ 686 016a 1360     		str	r3, [r2]
+ 687              	.L44:
+ 554:Generated_Source\PSoC4/CyFlash.c ****     }
+ 555:Generated_Source\PSoC4/CyFlash.c **** 
+ 556:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 688              		.loc 1 556 0
+ 689 016c 9823     		movs	r3, #152
+ 690 016e FB18     		adds	r3, r7, r3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 23
+
+
+ 691 0170 1B68     		ldr	r3, [r3]
+ 557:Generated_Source\PSoC4/CyFlash.c **** }
+ 692              		.loc 1 557 0
+ 693 0172 1800     		movs	r0, r3
+ 694 0174 BD46     		mov	sp, r7
+ 695 0176 29B0     		add	sp, sp, #164
+ 696              		@ sp needed
+ 697 0178 90BD     		pop	{r4, r7, pc}
+ 698              	.L47:
+ 699 017a C046     		.align	2
+ 700              	.L46:
+ 701 017c FF010000 		.word	511
+ 702 0180 B6D70001 		.word	16832438
+ 703 0184 B6D70000 		.word	55222
+ 704 0188 08001040 		.word	1074790408
+ 705 018c 04001040 		.word	1074790404
+ 706 0190 04000080 		.word	-2147483644
+ 707 0194 B6EB0000 		.word	60342
+ 708 0198 18000080 		.word	-2147483624
+ 709              		.cfi_endproc
+ 710              	.LFE4:
+ 711              		.size	CySysSFlashWriteUserRow, .-CySysSFlashWriteUserRow
+ 712              		.section	.text.CySysFlashClockBackup,"ax",%progbits
+ 713              		.align	2
+ 714              		.code	16
+ 715              		.thumb_func
+ 716              		.type	CySysFlashClockBackup, %function
+ 717              	CySysFlashClockBackup:
+ 718              	.LFB5:
+ 558:Generated_Source\PSoC4/CyFlash.c **** #endif /* (CY_SFLASH_XTRA_ROWS) */
+ 559:Generated_Source\PSoC4/CyFlash.c **** 
+ 560:Generated_Source\PSoC4/CyFlash.c **** 
+ 561:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 562:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashClockBackup
+ 563:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 564:Generated_Source\PSoC4/CyFlash.c **** *
+ 565:Generated_Source\PSoC4/CyFlash.c **** * Backups the device clock configuration.
+ 566:Generated_Source\PSoC4/CyFlash.c **** *
+ 567:Generated_Source\PSoC4/CyFlash.c **** * \return The same as \ref CySysFlashWriteRow().
+ 568:Generated_Source\PSoC4/CyFlash.c **** *
+ 569:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 570:Generated_Source\PSoC4/CyFlash.c **** static cystatus CySysFlashClockBackup(void)
+ 571:Generated_Source\PSoC4/CyFlash.c **** {
+ 719              		.loc 1 571 0
+ 720              		.cfi_startproc
+ 721              		@ args = 0, pretend = 0, frame = 16
+ 722              		@ frame_needed = 1, uses_anonymous_args = 0
+ 723 0000 80B5     		push	{r7, lr}
+ 724              		.cfi_def_cfa_offset 8
+ 725              		.cfi_offset 7, -8
+ 726              		.cfi_offset 14, -4
+ 727 0002 84B0     		sub	sp, sp, #16
+ 728              		.cfi_def_cfa_offset 24
+ 729 0004 00AF     		add	r7, sp, #0
+ 730              		.cfi_def_cfa_register 7
+ 572:Generated_Source\PSoC4/CyFlash.c ****     cystatus retValue = CY_SYS_FLASH_SUCCESS;
+ 731              		.loc 1 572 0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 24
+
+
+ 732 0006 0023     		movs	r3, #0
+ 733 0008 FB60     		str	r3, [r7, #12]
+ 573:Generated_Source\PSoC4/CyFlash.c **** #if(!CY_IP_FM)
+ 574:Generated_Source\PSoC4/CyFlash.c ****     #if !(CY_PSOC4_4000)
+ 575:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_IP_SPCIF_SYNCHRONOUS)
+ 576:Generated_Source\PSoC4/CyFlash.c ****             volatile uint32   parameters[2u];
+ 577:Generated_Source\PSoC4/CyFlash.c ****         #endif /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 578:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* !(CY_PSOC4_4000) */
+ 579:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (!CY_IP_FM) */
+ 580:Generated_Source\PSoC4/CyFlash.c **** 
+ 581:Generated_Source\PSoC4/CyFlash.c **** #if(CY_IP_FM)
+ 582:Generated_Source\PSoC4/CyFlash.c **** 
+ 583:Generated_Source\PSoC4/CyFlash.c ****     /***************************************************************
+ 584:Generated_Source\PSoC4/CyFlash.c ****     * Preserve IMO configuration that could be changed during
+ 585:Generated_Source\PSoC4/CyFlash.c ****     * system call execution (Cypress ID #150448).
+ 586:Generated_Source\PSoC4/CyFlash.c ****     ***************************************************************/
+ 587:Generated_Source\PSoC4/CyFlash.c ****     cySysFlashBackup.imoConfigReg = CY_SYS_CLK_IMO_CONFIG_REG;
+ 588:Generated_Source\PSoC4/CyFlash.c **** 
+ 589:Generated_Source\PSoC4/CyFlash.c **** #else   /* (CY_IP_FMLT) */
+ 590:Generated_Source\PSoC4/CyFlash.c **** 
+ 591:Generated_Source\PSoC4/CyFlash.c ****     #if (CY_PSOC4_4000)
+ 592:Generated_Source\PSoC4/CyFlash.c **** 
+ 593:Generated_Source\PSoC4/CyFlash.c ****         /***************************************************************************
+ 594:Generated_Source\PSoC4/CyFlash.c ****         * Perform firmware clock settings backup for the PSOC4 4000 devices (the
+ 595:Generated_Source\PSoC4/CyFlash.c ****         * corresponding system call is not available).
+ 596:Generated_Source\PSoC4/CyFlash.c ****         ***************************************************************************/
+ 597:Generated_Source\PSoC4/CyFlash.c **** 
+ 598:Generated_Source\PSoC4/CyFlash.c ****         /***************************************************************************
+ 599:Generated_Source\PSoC4/CyFlash.c ****         * The registers listed below are modified by CySysFlashClockConfig().
+ 600:Generated_Source\PSoC4/CyFlash.c ****         *
+ 601:Generated_Source\PSoC4/CyFlash.c ****         * The registers to be saved:
+ 602:Generated_Source\PSoC4/CyFlash.c ****         * - CY_SYS_CLK_IMO_CONFIG_REG - IMO enable state.
+ 603:Generated_Source\PSoC4/CyFlash.c ****         * - CY_SYS_CLK_SELECT_REG     - HFCLK source, divider, pump source. Save
+ 604:Generated_Source\PSoC4/CyFlash.c ****         *                               entire register as it can be directly
+ 605:Generated_Source\PSoC4/CyFlash.c ****         *                               written on restore (no special
+ 606:Generated_Source\PSoC4/CyFlash.c ****         *                               requirements).
+ 607:Generated_Source\PSoC4/CyFlash.c ****         * - CY_SYS_CLK_IMO_SELECT_REG - Save IMO frequency.
+ 608:Generated_Source\PSoC4/CyFlash.c ****         *
+ 609:Generated_Source\PSoC4/CyFlash.c ****         * The registers not to be saved:
+ 610:Generated_Source\PSoC4/CyFlash.c ****         * - CY_SYS_CLK_IMO_TRIM1_REG  - No need to save. Function of frequency.
+ 611:Generated_Source\PSoC4/CyFlash.c ****         *                               Restored by CySysClkWriteImoFreq().
+ 612:Generated_Source\PSoC4/CyFlash.c ****         * - CY_SYS_CLK_IMO_TRIM3_REG  - No need to save. Function of frequency.
+ 613:Generated_Source\PSoC4/CyFlash.c ****         *                               Restored by CySysClkWriteImoFreq().
+ 614:Generated_Source\PSoC4/CyFlash.c ****         * - REG_CPUSS_FLASH_CTL       - Flash wait cycles. Unmodified due to system
+ 615:Generated_Source\PSoC4/CyFlash.c ****         *                               clock 16 MHz limit.
+ 616:Generated_Source\PSoC4/CyFlash.c ****         ***************************************************************************/
+ 617:Generated_Source\PSoC4/CyFlash.c **** 
+ 618:Generated_Source\PSoC4/CyFlash.c ****         cySysFlashBackup.clkSelectReg = CY_SYS_CLK_SELECT_REG;
+ 619:Generated_Source\PSoC4/CyFlash.c ****         cySysFlashBackup.clkImoEna    = CY_SYS_CLK_IMO_CONFIG_REG & CY_SYS_CLK_IMO_CONFIG_ENABLE;
+ 620:Generated_Source\PSoC4/CyFlash.c ****         cySysFlashBackup.clkImoFreq   = CY_SYS_CLK_IMO_MIN_FREQ_MHZ + (CY_SYS_CLK_IMO_SELECT_REG <<
+ 621:Generated_Source\PSoC4/CyFlash.c **** 
+ 622:Generated_Source\PSoC4/CyFlash.c ****     #else
+ 623:Generated_Source\PSoC4/CyFlash.c **** 
+ 624:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_IP_SPCIF_SYNCHRONOUS)
+ 625:Generated_Source\PSoC4/CyFlash.c ****             /* FM-Lite Clock Backup System Call */
+ 626:Generated_Source\PSoC4/CyFlash.c ****             parameters[0u] =
+ 734              		.loc 1 626 0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 25
+
+
+ 735 000a 3B1D     		adds	r3, r7, #4
+ 736 000c 164A     		ldr	r2, .L54
+ 737 000e 1A60     		str	r2, [r3]
+ 627:Generated_Source\PSoC4/CyFlash.c ****                 (uint32) ((CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_CLK_BACKUP) <<  CY_FLASH_PARAM_KEY_
+ 628:Generated_Source\PSoC4/CyFlash.c ****                             CY_FLASH_KEY_ONE);
+ 629:Generated_Source\PSoC4/CyFlash.c ****             parameters[1u] = (uint32) &cySysFlashBackup.clockSettings[0u];
+ 738              		.loc 1 629 0
+ 739 0010 164A     		ldr	r2, .L54+4
+ 740 0012 3B1D     		adds	r3, r7, #4
+ 741 0014 5A60     		str	r2, [r3, #4]
+ 630:Generated_Source\PSoC4/CyFlash.c ****             CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 742              		.loc 1 630 0
+ 743 0016 164B     		ldr	r3, .L54+8
+ 744 0018 3A1D     		adds	r2, r7, #4
+ 745 001a 1A60     		str	r2, [r3]
+ 631:Generated_Source\PSoC4/CyFlash.c ****             CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_CLK_BACKUP;
+ 746              		.loc 1 631 0
+ 747 001c 154B     		ldr	r3, .L54+12
+ 748 001e 164A     		ldr	r2, .L54+16
+ 749 0020 1A60     		str	r2, [r3]
+ 632:Generated_Source\PSoC4/CyFlash.c ****             CY_NOP;
+ 750              		.loc 1 632 0
+ 751              		.syntax divided
+ 752              	@ 632 "Generated_Source\PSoC4\CyFlash.c" 1
+ 753 0022 C046     		NOP
+ 754              	
+ 755              	@ 0 "" 2
+ 633:Generated_Source\PSoC4/CyFlash.c ****             retValue = CY_FLASH_API_RETURN;
+ 756              		.loc 1 633 0
+ 757              		.thumb
+ 758              		.syntax unified
+ 759 0024 124B     		ldr	r3, .L54+8
+ 760 0026 1B68     		ldr	r3, [r3]
+ 761 0028 1B0F     		lsrs	r3, r3, #28
+ 762 002a 1A07     		lsls	r2, r3, #28
+ 763 002c F023     		movs	r3, #240
+ 764 002e 1B06     		lsls	r3, r3, #24
+ 765 0030 9A42     		cmp	r2, r3
+ 766 0032 04D1     		bne	.L49
+ 767              		.loc 1 633 0 is_stmt 0 discriminator 1
+ 768 0034 0E4B     		ldr	r3, .L54+8
+ 769 0036 1B68     		ldr	r3, [r3]
+ 770 0038 FF22     		movs	r2, #255
+ 771 003a 1340     		ands	r3, r2
+ 772 003c 0DE0     		b	.L50
+ 773              	.L49:
+ 774              		.loc 1 633 0 discriminator 2
+ 775 003e 0C4B     		ldr	r3, .L54+8
+ 776 0040 1B68     		ldr	r3, [r3]
+ 777 0042 1B0F     		lsrs	r3, r3, #28
+ 778 0044 1A07     		lsls	r2, r3, #28
+ 779 0046 A023     		movs	r3, #160
+ 780 0048 1B06     		lsls	r3, r3, #24
+ 781 004a 9A42     		cmp	r2, r3
+ 782 004c 04D0     		beq	.L51
+ 783              		.loc 1 633 0 discriminator 4
+ 784 004e 084B     		ldr	r3, .L54+8
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 26
+
+
+ 785 0050 1B68     		ldr	r3, [r3]
+ 786 0052 FF22     		movs	r2, #255
+ 787 0054 1340     		ands	r3, r2
+ 788 0056 00E0     		b	.L50
+ 789              	.L51:
+ 790              		.loc 1 633 0 discriminator 5
+ 791 0058 0023     		movs	r3, #0
+ 792              	.L50:
+ 793              		.loc 1 633 0 discriminator 8
+ 794 005a FB60     		str	r3, [r7, #12]
+ 634:Generated_Source\PSoC4/CyFlash.c ****         #endif /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 635:Generated_Source\PSoC4/CyFlash.c **** 
+ 636:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* (CY_PSOC4_4000) */
+ 637:Generated_Source\PSoC4/CyFlash.c **** 
+ 638:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_IP_FM) */
+ 639:Generated_Source\PSoC4/CyFlash.c **** 
+ 640:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 795              		.loc 1 640 0 is_stmt 1 discriminator 8
+ 796 005c FB68     		ldr	r3, [r7, #12]
+ 641:Generated_Source\PSoC4/CyFlash.c **** }
+ 797              		.loc 1 641 0 discriminator 8
+ 798 005e 1800     		movs	r0, r3
+ 799 0060 BD46     		mov	sp, r7
+ 800 0062 04B0     		add	sp, sp, #16
+ 801              		@ sp needed
+ 802 0064 80BD     		pop	{r7, pc}
+ 803              	.L55:
+ 804 0066 C046     		.align	2
+ 805              	.L54:
+ 806 0068 B6E90000 		.word	59830
+ 807 006c 04000000 		.word	cySysFlashBackup+4
+ 808 0070 08001040 		.word	1074790408
+ 809 0074 04001040 		.word	1074790404
+ 810 0078 16000080 		.word	-2147483626
+ 811              		.cfi_endproc
+ 812              	.LFE5:
+ 813              		.size	CySysFlashClockBackup, .-CySysFlashClockBackup
+ 814              		.section	.text.CySysFlashClockConfig,"ax",%progbits
+ 815              		.align	2
+ 816              		.code	16
+ 817              		.thumb_func
+ 818              		.type	CySysFlashClockConfig, %function
+ 819              	CySysFlashClockConfig:
+ 820              	.LFB6:
+ 642:Generated_Source\PSoC4/CyFlash.c **** 
+ 643:Generated_Source\PSoC4/CyFlash.c **** 
+ 644:Generated_Source\PSoC4/CyFlash.c **** #if(CY_IP_SPCIF_SYNCHRONOUS)
+ 645:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 646:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashClockConfig
+ 647:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 648:Generated_Source\PSoC4/CyFlash.c **** *
+ 649:Generated_Source\PSoC4/CyFlash.c **** * Configures the device clocks for the flash writing.
+ 650:Generated_Source\PSoC4/CyFlash.c **** *
+ 651:Generated_Source\PSoC4/CyFlash.c **** * \return The same as \ref CySysFlashWriteRow().
+ 652:Generated_Source\PSoC4/CyFlash.c **** *
+ 653:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 654:Generated_Source\PSoC4/CyFlash.c **** static cystatus CySysFlashClockConfig(void)
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 27
+
+
+ 655:Generated_Source\PSoC4/CyFlash.c **** {
+ 821              		.loc 1 655 0
+ 822              		.cfi_startproc
+ 823              		@ args = 0, pretend = 0, frame = 8
+ 824              		@ frame_needed = 1, uses_anonymous_args = 0
+ 825 0000 80B5     		push	{r7, lr}
+ 826              		.cfi_def_cfa_offset 8
+ 827              		.cfi_offset 7, -8
+ 828              		.cfi_offset 14, -4
+ 829 0002 82B0     		sub	sp, sp, #8
+ 830              		.cfi_def_cfa_offset 16
+ 831 0004 00AF     		add	r7, sp, #0
+ 832              		.cfi_def_cfa_register 7
+ 656:Generated_Source\PSoC4/CyFlash.c ****     cystatus retValue = CY_SYS_FLASH_SUCCESS;
+ 833              		.loc 1 656 0
+ 834 0006 0023     		movs	r3, #0
+ 835 0008 7B60     		str	r3, [r7, #4]
+ 657:Generated_Source\PSoC4/CyFlash.c **** 
+ 658:Generated_Source\PSoC4/CyFlash.c ****     /***************************************************************************
+ 659:Generated_Source\PSoC4/CyFlash.c ****     * The FM-Lite IP uses the IMO at 48MHz for the pump clock and SPC timer
+ 660:Generated_Source\PSoC4/CyFlash.c ****     * clock. The PUMP_SEL and HF clock must be set to IMO before calling Flash
+ 661:Generated_Source\PSoC4/CyFlash.c ****     * write or erase operation.
+ 662:Generated_Source\PSoC4/CyFlash.c ****     ***************************************************************************/
+ 663:Generated_Source\PSoC4/CyFlash.c **** #if (CY_PSOC4_4000)
+ 664:Generated_Source\PSoC4/CyFlash.c **** 
+ 665:Generated_Source\PSoC4/CyFlash.c ****     /***************************************************************************
+ 666:Generated_Source\PSoC4/CyFlash.c ****     * Perform firmware clock settings setup for the PSOC4 4000 devices (the
+ 667:Generated_Source\PSoC4/CyFlash.c ****     * corresponding system call is not reliable):
+ 668:Generated_Source\PSoC4/CyFlash.c ****     * - The IMO frequency should be 48 MHz
+ 669:Generated_Source\PSoC4/CyFlash.c ****     * - The IMO should be source for the HFCLK
+ 670:Generated_Source\PSoC4/CyFlash.c ****     * - The IMO should be the source for the charge pump clock
+ 671:Generated_Source\PSoC4/CyFlash.c ****     *
+ 672:Generated_Source\PSoC4/CyFlash.c ****     * Note The structure members used below are initialized by
+ 673:Generated_Source\PSoC4/CyFlash.c ****     * the CySysFlashClockBackup() function.
+ 674:Generated_Source\PSoC4/CyFlash.c ****     ***************************************************************************/
+ 675:Generated_Source\PSoC4/CyFlash.c ****     if ((cySysFlashBackup.clkImoFreq != 48u) ||
+ 676:Generated_Source\PSoC4/CyFlash.c ****         ((cySysFlashBackup.clkSelectReg & CY_SYS_CLK_SELECT_DIRECT_SEL_MASK) != CY_SYS_CLK_HFCLK_IM
+ 677:Generated_Source\PSoC4/CyFlash.c ****         (((cySysFlashBackup.clkSelectReg >> CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT) & CY_SYS_CLK_SELECT_P
+ 678:Generated_Source\PSoC4/CyFlash.c ****             CY_SYS_CLK_SELECT_PUMP_SEL_IMO))
+ 679:Generated_Source\PSoC4/CyFlash.c ****     {
+ 680:Generated_Source\PSoC4/CyFlash.c ****         /***********************************************************************
+ 681:Generated_Source\PSoC4/CyFlash.c ****          Set HFCLK divider to divide-by-4 to ensure that System clock frequency
+ 682:Generated_Source\PSoC4/CyFlash.c ****         * is within the valid limit (16 MHz for the PSoC4 4000).
+ 683:Generated_Source\PSoC4/CyFlash.c ****         ***********************************************************************/
+ 684:Generated_Source\PSoC4/CyFlash.c ****         CySysClkWriteHfclkDiv(CY_SYS_CLK_HFCLK_DIV_4);
+ 685:Generated_Source\PSoC4/CyFlash.c **** 
+ 686:Generated_Source\PSoC4/CyFlash.c ****         /* The IMO frequency should be 48 MHz */
+ 687:Generated_Source\PSoC4/CyFlash.c ****         if (cySysFlashBackup.clkImoFreq != 48u)
+ 688:Generated_Source\PSoC4/CyFlash.c ****         {
+ 689:Generated_Source\PSoC4/CyFlash.c ****             CySysClkWriteImoFreq(48u);
+ 690:Generated_Source\PSoC4/CyFlash.c ****         }
+ 691:Generated_Source\PSoC4/CyFlash.c ****         CySysClkImoStart();
+ 692:Generated_Source\PSoC4/CyFlash.c **** 
+ 693:Generated_Source\PSoC4/CyFlash.c ****         /* The IMO should be source for the HFCLK */
+ 694:Generated_Source\PSoC4/CyFlash.c ****         CySysClkWriteHfclkDirect(CY_SYS_CLK_HFCLK_IMO);
+ 695:Generated_Source\PSoC4/CyFlash.c **** 
+ 696:Generated_Source\PSoC4/CyFlash.c ****         /* The IMO should be the source for the charge pump clock */
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 28
+
+
+ 697:Generated_Source\PSoC4/CyFlash.c ****         CY_SYS_CLK_SELECT_REG =  (CY_SYS_CLK_SELECT_REG &
+ 698:Generated_Source\PSoC4/CyFlash.c ****             ((uint32)~(uint32)(CY_SYS_CLK_SELECT_PUMP_SEL_MASK << CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT)
+ 699:Generated_Source\PSoC4/CyFlash.c ****             ((uint32)((uint32)1u << CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT));
+ 700:Generated_Source\PSoC4/CyFlash.c ****     }
+ 701:Generated_Source\PSoC4/CyFlash.c **** 
+ 702:Generated_Source\PSoC4/CyFlash.c **** #else
+ 703:Generated_Source\PSoC4/CyFlash.c **** 
+ 704:Generated_Source\PSoC4/CyFlash.c ****     /* FM-Lite Clock Configuration */
+ 705:Generated_Source\PSoC4/CyFlash.c ****     CY_FLASH_CPUSS_SYSARG_REG =
+ 836              		.loc 1 705 0
+ 837 000a 144B     		ldr	r3, .L62
+ 838 000c 144A     		ldr	r2, .L62+4
+ 839 000e 1A60     		str	r2, [r3]
+ 706:Generated_Source\PSoC4/CyFlash.c ****         (uint32) ((CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_CLK_CONFIG) <<  CY_FLASH_PARAM_KEY_TWO_OFFS
+ 707:Generated_Source\PSoC4/CyFlash.c ****                     CY_FLASH_KEY_ONE);
+ 708:Generated_Source\PSoC4/CyFlash.c ****     CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_CLK_CONFIG;
+ 840              		.loc 1 708 0
+ 841 0010 144B     		ldr	r3, .L62+8
+ 842 0012 154A     		ldr	r2, .L62+12
+ 843 0014 1A60     		str	r2, [r3]
+ 709:Generated_Source\PSoC4/CyFlash.c ****     CY_NOP;
+ 844              		.loc 1 709 0
+ 845              		.syntax divided
+ 846              	@ 709 "Generated_Source\PSoC4\CyFlash.c" 1
+ 847 0016 C046     		NOP
+ 848              	
+ 849              	@ 0 "" 2
+ 710:Generated_Source\PSoC4/CyFlash.c ****     retValue = CY_FLASH_API_RETURN;
+ 850              		.loc 1 710 0
+ 851              		.thumb
+ 852              		.syntax unified
+ 853 0018 104B     		ldr	r3, .L62
+ 854 001a 1B68     		ldr	r3, [r3]
+ 855 001c 1B0F     		lsrs	r3, r3, #28
+ 856 001e 1A07     		lsls	r2, r3, #28
+ 857 0020 F023     		movs	r3, #240
+ 858 0022 1B06     		lsls	r3, r3, #24
+ 859 0024 9A42     		cmp	r2, r3
+ 860 0026 04D1     		bne	.L57
+ 861              		.loc 1 710 0 is_stmt 0 discriminator 1
+ 862 0028 0C4B     		ldr	r3, .L62
+ 863 002a 1B68     		ldr	r3, [r3]
+ 864 002c FF22     		movs	r2, #255
+ 865 002e 1340     		ands	r3, r2
+ 866 0030 0DE0     		b	.L58
+ 867              	.L57:
+ 868              		.loc 1 710 0 discriminator 2
+ 869 0032 0A4B     		ldr	r3, .L62
+ 870 0034 1B68     		ldr	r3, [r3]
+ 871 0036 1B0F     		lsrs	r3, r3, #28
+ 872 0038 1A07     		lsls	r2, r3, #28
+ 873 003a A023     		movs	r3, #160
+ 874 003c 1B06     		lsls	r3, r3, #24
+ 875 003e 9A42     		cmp	r2, r3
+ 876 0040 04D0     		beq	.L59
+ 877              		.loc 1 710 0 discriminator 4
+ 878 0042 064B     		ldr	r3, .L62
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 29
+
+
+ 879 0044 1B68     		ldr	r3, [r3]
+ 880 0046 FF22     		movs	r2, #255
+ 881 0048 1340     		ands	r3, r2
+ 882 004a 00E0     		b	.L58
+ 883              	.L59:
+ 884              		.loc 1 710 0 discriminator 5
+ 885 004c 0023     		movs	r3, #0
+ 886              	.L58:
+ 887              		.loc 1 710 0 discriminator 8
+ 888 004e 7B60     		str	r3, [r7, #4]
+ 711:Generated_Source\PSoC4/CyFlash.c **** 
+ 712:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_PSOC4_4000) */
+ 713:Generated_Source\PSoC4/CyFlash.c **** 
+ 714:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 889              		.loc 1 714 0 is_stmt 1 discriminator 8
+ 890 0050 7B68     		ldr	r3, [r7, #4]
+ 715:Generated_Source\PSoC4/CyFlash.c **** }
+ 891              		.loc 1 715 0 discriminator 8
+ 892 0052 1800     		movs	r0, r3
+ 893 0054 BD46     		mov	sp, r7
+ 894 0056 02B0     		add	sp, sp, #8
+ 895              		@ sp needed
+ 896 0058 80BD     		pop	{r7, pc}
+ 897              	.L63:
+ 898 005a C046     		.align	2
+ 899              	.L62:
+ 900 005c 08001040 		.word	1074790408
+ 901 0060 B6E80000 		.word	59574
+ 902 0064 04001040 		.word	1074790404
+ 903 0068 15000080 		.word	-2147483627
+ 904              		.cfi_endproc
+ 905              	.LFE6:
+ 906              		.size	CySysFlashClockConfig, .-CySysFlashClockConfig
+ 907              		.section	.text.CySysFlashClockRestore,"ax",%progbits
+ 908              		.align	2
+ 909              		.code	16
+ 910              		.thumb_func
+ 911              		.type	CySysFlashClockRestore, %function
+ 912              	CySysFlashClockRestore:
+ 913              	.LFB7:
+ 716:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 717:Generated_Source\PSoC4/CyFlash.c **** 
+ 718:Generated_Source\PSoC4/CyFlash.c **** 
+ 719:Generated_Source\PSoC4/CyFlash.c **** /*******************************************************************************
+ 720:Generated_Source\PSoC4/CyFlash.c **** * Function Name: CySysFlashClockRestore
+ 721:Generated_Source\PSoC4/CyFlash.c **** ****************************************************************************//**
+ 722:Generated_Source\PSoC4/CyFlash.c **** *
+ 723:Generated_Source\PSoC4/CyFlash.c **** * Restores the device clock configuration.
+ 724:Generated_Source\PSoC4/CyFlash.c **** *
+ 725:Generated_Source\PSoC4/CyFlash.c **** * \return The same as \ref CySysFlashWriteRow().
+ 726:Generated_Source\PSoC4/CyFlash.c **** *
+ 727:Generated_Source\PSoC4/CyFlash.c **** *******************************************************************************/
+ 728:Generated_Source\PSoC4/CyFlash.c **** static cystatus CySysFlashClockRestore(void)
+ 729:Generated_Source\PSoC4/CyFlash.c **** {
+ 914              		.loc 1 729 0
+ 915              		.cfi_startproc
+ 916              		@ args = 0, pretend = 0, frame = 16
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 30
+
+
+ 917              		@ frame_needed = 1, uses_anonymous_args = 0
+ 918 0000 80B5     		push	{r7, lr}
+ 919              		.cfi_def_cfa_offset 8
+ 920              		.cfi_offset 7, -8
+ 921              		.cfi_offset 14, -4
+ 922 0002 84B0     		sub	sp, sp, #16
+ 923              		.cfi_def_cfa_offset 24
+ 924 0004 00AF     		add	r7, sp, #0
+ 925              		.cfi_def_cfa_register 7
+ 730:Generated_Source\PSoC4/CyFlash.c ****     cystatus retValue = CY_SYS_FLASH_SUCCESS;
+ 926              		.loc 1 730 0
+ 927 0006 0023     		movs	r3, #0
+ 928 0008 FB60     		str	r3, [r7, #12]
+ 731:Generated_Source\PSoC4/CyFlash.c **** #if(!CY_IP_FM)
+ 732:Generated_Source\PSoC4/CyFlash.c ****     #if !(CY_PSOC4_4000)
+ 733:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_IP_SPCIF_SYNCHRONOUS)
+ 734:Generated_Source\PSoC4/CyFlash.c ****             volatile uint32   parameters[2u];
+ 735:Generated_Source\PSoC4/CyFlash.c ****         #endif /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 736:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* !(CY_PSOC4_4000) */
+ 737:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (!CY_IP_FM) */
+ 738:Generated_Source\PSoC4/CyFlash.c **** 
+ 739:Generated_Source\PSoC4/CyFlash.c **** #if(CY_IP_FM)
+ 740:Generated_Source\PSoC4/CyFlash.c **** 
+ 741:Generated_Source\PSoC4/CyFlash.c ****     /***************************************************************
+ 742:Generated_Source\PSoC4/CyFlash.c ****     * Restore IMO configuration that could be changed during
+ 743:Generated_Source\PSoC4/CyFlash.c ****     * system call execution (Cypress ID #150448).
+ 744:Generated_Source\PSoC4/CyFlash.c ****     ***************************************************************/
+ 745:Generated_Source\PSoC4/CyFlash.c ****     CY_SYS_CLK_IMO_CONFIG_REG = cySysFlashBackup.imoConfigReg;
+ 746:Generated_Source\PSoC4/CyFlash.c **** 
+ 747:Generated_Source\PSoC4/CyFlash.c **** #else
+ 748:Generated_Source\PSoC4/CyFlash.c **** 
+ 749:Generated_Source\PSoC4/CyFlash.c ****     #if (CY_PSOC4_4000)
+ 750:Generated_Source\PSoC4/CyFlash.c **** 
+ 751:Generated_Source\PSoC4/CyFlash.c ****         /***************************************************************************
+ 752:Generated_Source\PSoC4/CyFlash.c ****         * Perform firmware clock settings restore for the PSOC4 4000 devices (the
+ 753:Generated_Source\PSoC4/CyFlash.c ****         * corresponding system call is not available).
+ 754:Generated_Source\PSoC4/CyFlash.c ****         ***************************************************************************/
+ 755:Generated_Source\PSoC4/CyFlash.c **** 
+ 756:Generated_Source\PSoC4/CyFlash.c ****         /* Restore clock settings */
+ 757:Generated_Source\PSoC4/CyFlash.c ****         if ((cySysFlashBackup.clkImoFreq != 48u) ||
+ 758:Generated_Source\PSoC4/CyFlash.c ****             ((cySysFlashBackup.clkSelectReg & CY_SYS_CLK_SELECT_DIRECT_SEL_MASK) != CY_SYS_CLK_HFCL
+ 759:Generated_Source\PSoC4/CyFlash.c ****             (((cySysFlashBackup.clkSelectReg >> CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT) & CY_SYS_CLK_SELE
+ 760:Generated_Source\PSoC4/CyFlash.c ****                 CY_SYS_CLK_SELECT_PUMP_SEL_IMO))
+ 761:Generated_Source\PSoC4/CyFlash.c ****         {
+ 762:Generated_Source\PSoC4/CyFlash.c ****             /* Restore IMO frequency if needed */
+ 763:Generated_Source\PSoC4/CyFlash.c ****             if (cySysFlashBackup.clkImoFreq != 48u)
+ 764:Generated_Source\PSoC4/CyFlash.c ****             {
+ 765:Generated_Source\PSoC4/CyFlash.c ****                 CySysClkWriteImoFreq(cySysFlashBackup.clkImoFreq);
+ 766:Generated_Source\PSoC4/CyFlash.c ****             }
+ 767:Generated_Source\PSoC4/CyFlash.c **** 
+ 768:Generated_Source\PSoC4/CyFlash.c ****             /* Restore HFCLK clock source */
+ 769:Generated_Source\PSoC4/CyFlash.c ****             CySysClkWriteHfclkDirect(cySysFlashBackup.clkSelectReg & CY_SYS_CLK_SELECT_DIRECT_SEL_M
+ 770:Generated_Source\PSoC4/CyFlash.c **** 
+ 771:Generated_Source\PSoC4/CyFlash.c ****             /* Restore HFCLK divider and source for pump  */
+ 772:Generated_Source\PSoC4/CyFlash.c ****             CY_SYS_CLK_SELECT_REG = cySysFlashBackup.clkSelectReg;
+ 773:Generated_Source\PSoC4/CyFlash.c **** 
+ 774:Generated_Source\PSoC4/CyFlash.c ****             /* Stop IMO if needed */
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 31
+
+
+ 775:Generated_Source\PSoC4/CyFlash.c ****             if (0u == cySysFlashBackup.clkImoEna)
+ 776:Generated_Source\PSoC4/CyFlash.c ****             {
+ 777:Generated_Source\PSoC4/CyFlash.c ****                 CySysClkImoStop();
+ 778:Generated_Source\PSoC4/CyFlash.c ****             }
+ 779:Generated_Source\PSoC4/CyFlash.c ****         }
+ 780:Generated_Source\PSoC4/CyFlash.c **** 
+ 781:Generated_Source\PSoC4/CyFlash.c ****     #else
+ 782:Generated_Source\PSoC4/CyFlash.c **** 
+ 783:Generated_Source\PSoC4/CyFlash.c ****         #if (CY_IP_SPCIF_SYNCHRONOUS)
+ 784:Generated_Source\PSoC4/CyFlash.c ****             /* FM-Lite Clock Restore */
+ 785:Generated_Source\PSoC4/CyFlash.c ****             parameters[0u] =
+ 929              		.loc 1 785 0
+ 930 000a 3B1D     		adds	r3, r7, #4
+ 931 000c 164A     		ldr	r2, .L70
+ 932 000e 1A60     		str	r2, [r3]
+ 786:Generated_Source\PSoC4/CyFlash.c ****                 (uint32) ((CY_FLASH_KEY_TWO(CY_FLASH_API_OPCODE_CLK_RESTORE) <<  CY_FLASH_PARAM_KEY
+ 787:Generated_Source\PSoC4/CyFlash.c ****                             CY_FLASH_KEY_ONE);
+ 788:Generated_Source\PSoC4/CyFlash.c ****             parameters[1u] = (uint32) &cySysFlashBackup.clockSettings[0u];
+ 933              		.loc 1 788 0
+ 934 0010 164A     		ldr	r2, .L70+4
+ 935 0012 3B1D     		adds	r3, r7, #4
+ 936 0014 5A60     		str	r2, [r3, #4]
+ 789:Generated_Source\PSoC4/CyFlash.c ****             CY_FLASH_CPUSS_SYSARG_REG = (uint32) &parameters[0u];
+ 937              		.loc 1 789 0
+ 938 0016 164B     		ldr	r3, .L70+8
+ 939 0018 3A1D     		adds	r2, r7, #4
+ 940 001a 1A60     		str	r2, [r3]
+ 790:Generated_Source\PSoC4/CyFlash.c ****             CY_FLASH_CPUSS_SYSREQ_REG = CY_FLASH_CPUSS_REQ_START | CY_FLASH_API_OPCODE_CLK_RESTORE;
+ 941              		.loc 1 790 0
+ 942 001c 154B     		ldr	r3, .L70+12
+ 943 001e 164A     		ldr	r2, .L70+16
+ 944 0020 1A60     		str	r2, [r3]
+ 791:Generated_Source\PSoC4/CyFlash.c ****             CY_NOP;
+ 945              		.loc 1 791 0
+ 946              		.syntax divided
+ 947              	@ 791 "Generated_Source\PSoC4\CyFlash.c" 1
+ 948 0022 C046     		NOP
+ 949              	
+ 950              	@ 0 "" 2
+ 792:Generated_Source\PSoC4/CyFlash.c ****             retValue = CY_FLASH_API_RETURN;
+ 951              		.loc 1 792 0
+ 952              		.thumb
+ 953              		.syntax unified
+ 954 0024 124B     		ldr	r3, .L70+8
+ 955 0026 1B68     		ldr	r3, [r3]
+ 956 0028 1B0F     		lsrs	r3, r3, #28
+ 957 002a 1A07     		lsls	r2, r3, #28
+ 958 002c F023     		movs	r3, #240
+ 959 002e 1B06     		lsls	r3, r3, #24
+ 960 0030 9A42     		cmp	r2, r3
+ 961 0032 04D1     		bne	.L65
+ 962              		.loc 1 792 0 is_stmt 0 discriminator 1
+ 963 0034 0E4B     		ldr	r3, .L70+8
+ 964 0036 1B68     		ldr	r3, [r3]
+ 965 0038 FF22     		movs	r2, #255
+ 966 003a 1340     		ands	r3, r2
+ 967 003c 0DE0     		b	.L66
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 32
+
+
+ 968              	.L65:
+ 969              		.loc 1 792 0 discriminator 2
+ 970 003e 0C4B     		ldr	r3, .L70+8
+ 971 0040 1B68     		ldr	r3, [r3]
+ 972 0042 1B0F     		lsrs	r3, r3, #28
+ 973 0044 1A07     		lsls	r2, r3, #28
+ 974 0046 A023     		movs	r3, #160
+ 975 0048 1B06     		lsls	r3, r3, #24
+ 976 004a 9A42     		cmp	r2, r3
+ 977 004c 04D0     		beq	.L67
+ 978              		.loc 1 792 0 discriminator 4
+ 979 004e 084B     		ldr	r3, .L70+8
+ 980 0050 1B68     		ldr	r3, [r3]
+ 981 0052 FF22     		movs	r2, #255
+ 982 0054 1340     		ands	r3, r2
+ 983 0056 00E0     		b	.L66
+ 984              	.L67:
+ 985              		.loc 1 792 0 discriminator 5
+ 986 0058 0023     		movs	r3, #0
+ 987              	.L66:
+ 988              		.loc 1 792 0 discriminator 8
+ 989 005a FB60     		str	r3, [r7, #12]
+ 793:Generated_Source\PSoC4/CyFlash.c ****         #endif /* (CY_IP_SPCIF_SYNCHRONOUS) */
+ 794:Generated_Source\PSoC4/CyFlash.c **** 
+ 795:Generated_Source\PSoC4/CyFlash.c ****     #endif  /* (CY_PSOC4_4000) */
+ 796:Generated_Source\PSoC4/CyFlash.c **** 
+ 797:Generated_Source\PSoC4/CyFlash.c **** #endif  /* (CY_IP_FM) */
+ 798:Generated_Source\PSoC4/CyFlash.c **** 
+ 799:Generated_Source\PSoC4/CyFlash.c ****     return (retValue);
+ 990              		.loc 1 799 0 is_stmt 1 discriminator 8
+ 991 005c FB68     		ldr	r3, [r7, #12]
+ 800:Generated_Source\PSoC4/CyFlash.c **** }
+ 992              		.loc 1 800 0 discriminator 8
+ 993 005e 1800     		movs	r0, r3
+ 994 0060 BD46     		mov	sp, r7
+ 995 0062 04B0     		add	sp, sp, #16
+ 996              		@ sp needed
+ 997 0064 80BD     		pop	{r7, pc}
+ 998              	.L71:
+ 999 0066 C046     		.align	2
+ 1000              	.L70:
+ 1001 0068 B6EA0000 		.word	60086
+ 1002 006c 04000000 		.word	cySysFlashBackup+4
+ 1003 0070 08001040 		.word	1074790408
+ 1004 0074 04001040 		.word	1074790404
+ 1005 0078 17000080 		.word	-2147483625
+ 1006              		.cfi_endproc
+ 1007              	.LFE7:
+ 1008              		.size	CySysFlashClockRestore, .-CySysFlashClockRestore
+ 1009              		.text
+ 1010              	.Letext0:
+ 1011              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 1012              		.file 3 "Generated_Source\\PSoC4\\CyFlash.h"
+ 1013              		.section	.debug_info,"",%progbits
+ 1014              	.Ldebug_info0:
+ 1015 0000 29030000 		.4byte	0x329
+ 1016 0004 0300     		.2byte	0x3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 33
+
+
+ 1017 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1018 000a 04       		.byte	0x4
+ 1019 000b 01       		.uleb128 0x1
+ 1020 000c 4C020000 		.4byte	.LASF35
+ 1021 0010 0C       		.byte	0xc
+ 1022 0011 FC000000 		.4byte	.LASF36
+ 1023 0015 64010000 		.4byte	.LASF37
+ 1024 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1025 001d 00000000 		.4byte	0
+ 1026 0021 00000000 		.4byte	0
+ 1027 0025 00000000 		.4byte	.Ldebug_line0
+ 1028 0029 02       		.uleb128 0x2
+ 1029 002a 01       		.byte	0x1
+ 1030 002b 06       		.byte	0x6
+ 1031 002c 40020000 		.4byte	.LASF0
+ 1032 0030 02       		.uleb128 0x2
+ 1033 0031 01       		.byte	0x1
+ 1034 0032 08       		.byte	0x8
+ 1035 0033 93000000 		.4byte	.LASF1
+ 1036 0037 02       		.uleb128 0x2
+ 1037 0038 02       		.byte	0x2
+ 1038 0039 05       		.byte	0x5
+ 1039 003a D2000000 		.4byte	.LASF2
+ 1040 003e 02       		.uleb128 0x2
+ 1041 003f 02       		.byte	0x2
+ 1042 0040 07       		.byte	0x7
+ 1043 0041 62000000 		.4byte	.LASF3
+ 1044 0045 02       		.uleb128 0x2
+ 1045 0046 04       		.byte	0x4
+ 1046 0047 05       		.byte	0x5
+ 1047 0048 2B020000 		.4byte	.LASF4
+ 1048 004c 02       		.uleb128 0x2
+ 1049 004d 04       		.byte	0x4
+ 1050 004e 07       		.byte	0x7
+ 1051 004f EA000000 		.4byte	.LASF5
+ 1052 0053 02       		.uleb128 0x2
+ 1053 0054 08       		.byte	0x8
+ 1054 0055 05       		.byte	0x5
+ 1055 0056 4C010000 		.4byte	.LASF6
+ 1056 005a 02       		.uleb128 0x2
+ 1057 005b 08       		.byte	0x8
+ 1058 005c 07       		.byte	0x7
+ 1059 005d 1D010000 		.4byte	.LASF7
+ 1060 0061 03       		.uleb128 0x3
+ 1061 0062 04       		.byte	0x4
+ 1062 0063 05       		.byte	0x5
+ 1063 0064 696E7400 		.ascii	"int\000"
+ 1064 0068 02       		.uleb128 0x2
+ 1065 0069 04       		.byte	0x4
+ 1066 006a 07       		.byte	0x7
+ 1067 006b 75000000 		.4byte	.LASF8
+ 1068 006f 04       		.uleb128 0x4
+ 1069 0070 C5000000 		.4byte	.LASF9
+ 1070 0074 02       		.byte	0x2
+ 1071 0075 D201     		.2byte	0x1d2
+ 1072 0077 30000000 		.4byte	0x30
+ 1073 007b 04       		.uleb128 0x4
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 34
+
+
+ 1074 007c DC000000 		.4byte	.LASF10
+ 1075 0080 02       		.byte	0x2
+ 1076 0081 D301     		.2byte	0x1d3
+ 1077 0083 3E000000 		.4byte	0x3e
+ 1078 0087 04       		.uleb128 0x4
+ 1079 0088 E3000000 		.4byte	.LASF11
+ 1080 008c 02       		.byte	0x2
+ 1081 008d D401     		.2byte	0x1d4
+ 1082 008f 4C000000 		.4byte	0x4c
+ 1083 0093 02       		.uleb128 0x2
+ 1084 0094 04       		.byte	0x4
+ 1085 0095 04       		.byte	0x4
+ 1086 0096 82000000 		.4byte	.LASF12
+ 1087 009a 02       		.uleb128 0x2
+ 1088 009b 08       		.byte	0x8
+ 1089 009c 04       		.byte	0x4
+ 1090 009d CB000000 		.4byte	.LASF13
+ 1091 00a1 02       		.uleb128 0x2
+ 1092 00a2 01       		.byte	0x1
+ 1093 00a3 08       		.byte	0x8
+ 1094 00a4 5A010000 		.4byte	.LASF14
+ 1095 00a8 04       		.uleb128 0x4
+ 1096 00a9 00000000 		.4byte	.LASF15
+ 1097 00ad 02       		.byte	0x2
+ 1098 00ae 7402     		.2byte	0x274
+ 1099 00b0 4C000000 		.4byte	0x4c
+ 1100 00b4 04       		.uleb128 0x4
+ 1101 00b5 09000000 		.4byte	.LASF16
+ 1102 00b9 02       		.byte	0x2
+ 1103 00ba 7E02     		.2byte	0x27e
+ 1104 00bc C0000000 		.4byte	0xc0
+ 1105 00c0 05       		.uleb128 0x5
+ 1106 00c1 87000000 		.4byte	0x87
+ 1107 00c5 02       		.uleb128 0x2
+ 1108 00c6 08       		.byte	0x8
+ 1109 00c7 04       		.byte	0x4
+ 1110 00c8 34020000 		.4byte	.LASF17
+ 1111 00cc 02       		.uleb128 0x2
+ 1112 00cd 04       		.byte	0x4
+ 1113 00ce 07       		.byte	0x7
+ 1114 00cf 43010000 		.4byte	.LASF18
+ 1115 00d3 06       		.uleb128 0x6
+ 1116 00d4 2E000000 		.4byte	.LASF38
+ 1117 00d8 14       		.byte	0x14
+ 1118 00d9 03       		.byte	0x3
+ 1119 00da D7       		.byte	0xd7
+ 1120 00db F8000000 		.4byte	0xf8
+ 1121 00df 07       		.uleb128 0x7
+ 1122 00e0 88000000 		.4byte	.LASF19
+ 1123 00e4 03       		.byte	0x3
+ 1124 00e5 E3       		.byte	0xe3
+ 1125 00e6 87000000 		.4byte	0x87
+ 1126 00ea 00       		.byte	0
+ 1127 00eb 07       		.uleb128 0x7
+ 1128 00ec B9010000 		.4byte	.LASF20
+ 1129 00f0 03       		.byte	0x3
+ 1130 00f1 E7       		.byte	0xe7
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 35
+
+
+ 1131 00f2 F8000000 		.4byte	0xf8
+ 1132 00f6 04       		.byte	0x4
+ 1133 00f7 00       		.byte	0
+ 1134 00f8 08       		.uleb128 0x8
+ 1135 00f9 87000000 		.4byte	0x87
+ 1136 00fd 08010000 		.4byte	0x108
+ 1137 0101 09       		.uleb128 0x9
+ 1138 0102 CC000000 		.4byte	0xcc
+ 1139 0106 03       		.byte	0x3
+ 1140 0107 00       		.byte	0
+ 1141 0108 0A       		.uleb128 0xa
+ 1142 0109 0A020000 		.4byte	.LASF21
+ 1143 010d 03       		.byte	0x3
+ 1144 010e ED       		.byte	0xed
+ 1145 010f D3000000 		.4byte	0xd3
+ 1146 0113 0B       		.uleb128 0xb
+ 1147 0114 01       		.byte	0x1
+ 1148 0115 E4020000 		.4byte	.LASF29
+ 1149 0119 01       		.byte	0x1
+ 1150 011a 51       		.byte	0x51
+ 1151 011b 01       		.byte	0x1
+ 1152 011c 87000000 		.4byte	0x87
+ 1153 0120 00000000 		.4byte	.LFB2
+ 1154 0124 C4010000 		.4byte	.LFE2
+ 1155 0128 01       		.byte	0x1
+ 1156 0129 9C       		.byte	0x9c
+ 1157 012a 01       		.byte	0x1
+ 1158 012b 87010000 		.4byte	0x187
+ 1159 012f 0C       		.uleb128 0xc
+ 1160 0130 18000000 		.4byte	.LASF22
+ 1161 0134 01       		.byte	0x1
+ 1162 0135 51       		.byte	0x51
+ 1163 0136 87000000 		.4byte	0x87
+ 1164 013a 03       		.byte	0x3
+ 1165 013b 91       		.byte	0x91
+ 1166 013c D47E     		.sleb128 -172
+ 1167 013e 0C       		.uleb128 0xc
+ 1168 013f A1000000 		.4byte	.LASF23
+ 1169 0143 01       		.byte	0x1
+ 1170 0144 51       		.byte	0x51
+ 1171 0145 87010000 		.4byte	0x187
+ 1172 0149 03       		.byte	0x3
+ 1173 014a 91       		.byte	0x91
+ 1174 014b D07E     		.sleb128 -176
+ 1175 014d 0D       		.uleb128 0xd
+ 1176 014e 0F000000 		.4byte	.LASF24
+ 1177 0152 01       		.byte	0x1
+ 1178 0153 53       		.byte	0x53
+ 1179 0154 C0000000 		.4byte	0xc0
+ 1180 0158 02       		.byte	0x2
+ 1181 0159 91       		.byte	0x91
+ 1182 015a 68       		.sleb128 -24
+ 1183 015b 0D       		.uleb128 0xd
+ 1184 015c 1F000000 		.4byte	.LASF25
+ 1185 0160 01       		.byte	0x1
+ 1186 0161 54       		.byte	0x54
+ 1187 0162 C0000000 		.4byte	0xc0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 36
+
+
+ 1188 0166 02       		.byte	0x2
+ 1189 0167 91       		.byte	0x91
+ 1190 0168 64       		.sleb128 -28
+ 1191 0169 0D       		.uleb128 0xd
+ 1192 016a A9000000 		.4byte	.LASF26
+ 1193 016e 01       		.byte	0x1
+ 1194 016f 55       		.byte	0x55
+ 1195 0170 A2010000 		.4byte	0x1a2
+ 1196 0174 03       		.byte	0x3
+ 1197 0175 91       		.byte	0x91
+ 1198 0176 DC7E     		.sleb128 -164
+ 1199 0178 0D       		.uleb128 0xd
+ 1200 0179 34010000 		.4byte	.LASF27
+ 1201 017d 01       		.byte	0x1
+ 1202 017e 56       		.byte	0x56
+ 1203 017f 6F000000 		.4byte	0x6f
+ 1204 0183 02       		.byte	0x2
+ 1205 0184 91       		.byte	0x91
+ 1206 0185 6F       		.sleb128 -17
+ 1207 0186 00       		.byte	0
+ 1208 0187 0E       		.uleb128 0xe
+ 1209 0188 04       		.byte	0x4
+ 1210 0189 8D010000 		.4byte	0x18d
+ 1211 018d 0F       		.uleb128 0xf
+ 1212 018e 6F000000 		.4byte	0x6f
+ 1213 0192 08       		.uleb128 0x8
+ 1214 0193 C0000000 		.4byte	0xc0
+ 1215 0197 A2010000 		.4byte	0x1a2
+ 1216 019b 09       		.uleb128 0x9
+ 1217 019c CC000000 		.4byte	0xcc
+ 1218 01a0 21       		.byte	0x21
+ 1219 01a1 00       		.byte	0
+ 1220 01a2 05       		.uleb128 0x5
+ 1221 01a3 92010000 		.4byte	0x192
+ 1222 01a7 10       		.uleb128 0x10
+ 1223 01a8 01       		.byte	0x1
+ 1224 01a9 F7020000 		.4byte	.LASF39
+ 1225 01ad 01       		.byte	0x1
+ 1226 01ae A601     		.2byte	0x1a6
+ 1227 01b0 01       		.byte	0x1
+ 1228 01b1 00000000 		.4byte	.LFB3
+ 1229 01b5 78000000 		.4byte	.LFE3
+ 1230 01b9 01       		.byte	0x1
+ 1231 01ba 9C       		.byte	0x9c
+ 1232 01bb 01       		.byte	0x1
+ 1233 01bc DF010000 		.4byte	0x1df
+ 1234 01c0 11       		.uleb128 0x11
+ 1235 01c1 5F010000 		.4byte	.LASF28
+ 1236 01c5 01       		.byte	0x1
+ 1237 01c6 A601     		.2byte	0x1a6
+ 1238 01c8 87000000 		.4byte	0x87
+ 1239 01cc 02       		.byte	0x2
+ 1240 01cd 91       		.byte	0x91
+ 1241 01ce 64       		.sleb128 -28
+ 1242 01cf 12       		.uleb128 0x12
+ 1243 01d0 34010000 		.4byte	.LASF27
+ 1244 01d4 01       		.byte	0x1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 37
+
+
+ 1245 01d5 A801     		.2byte	0x1a8
+ 1246 01d7 6F000000 		.4byte	0x6f
+ 1247 01db 02       		.byte	0x2
+ 1248 01dc 91       		.byte	0x91
+ 1249 01dd 6F       		.sleb128 -17
+ 1250 01de 00       		.byte	0
+ 1251 01df 13       		.uleb128 0x13
+ 1252 01e0 01       		.byte	0x1
+ 1253 01e1 4A000000 		.4byte	.LASF30
+ 1254 01e5 01       		.byte	0x1
+ 1255 01e6 EA01     		.2byte	0x1ea
+ 1256 01e8 01       		.byte	0x1
+ 1257 01e9 87000000 		.4byte	0x87
+ 1258 01ed 00000000 		.4byte	.LFB4
+ 1259 01f1 9C010000 		.4byte	.LFE4
+ 1260 01f5 01       		.byte	0x1
+ 1261 01f6 9C       		.byte	0x9c
+ 1262 01f7 01       		.byte	0x1
+ 1263 01f8 5A020000 		.4byte	0x25a
+ 1264 01fc 11       		.uleb128 0x11
+ 1265 01fd 18000000 		.4byte	.LASF22
+ 1266 0201 01       		.byte	0x1
+ 1267 0202 EA01     		.2byte	0x1ea
+ 1268 0204 87000000 		.4byte	0x87
+ 1269 0208 03       		.byte	0x3
+ 1270 0209 91       		.byte	0x91
+ 1271 020a D47E     		.sleb128 -172
+ 1272 020c 11       		.uleb128 0x11
+ 1273 020d A1000000 		.4byte	.LASF23
+ 1274 0211 01       		.byte	0x1
+ 1275 0212 EA01     		.2byte	0x1ea
+ 1276 0214 87010000 		.4byte	0x187
+ 1277 0218 03       		.byte	0x3
+ 1278 0219 91       		.byte	0x91
+ 1279 021a D07E     		.sleb128 -176
+ 1280 021c 12       		.uleb128 0x12
+ 1281 021d 0F000000 		.4byte	.LASF24
+ 1282 0221 01       		.byte	0x1
+ 1283 0222 EC01     		.2byte	0x1ec
+ 1284 0224 C0000000 		.4byte	0xc0
+ 1285 0228 02       		.byte	0x2
+ 1286 0229 91       		.byte	0x91
+ 1287 022a 68       		.sleb128 -24
+ 1288 022b 12       		.uleb128 0x12
+ 1289 022c 1F000000 		.4byte	.LASF25
+ 1290 0230 01       		.byte	0x1
+ 1291 0231 ED01     		.2byte	0x1ed
+ 1292 0233 C0000000 		.4byte	0xc0
+ 1293 0237 02       		.byte	0x2
+ 1294 0238 91       		.byte	0x91
+ 1295 0239 64       		.sleb128 -28
+ 1296 023a 12       		.uleb128 0x12
+ 1297 023b A9000000 		.4byte	.LASF26
+ 1298 023f 01       		.byte	0x1
+ 1299 0240 EE01     		.2byte	0x1ee
+ 1300 0242 5A020000 		.4byte	0x25a
+ 1301 0246 03       		.byte	0x3
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 38
+
+
+ 1302 0247 91       		.byte	0x91
+ 1303 0248 DC7E     		.sleb128 -164
+ 1304 024a 12       		.uleb128 0x12
+ 1305 024b 34010000 		.4byte	.LASF27
+ 1306 024f 01       		.byte	0x1
+ 1307 0250 EF01     		.2byte	0x1ef
+ 1308 0252 6F000000 		.4byte	0x6f
+ 1309 0256 02       		.byte	0x2
+ 1310 0257 91       		.byte	0x91
+ 1311 0258 6F       		.sleb128 -17
+ 1312 0259 00       		.byte	0
+ 1313 025a 05       		.uleb128 0x5
+ 1314 025b 92010000 		.4byte	0x192
+ 1315 025f 14       		.uleb128 0x14
+ 1316 0260 F4010000 		.4byte	.LASF31
+ 1317 0264 01       		.byte	0x1
+ 1318 0265 3A02     		.2byte	0x23a
+ 1319 0267 01       		.byte	0x1
+ 1320 0268 A8000000 		.4byte	0xa8
+ 1321 026c 00000000 		.4byte	.LFB5
+ 1322 0270 7C000000 		.4byte	.LFE5
+ 1323 0274 01       		.byte	0x1
+ 1324 0275 9C       		.byte	0x9c
+ 1325 0276 01       		.byte	0x1
+ 1326 0277 9A020000 		.4byte	0x29a
+ 1327 027b 12       		.uleb128 0x12
+ 1328 027c 0F000000 		.4byte	.LASF24
+ 1329 0280 01       		.byte	0x1
+ 1330 0281 3C02     		.2byte	0x23c
+ 1331 0283 A8000000 		.4byte	0xa8
+ 1332 0287 02       		.byte	0x2
+ 1333 0288 91       		.byte	0x91
+ 1334 0289 74       		.sleb128 -12
+ 1335 028a 12       		.uleb128 0x12
+ 1336 028b A9000000 		.4byte	.LASF26
+ 1337 028f 01       		.byte	0x1
+ 1338 0290 4002     		.2byte	0x240
+ 1339 0292 AA020000 		.4byte	0x2aa
+ 1340 0296 02       		.byte	0x2
+ 1341 0297 91       		.byte	0x91
+ 1342 0298 6C       		.sleb128 -20
+ 1343 0299 00       		.byte	0
+ 1344 029a 08       		.uleb128 0x8
+ 1345 029b C0000000 		.4byte	0xc0
+ 1346 029f AA020000 		.4byte	0x2aa
+ 1347 02a3 09       		.uleb128 0x9
+ 1348 02a4 CC000000 		.4byte	0xcc
+ 1349 02a8 01       		.byte	0x1
+ 1350 02a9 00       		.byte	0
+ 1351 02aa 05       		.uleb128 0x5
+ 1352 02ab 9A020000 		.4byte	0x29a
+ 1353 02af 14       		.uleb128 0x14
+ 1354 02b0 C7010000 		.4byte	.LASF32
+ 1355 02b4 01       		.byte	0x1
+ 1356 02b5 8E02     		.2byte	0x28e
+ 1357 02b7 01       		.byte	0x1
+ 1358 02b8 A8000000 		.4byte	0xa8
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 39
+
+
+ 1359 02bc 00000000 		.4byte	.LFB6
+ 1360 02c0 6C000000 		.4byte	.LFE6
+ 1361 02c4 01       		.byte	0x1
+ 1362 02c5 9C       		.byte	0x9c
+ 1363 02c6 01       		.byte	0x1
+ 1364 02c7 DB020000 		.4byte	0x2db
+ 1365 02cb 12       		.uleb128 0x12
+ 1366 02cc 0F000000 		.4byte	.LASF24
+ 1367 02d0 01       		.byte	0x1
+ 1368 02d1 9002     		.2byte	0x290
+ 1369 02d3 A8000000 		.4byte	0xa8
+ 1370 02d7 02       		.byte	0x2
+ 1371 02d8 91       		.byte	0x91
+ 1372 02d9 74       		.sleb128 -12
+ 1373 02da 00       		.byte	0
+ 1374 02db 14       		.uleb128 0x14
+ 1375 02dc DD010000 		.4byte	.LASF33
+ 1376 02e0 01       		.byte	0x1
+ 1377 02e1 D802     		.2byte	0x2d8
+ 1378 02e3 01       		.byte	0x1
+ 1379 02e4 A8000000 		.4byte	0xa8
+ 1380 02e8 00000000 		.4byte	.LFB7
+ 1381 02ec 7C000000 		.4byte	.LFE7
+ 1382 02f0 01       		.byte	0x1
+ 1383 02f1 9C       		.byte	0x9c
+ 1384 02f2 01       		.byte	0x1
+ 1385 02f3 16030000 		.4byte	0x316
+ 1386 02f7 12       		.uleb128 0x12
+ 1387 02f8 0F000000 		.4byte	.LASF24
+ 1388 02fc 01       		.byte	0x1
+ 1389 02fd DA02     		.2byte	0x2da
+ 1390 02ff A8000000 		.4byte	0xa8
+ 1391 0303 02       		.byte	0x2
+ 1392 0304 91       		.byte	0x91
+ 1393 0305 74       		.sleb128 -12
+ 1394 0306 12       		.uleb128 0x12
+ 1395 0307 A9000000 		.4byte	.LASF26
+ 1396 030b 01       		.byte	0x1
+ 1397 030c DE02     		.2byte	0x2de
+ 1398 030e 16030000 		.4byte	0x316
+ 1399 0312 02       		.byte	0x2
+ 1400 0313 91       		.byte	0x91
+ 1401 0314 6C       		.sleb128 -20
+ 1402 0315 00       		.byte	0
+ 1403 0316 05       		.uleb128 0x5
+ 1404 0317 9A020000 		.4byte	0x29a
+ 1405 031b 0D       		.uleb128 0xd
+ 1406 031c B4000000 		.4byte	.LASF34
+ 1407 0320 01       		.byte	0x1
+ 1408 0321 22       		.byte	0x22
+ 1409 0322 08010000 		.4byte	0x108
+ 1410 0326 05       		.byte	0x5
+ 1411 0327 03       		.byte	0x3
+ 1412 0328 00000000 		.4byte	cySysFlashBackup
+ 1413 032c 00       		.byte	0
+ 1414              		.section	.debug_abbrev,"",%progbits
+ 1415              	.Ldebug_abbrev0:
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 40
+
+
+ 1416 0000 01       		.uleb128 0x1
+ 1417 0001 11       		.uleb128 0x11
+ 1418 0002 01       		.byte	0x1
+ 1419 0003 25       		.uleb128 0x25
+ 1420 0004 0E       		.uleb128 0xe
+ 1421 0005 13       		.uleb128 0x13
+ 1422 0006 0B       		.uleb128 0xb
+ 1423 0007 03       		.uleb128 0x3
+ 1424 0008 0E       		.uleb128 0xe
+ 1425 0009 1B       		.uleb128 0x1b
+ 1426 000a 0E       		.uleb128 0xe
+ 1427 000b 55       		.uleb128 0x55
+ 1428 000c 06       		.uleb128 0x6
+ 1429 000d 11       		.uleb128 0x11
+ 1430 000e 01       		.uleb128 0x1
+ 1431 000f 52       		.uleb128 0x52
+ 1432 0010 01       		.uleb128 0x1
+ 1433 0011 10       		.uleb128 0x10
+ 1434 0012 06       		.uleb128 0x6
+ 1435 0013 00       		.byte	0
+ 1436 0014 00       		.byte	0
+ 1437 0015 02       		.uleb128 0x2
+ 1438 0016 24       		.uleb128 0x24
+ 1439 0017 00       		.byte	0
+ 1440 0018 0B       		.uleb128 0xb
+ 1441 0019 0B       		.uleb128 0xb
+ 1442 001a 3E       		.uleb128 0x3e
+ 1443 001b 0B       		.uleb128 0xb
+ 1444 001c 03       		.uleb128 0x3
+ 1445 001d 0E       		.uleb128 0xe
+ 1446 001e 00       		.byte	0
+ 1447 001f 00       		.byte	0
+ 1448 0020 03       		.uleb128 0x3
+ 1449 0021 24       		.uleb128 0x24
+ 1450 0022 00       		.byte	0
+ 1451 0023 0B       		.uleb128 0xb
+ 1452 0024 0B       		.uleb128 0xb
+ 1453 0025 3E       		.uleb128 0x3e
+ 1454 0026 0B       		.uleb128 0xb
+ 1455 0027 03       		.uleb128 0x3
+ 1456 0028 08       		.uleb128 0x8
+ 1457 0029 00       		.byte	0
+ 1458 002a 00       		.byte	0
+ 1459 002b 04       		.uleb128 0x4
+ 1460 002c 16       		.uleb128 0x16
+ 1461 002d 00       		.byte	0
+ 1462 002e 03       		.uleb128 0x3
+ 1463 002f 0E       		.uleb128 0xe
+ 1464 0030 3A       		.uleb128 0x3a
+ 1465 0031 0B       		.uleb128 0xb
+ 1466 0032 3B       		.uleb128 0x3b
+ 1467 0033 05       		.uleb128 0x5
+ 1468 0034 49       		.uleb128 0x49
+ 1469 0035 13       		.uleb128 0x13
+ 1470 0036 00       		.byte	0
+ 1471 0037 00       		.byte	0
+ 1472 0038 05       		.uleb128 0x5
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 41
+
+
+ 1473 0039 35       		.uleb128 0x35
+ 1474 003a 00       		.byte	0
+ 1475 003b 49       		.uleb128 0x49
+ 1476 003c 13       		.uleb128 0x13
+ 1477 003d 00       		.byte	0
+ 1478 003e 00       		.byte	0
+ 1479 003f 06       		.uleb128 0x6
+ 1480 0040 13       		.uleb128 0x13
+ 1481 0041 01       		.byte	0x1
+ 1482 0042 03       		.uleb128 0x3
+ 1483 0043 0E       		.uleb128 0xe
+ 1484 0044 0B       		.uleb128 0xb
+ 1485 0045 0B       		.uleb128 0xb
+ 1486 0046 3A       		.uleb128 0x3a
+ 1487 0047 0B       		.uleb128 0xb
+ 1488 0048 3B       		.uleb128 0x3b
+ 1489 0049 0B       		.uleb128 0xb
+ 1490 004a 01       		.uleb128 0x1
+ 1491 004b 13       		.uleb128 0x13
+ 1492 004c 00       		.byte	0
+ 1493 004d 00       		.byte	0
+ 1494 004e 07       		.uleb128 0x7
+ 1495 004f 0D       		.uleb128 0xd
+ 1496 0050 00       		.byte	0
+ 1497 0051 03       		.uleb128 0x3
+ 1498 0052 0E       		.uleb128 0xe
+ 1499 0053 3A       		.uleb128 0x3a
+ 1500 0054 0B       		.uleb128 0xb
+ 1501 0055 3B       		.uleb128 0x3b
+ 1502 0056 0B       		.uleb128 0xb
+ 1503 0057 49       		.uleb128 0x49
+ 1504 0058 13       		.uleb128 0x13
+ 1505 0059 38       		.uleb128 0x38
+ 1506 005a 0B       		.uleb128 0xb
+ 1507 005b 00       		.byte	0
+ 1508 005c 00       		.byte	0
+ 1509 005d 08       		.uleb128 0x8
+ 1510 005e 01       		.uleb128 0x1
+ 1511 005f 01       		.byte	0x1
+ 1512 0060 49       		.uleb128 0x49
+ 1513 0061 13       		.uleb128 0x13
+ 1514 0062 01       		.uleb128 0x1
+ 1515 0063 13       		.uleb128 0x13
+ 1516 0064 00       		.byte	0
+ 1517 0065 00       		.byte	0
+ 1518 0066 09       		.uleb128 0x9
+ 1519 0067 21       		.uleb128 0x21
+ 1520 0068 00       		.byte	0
+ 1521 0069 49       		.uleb128 0x49
+ 1522 006a 13       		.uleb128 0x13
+ 1523 006b 2F       		.uleb128 0x2f
+ 1524 006c 0B       		.uleb128 0xb
+ 1525 006d 00       		.byte	0
+ 1526 006e 00       		.byte	0
+ 1527 006f 0A       		.uleb128 0xa
+ 1528 0070 16       		.uleb128 0x16
+ 1529 0071 00       		.byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 42
+
+
+ 1530 0072 03       		.uleb128 0x3
+ 1531 0073 0E       		.uleb128 0xe
+ 1532 0074 3A       		.uleb128 0x3a
+ 1533 0075 0B       		.uleb128 0xb
+ 1534 0076 3B       		.uleb128 0x3b
+ 1535 0077 0B       		.uleb128 0xb
+ 1536 0078 49       		.uleb128 0x49
+ 1537 0079 13       		.uleb128 0x13
+ 1538 007a 00       		.byte	0
+ 1539 007b 00       		.byte	0
+ 1540 007c 0B       		.uleb128 0xb
+ 1541 007d 2E       		.uleb128 0x2e
+ 1542 007e 01       		.byte	0x1
+ 1543 007f 3F       		.uleb128 0x3f
+ 1544 0080 0C       		.uleb128 0xc
+ 1545 0081 03       		.uleb128 0x3
+ 1546 0082 0E       		.uleb128 0xe
+ 1547 0083 3A       		.uleb128 0x3a
+ 1548 0084 0B       		.uleb128 0xb
+ 1549 0085 3B       		.uleb128 0x3b
+ 1550 0086 0B       		.uleb128 0xb
+ 1551 0087 27       		.uleb128 0x27
+ 1552 0088 0C       		.uleb128 0xc
+ 1553 0089 49       		.uleb128 0x49
+ 1554 008a 13       		.uleb128 0x13
+ 1555 008b 11       		.uleb128 0x11
+ 1556 008c 01       		.uleb128 0x1
+ 1557 008d 12       		.uleb128 0x12
+ 1558 008e 01       		.uleb128 0x1
+ 1559 008f 40       		.uleb128 0x40
+ 1560 0090 0A       		.uleb128 0xa
+ 1561 0091 9642     		.uleb128 0x2116
+ 1562 0093 0C       		.uleb128 0xc
+ 1563 0094 01       		.uleb128 0x1
+ 1564 0095 13       		.uleb128 0x13
+ 1565 0096 00       		.byte	0
+ 1566 0097 00       		.byte	0
+ 1567 0098 0C       		.uleb128 0xc
+ 1568 0099 05       		.uleb128 0x5
+ 1569 009a 00       		.byte	0
+ 1570 009b 03       		.uleb128 0x3
+ 1571 009c 0E       		.uleb128 0xe
+ 1572 009d 3A       		.uleb128 0x3a
+ 1573 009e 0B       		.uleb128 0xb
+ 1574 009f 3B       		.uleb128 0x3b
+ 1575 00a0 0B       		.uleb128 0xb
+ 1576 00a1 49       		.uleb128 0x49
+ 1577 00a2 13       		.uleb128 0x13
+ 1578 00a3 02       		.uleb128 0x2
+ 1579 00a4 0A       		.uleb128 0xa
+ 1580 00a5 00       		.byte	0
+ 1581 00a6 00       		.byte	0
+ 1582 00a7 0D       		.uleb128 0xd
+ 1583 00a8 34       		.uleb128 0x34
+ 1584 00a9 00       		.byte	0
+ 1585 00aa 03       		.uleb128 0x3
+ 1586 00ab 0E       		.uleb128 0xe
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 43
+
+
+ 1587 00ac 3A       		.uleb128 0x3a
+ 1588 00ad 0B       		.uleb128 0xb
+ 1589 00ae 3B       		.uleb128 0x3b
+ 1590 00af 0B       		.uleb128 0xb
+ 1591 00b0 49       		.uleb128 0x49
+ 1592 00b1 13       		.uleb128 0x13
+ 1593 00b2 02       		.uleb128 0x2
+ 1594 00b3 0A       		.uleb128 0xa
+ 1595 00b4 00       		.byte	0
+ 1596 00b5 00       		.byte	0
+ 1597 00b6 0E       		.uleb128 0xe
+ 1598 00b7 0F       		.uleb128 0xf
+ 1599 00b8 00       		.byte	0
+ 1600 00b9 0B       		.uleb128 0xb
+ 1601 00ba 0B       		.uleb128 0xb
+ 1602 00bb 49       		.uleb128 0x49
+ 1603 00bc 13       		.uleb128 0x13
+ 1604 00bd 00       		.byte	0
+ 1605 00be 00       		.byte	0
+ 1606 00bf 0F       		.uleb128 0xf
+ 1607 00c0 26       		.uleb128 0x26
+ 1608 00c1 00       		.byte	0
+ 1609 00c2 49       		.uleb128 0x49
+ 1610 00c3 13       		.uleb128 0x13
+ 1611 00c4 00       		.byte	0
+ 1612 00c5 00       		.byte	0
+ 1613 00c6 10       		.uleb128 0x10
+ 1614 00c7 2E       		.uleb128 0x2e
+ 1615 00c8 01       		.byte	0x1
+ 1616 00c9 3F       		.uleb128 0x3f
+ 1617 00ca 0C       		.uleb128 0xc
+ 1618 00cb 03       		.uleb128 0x3
+ 1619 00cc 0E       		.uleb128 0xe
+ 1620 00cd 3A       		.uleb128 0x3a
+ 1621 00ce 0B       		.uleb128 0xb
+ 1622 00cf 3B       		.uleb128 0x3b
+ 1623 00d0 05       		.uleb128 0x5
+ 1624 00d1 27       		.uleb128 0x27
+ 1625 00d2 0C       		.uleb128 0xc
+ 1626 00d3 11       		.uleb128 0x11
+ 1627 00d4 01       		.uleb128 0x1
+ 1628 00d5 12       		.uleb128 0x12
+ 1629 00d6 01       		.uleb128 0x1
+ 1630 00d7 40       		.uleb128 0x40
+ 1631 00d8 0A       		.uleb128 0xa
+ 1632 00d9 9642     		.uleb128 0x2116
+ 1633 00db 0C       		.uleb128 0xc
+ 1634 00dc 01       		.uleb128 0x1
+ 1635 00dd 13       		.uleb128 0x13
+ 1636 00de 00       		.byte	0
+ 1637 00df 00       		.byte	0
+ 1638 00e0 11       		.uleb128 0x11
+ 1639 00e1 05       		.uleb128 0x5
+ 1640 00e2 00       		.byte	0
+ 1641 00e3 03       		.uleb128 0x3
+ 1642 00e4 0E       		.uleb128 0xe
+ 1643 00e5 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 44
+
+
+ 1644 00e6 0B       		.uleb128 0xb
+ 1645 00e7 3B       		.uleb128 0x3b
+ 1646 00e8 05       		.uleb128 0x5
+ 1647 00e9 49       		.uleb128 0x49
+ 1648 00ea 13       		.uleb128 0x13
+ 1649 00eb 02       		.uleb128 0x2
+ 1650 00ec 0A       		.uleb128 0xa
+ 1651 00ed 00       		.byte	0
+ 1652 00ee 00       		.byte	0
+ 1653 00ef 12       		.uleb128 0x12
+ 1654 00f0 34       		.uleb128 0x34
+ 1655 00f1 00       		.byte	0
+ 1656 00f2 03       		.uleb128 0x3
+ 1657 00f3 0E       		.uleb128 0xe
+ 1658 00f4 3A       		.uleb128 0x3a
+ 1659 00f5 0B       		.uleb128 0xb
+ 1660 00f6 3B       		.uleb128 0x3b
+ 1661 00f7 05       		.uleb128 0x5
+ 1662 00f8 49       		.uleb128 0x49
+ 1663 00f9 13       		.uleb128 0x13
+ 1664 00fa 02       		.uleb128 0x2
+ 1665 00fb 0A       		.uleb128 0xa
+ 1666 00fc 00       		.byte	0
+ 1667 00fd 00       		.byte	0
+ 1668 00fe 13       		.uleb128 0x13
+ 1669 00ff 2E       		.uleb128 0x2e
+ 1670 0100 01       		.byte	0x1
+ 1671 0101 3F       		.uleb128 0x3f
+ 1672 0102 0C       		.uleb128 0xc
+ 1673 0103 03       		.uleb128 0x3
+ 1674 0104 0E       		.uleb128 0xe
+ 1675 0105 3A       		.uleb128 0x3a
+ 1676 0106 0B       		.uleb128 0xb
+ 1677 0107 3B       		.uleb128 0x3b
+ 1678 0108 05       		.uleb128 0x5
+ 1679 0109 27       		.uleb128 0x27
+ 1680 010a 0C       		.uleb128 0xc
+ 1681 010b 49       		.uleb128 0x49
+ 1682 010c 13       		.uleb128 0x13
+ 1683 010d 11       		.uleb128 0x11
+ 1684 010e 01       		.uleb128 0x1
+ 1685 010f 12       		.uleb128 0x12
+ 1686 0110 01       		.uleb128 0x1
+ 1687 0111 40       		.uleb128 0x40
+ 1688 0112 0A       		.uleb128 0xa
+ 1689 0113 9642     		.uleb128 0x2116
+ 1690 0115 0C       		.uleb128 0xc
+ 1691 0116 01       		.uleb128 0x1
+ 1692 0117 13       		.uleb128 0x13
+ 1693 0118 00       		.byte	0
+ 1694 0119 00       		.byte	0
+ 1695 011a 14       		.uleb128 0x14
+ 1696 011b 2E       		.uleb128 0x2e
+ 1697 011c 01       		.byte	0x1
+ 1698 011d 03       		.uleb128 0x3
+ 1699 011e 0E       		.uleb128 0xe
+ 1700 011f 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 45
+
+
+ 1701 0120 0B       		.uleb128 0xb
+ 1702 0121 3B       		.uleb128 0x3b
+ 1703 0122 05       		.uleb128 0x5
+ 1704 0123 27       		.uleb128 0x27
+ 1705 0124 0C       		.uleb128 0xc
+ 1706 0125 49       		.uleb128 0x49
+ 1707 0126 13       		.uleb128 0x13
+ 1708 0127 11       		.uleb128 0x11
+ 1709 0128 01       		.uleb128 0x1
+ 1710 0129 12       		.uleb128 0x12
+ 1711 012a 01       		.uleb128 0x1
+ 1712 012b 40       		.uleb128 0x40
+ 1713 012c 0A       		.uleb128 0xa
+ 1714 012d 9742     		.uleb128 0x2117
+ 1715 012f 0C       		.uleb128 0xc
+ 1716 0130 01       		.uleb128 0x1
+ 1717 0131 13       		.uleb128 0x13
+ 1718 0132 00       		.byte	0
+ 1719 0133 00       		.byte	0
+ 1720 0134 00       		.byte	0
+ 1721              		.section	.debug_aranges,"",%progbits
+ 1722 0000 44000000 		.4byte	0x44
+ 1723 0004 0200     		.2byte	0x2
+ 1724 0006 00000000 		.4byte	.Ldebug_info0
+ 1725 000a 04       		.byte	0x4
+ 1726 000b 00       		.byte	0
+ 1727 000c 0000     		.2byte	0
+ 1728 000e 0000     		.2byte	0
+ 1729 0010 00000000 		.4byte	.LFB2
+ 1730 0014 C4010000 		.4byte	.LFE2-.LFB2
+ 1731 0018 00000000 		.4byte	.LFB3
+ 1732 001c 78000000 		.4byte	.LFE3-.LFB3
+ 1733 0020 00000000 		.4byte	.LFB4
+ 1734 0024 9C010000 		.4byte	.LFE4-.LFB4
+ 1735 0028 00000000 		.4byte	.LFB5
+ 1736 002c 7C000000 		.4byte	.LFE5-.LFB5
+ 1737 0030 00000000 		.4byte	.LFB6
+ 1738 0034 6C000000 		.4byte	.LFE6-.LFB6
+ 1739 0038 00000000 		.4byte	.LFB7
+ 1740 003c 7C000000 		.4byte	.LFE7-.LFB7
+ 1741 0040 00000000 		.4byte	0
+ 1742 0044 00000000 		.4byte	0
+ 1743              		.section	.debug_ranges,"",%progbits
+ 1744              	.Ldebug_ranges0:
+ 1745 0000 00000000 		.4byte	.LFB2
+ 1746 0004 C4010000 		.4byte	.LFE2
+ 1747 0008 00000000 		.4byte	.LFB3
+ 1748 000c 78000000 		.4byte	.LFE3
+ 1749 0010 00000000 		.4byte	.LFB4
+ 1750 0014 9C010000 		.4byte	.LFE4
+ 1751 0018 00000000 		.4byte	.LFB5
+ 1752 001c 7C000000 		.4byte	.LFE5
+ 1753 0020 00000000 		.4byte	.LFB6
+ 1754 0024 6C000000 		.4byte	.LFE6
+ 1755 0028 00000000 		.4byte	.LFB7
+ 1756 002c 7C000000 		.4byte	.LFE7
+ 1757 0030 00000000 		.4byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 46
+
+
+ 1758 0034 00000000 		.4byte	0
+ 1759              		.section	.debug_line,"",%progbits
+ 1760              	.Ldebug_line0:
+ 1761 0000 37020000 		.section	.debug_str,"MS",%progbits,1
+ 1761      02005100 
+ 1761      00000201 
+ 1761      FB0E0D00 
+ 1761      01010101 
+ 1762              	.LASF15:
+ 1763 0000 63797374 		.ascii	"cystatus\000"
+ 1763      61747573 
+ 1763      00
+ 1764              	.LASF16:
+ 1765 0009 72656733 		.ascii	"reg32\000"
+ 1765      3200
+ 1766              	.LASF24:
+ 1767 000f 72657456 		.ascii	"retValue\000"
+ 1767      616C7565 
+ 1767      00
+ 1768              	.LASF22:
+ 1769 0018 726F774E 		.ascii	"rowNum\000"
+ 1769      756D00
+ 1770              	.LASF25:
+ 1771 001f 636C6B43 		.ascii	"clkCnfRetValue\000"
+ 1771      6E665265 
+ 1771      7456616C 
+ 1771      756500
+ 1772              	.LASF38:
+ 1773 002e 63795379 		.ascii	"cySysFlashClockBackupStruct\000"
+ 1773      73466C61 
+ 1773      7368436C 
+ 1773      6F636B42 
+ 1773      61636B75 
+ 1774              	.LASF30:
+ 1775 004a 43795379 		.ascii	"CySysSFlashWriteUserRow\000"
+ 1775      7353466C 
+ 1775      61736857 
+ 1775      72697465 
+ 1775      55736572 
+ 1776              	.LASF3:
+ 1777 0062 73686F72 		.ascii	"short unsigned int\000"
+ 1777      7420756E 
+ 1777      7369676E 
+ 1777      65642069 
+ 1777      6E7400
+ 1778              	.LASF8:
+ 1779 0075 756E7369 		.ascii	"unsigned int\000"
+ 1779      676E6564 
+ 1779      20696E74 
+ 1779      00
+ 1780              	.LASF12:
+ 1781 0082 666C6F61 		.ascii	"float\000"
+ 1781      7400
+ 1782              	.LASF19:
+ 1783 0088 636C6B49 		.ascii	"clkImoPump\000"
+ 1783      6D6F5075 
+ 1783      6D7000
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 47
+
+
+ 1784              	.LASF1:
+ 1785 0093 756E7369 		.ascii	"unsigned char\000"
+ 1785      676E6564 
+ 1785      20636861 
+ 1785      7200
+ 1786              	.LASF23:
+ 1787 00a1 726F7744 		.ascii	"rowData\000"
+ 1787      61746100 
+ 1788              	.LASF26:
+ 1789 00a9 70617261 		.ascii	"parameters\000"
+ 1789      6D657465 
+ 1789      727300
+ 1790              	.LASF34:
+ 1791 00b4 63795379 		.ascii	"cySysFlashBackup\000"
+ 1791      73466C61 
+ 1791      73684261 
+ 1791      636B7570 
+ 1791      00
+ 1792              	.LASF9:
+ 1793 00c5 75696E74 		.ascii	"uint8\000"
+ 1793      3800
+ 1794              	.LASF13:
+ 1795 00cb 646F7562 		.ascii	"double\000"
+ 1795      6C6500
+ 1796              	.LASF2:
+ 1797 00d2 73686F72 		.ascii	"short int\000"
+ 1797      7420696E 
+ 1797      7400
+ 1798              	.LASF10:
+ 1799 00dc 75696E74 		.ascii	"uint16\000"
+ 1799      313600
+ 1800              	.LASF11:
+ 1801 00e3 75696E74 		.ascii	"uint32\000"
+ 1801      333200
+ 1802              	.LASF5:
+ 1803 00ea 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1803      20756E73 
+ 1803      69676E65 
+ 1803      6420696E 
+ 1803      7400
+ 1804              	.LASF36:
+ 1805 00fc 47656E65 		.ascii	"Generated_Source\\PSoC4\\CyFlash.c\000"
+ 1805      72617465 
+ 1805      645F536F 
+ 1805      75726365 
+ 1805      5C50536F 
+ 1806              	.LASF7:
+ 1807 011d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1807      206C6F6E 
+ 1807      6720756E 
+ 1807      7369676E 
+ 1807      65642069 
+ 1808              	.LASF27:
+ 1809 0134 696E7465 		.ascii	"interruptState\000"
+ 1809      72727570 
+ 1809      74537461 
+ 1809      746500
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 48
+
+
+ 1810              	.LASF18:
+ 1811 0143 73697A65 		.ascii	"sizetype\000"
+ 1811      74797065 
+ 1811      00
+ 1812              	.LASF6:
+ 1813 014c 6C6F6E67 		.ascii	"long long int\000"
+ 1813      206C6F6E 
+ 1813      6720696E 
+ 1813      7400
+ 1814              	.LASF14:
+ 1815 015a 63686172 		.ascii	"char\000"
+ 1815      00
+ 1816              	.LASF28:
+ 1817 015f 66726571 		.ascii	"freq\000"
+ 1817      00
+ 1818              	.LASF37:
+ 1819 0164 433A5C55 		.ascii	"C:\\Users\\hasur\\Documents\\PSoC_4_BLE_Pressure_Se"
+ 1819      73657273 
+ 1819      5C686173 
+ 1819      75725C44 
+ 1819      6F63756D 
+ 1820 0193 6E736F72 		.ascii	"nsor\\PSoC_4_BLE_Pressure_Sensor.cydsn\000"
+ 1820      5C50536F 
+ 1820      435F345F 
+ 1820      424C455F 
+ 1820      50726573 
+ 1821              	.LASF20:
+ 1822 01b9 636C6F63 		.ascii	"clockSettings\000"
+ 1822      6B536574 
+ 1822      74696E67 
+ 1822      7300
+ 1823              	.LASF32:
+ 1824 01c7 43795379 		.ascii	"CySysFlashClockConfig\000"
+ 1824      73466C61 
+ 1824      7368436C 
+ 1824      6F636B43 
+ 1824      6F6E6669 
+ 1825              	.LASF33:
+ 1826 01dd 43795379 		.ascii	"CySysFlashClockRestore\000"
+ 1826      73466C61 
+ 1826      7368436C 
+ 1826      6F636B52 
+ 1826      6573746F 
+ 1827              	.LASF31:
+ 1828 01f4 43795379 		.ascii	"CySysFlashClockBackup\000"
+ 1828      73466C61 
+ 1828      7368436C 
+ 1828      6F636B42 
+ 1828      61636B75 
+ 1829              	.LASF21:
+ 1830 020a 43595F53 		.ascii	"CY_SYS_FLASH_CLOCK_BACKUP_STRUCT\000"
+ 1830      59535F46 
+ 1830      4C415348 
+ 1830      5F434C4F 
+ 1830      434B5F42 
+ 1831              	.LASF4:
+ 1832 022b 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccUrcb8r.s 			page 49
+
+
+ 1832      20696E74 
+ 1832      00
+ 1833              	.LASF17:
+ 1834 0234 6C6F6E67 		.ascii	"long double\000"
+ 1834      20646F75 
+ 1834      626C6500 
+ 1835              	.LASF0:
+ 1836 0240 7369676E 		.ascii	"signed char\000"
+ 1836      65642063 
+ 1836      68617200 
+ 1837              	.LASF35:
+ 1838 024c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1838      43313120 
+ 1838      352E342E 
+ 1838      31203230 
+ 1838      31363036 
+ 1839 027f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -g"
+ 1839      20726576 
+ 1839      6973696F 
+ 1839      6E203233 
+ 1839      37373135 
+ 1840 02b2 64776172 		.ascii	"dwarf-3 -O0 -ffunction-sections -ffat-lto-objects\000"
+ 1840      662D3320 
+ 1840      2D4F3020 
+ 1840      2D666675 
+ 1840      6E637469 
+ 1841              	.LASF29:
+ 1842 02e4 43795379 		.ascii	"CySysFlashWriteRow\000"
+ 1842      73466C61 
+ 1842      73685772 
+ 1842      69746552 
+ 1842      6F7700
+ 1843              	.LASF39:
+ 1844 02f7 43795379 		.ascii	"CySysFlashSetWaitCycles\000"
+ 1844      73466C61 
+ 1844      73685365 
+ 1844      74576169 
+ 1844      74437963 
+ 1845              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

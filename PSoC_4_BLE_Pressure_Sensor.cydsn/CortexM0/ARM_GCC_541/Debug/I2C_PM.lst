@@ -1,0 +1,821 @@
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"I2C_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	I2C_backup
+  20              		.bss
+  21              		.align	2
+  22              		.type	I2C_backup, %object
+  23              		.size	I2C_backup, 1
+  24              	I2C_backup:
+  25 0000 00       		.space	1
+  26              		.section	.text.I2C_Sleep,"ax",%progbits
+  27              		.align	2
+  28              		.global	I2C_Sleep
+  29              		.code	16
+  30              		.thumb_func
+  31              		.type	I2C_Sleep, %function
+  32              	I2C_Sleep:
+  33              	.LFB2:
+  34              		.file 1 "Generated_Source\\PSoC4\\I2C_PM.c"
+   1:Generated_Source\PSoC4/I2C_PM.c **** /***************************************************************************//**
+   2:Generated_Source\PSoC4/I2C_PM.c **** * \file I2C_PM.c
+   3:Generated_Source\PSoC4/I2C_PM.c **** * \version 4.0
+   4:Generated_Source\PSoC4/I2C_PM.c **** *
+   5:Generated_Source\PSoC4/I2C_PM.c **** * \brief
+   6:Generated_Source\PSoC4/I2C_PM.c **** *  This file provides the source code to the Power Management support for
+   7:Generated_Source\PSoC4/I2C_PM.c **** *  the SCB Component.
+   8:Generated_Source\PSoC4/I2C_PM.c **** *
+   9:Generated_Source\PSoC4/I2C_PM.c **** * Note:
+  10:Generated_Source\PSoC4/I2C_PM.c **** *
+  11:Generated_Source\PSoC4/I2C_PM.c **** ********************************************************************************
+  12:Generated_Source\PSoC4/I2C_PM.c **** * \copyright
+  13:Generated_Source\PSoC4/I2C_PM.c **** * Copyright 2013-2017, Cypress Semiconductor Corporation.  All rights reserved.
+  14:Generated_Source\PSoC4/I2C_PM.c **** * You may use this file only in accordance with the license, terms, conditions,
+  15:Generated_Source\PSoC4/I2C_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  16:Generated_Source\PSoC4/I2C_PM.c **** * the software package with which this file was provided.
+  17:Generated_Source\PSoC4/I2C_PM.c **** *******************************************************************************/
+  18:Generated_Source\PSoC4/I2C_PM.c **** 
+  19:Generated_Source\PSoC4/I2C_PM.c **** #include "I2C.h"
+  20:Generated_Source\PSoC4/I2C_PM.c **** #include "I2C_PVT.h"
+  21:Generated_Source\PSoC4/I2C_PM.c **** 
+  22:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_I2C_INC)
+  23:Generated_Source\PSoC4/I2C_PM.c ****     #include "I2C_I2C_PVT.h"
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 2
+
+
+  24:Generated_Source\PSoC4/I2C_PM.c **** #endif /* (I2C_SCB_MODE_I2C_INC) */
+  25:Generated_Source\PSoC4/I2C_PM.c **** 
+  26:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_EZI2C_INC)
+  27:Generated_Source\PSoC4/I2C_PM.c ****     #include "I2C_EZI2C_PVT.h"
+  28:Generated_Source\PSoC4/I2C_PM.c **** #endif /* (I2C_SCB_MODE_EZI2C_INC) */
+  29:Generated_Source\PSoC4/I2C_PM.c **** 
+  30:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_SPI_INC || I2C_SCB_MODE_UART_INC)
+  31:Generated_Source\PSoC4/I2C_PM.c ****     #include "I2C_SPI_UART_PVT.h"
+  32:Generated_Source\PSoC4/I2C_PM.c **** #endif /* (I2C_SCB_MODE_SPI_INC || I2C_SCB_MODE_UART_INC) */
+  33:Generated_Source\PSoC4/I2C_PM.c **** 
+  34:Generated_Source\PSoC4/I2C_PM.c **** 
+  35:Generated_Source\PSoC4/I2C_PM.c **** /***************************************
+  36:Generated_Source\PSoC4/I2C_PM.c **** *   Backup Structure declaration
+  37:Generated_Source\PSoC4/I2C_PM.c **** ***************************************/
+  38:Generated_Source\PSoC4/I2C_PM.c **** 
+  39:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_UNCONFIG_CONST_CFG || \
+  40:Generated_Source\PSoC4/I2C_PM.c ****    (I2C_SCB_MODE_I2C_CONST_CFG   && (!I2C_I2C_WAKE_ENABLE_CONST))   || \
+  41:Generated_Source\PSoC4/I2C_PM.c ****    (I2C_SCB_MODE_EZI2C_CONST_CFG && (!I2C_EZI2C_WAKE_ENABLE_CONST)) || \
+  42:Generated_Source\PSoC4/I2C_PM.c ****    (I2C_SCB_MODE_SPI_CONST_CFG   && (!I2C_SPI_WAKE_ENABLE_CONST))   || \
+  43:Generated_Source\PSoC4/I2C_PM.c ****    (I2C_SCB_MODE_UART_CONST_CFG  && (!I2C_UART_WAKE_ENABLE_CONST)))
+  44:Generated_Source\PSoC4/I2C_PM.c **** 
+  45:Generated_Source\PSoC4/I2C_PM.c ****     I2C_BACKUP_STRUCT I2C_backup =
+  46:Generated_Source\PSoC4/I2C_PM.c ****     {
+  47:Generated_Source\PSoC4/I2C_PM.c ****         0u, /* enableState */
+  48:Generated_Source\PSoC4/I2C_PM.c ****     };
+  49:Generated_Source\PSoC4/I2C_PM.c **** #endif
+  50:Generated_Source\PSoC4/I2C_PM.c **** 
+  51:Generated_Source\PSoC4/I2C_PM.c **** 
+  52:Generated_Source\PSoC4/I2C_PM.c **** /*******************************************************************************
+  53:Generated_Source\PSoC4/I2C_PM.c **** * Function Name: I2C_Sleep
+  54:Generated_Source\PSoC4/I2C_PM.c **** ****************************************************************************//**
+  55:Generated_Source\PSoC4/I2C_PM.c **** *
+  56:Generated_Source\PSoC4/I2C_PM.c **** *  Prepares the I2C component to enter Deep Sleep.
+  57:Generated_Source\PSoC4/I2C_PM.c **** *  The “Enable wakeup from Deep Sleep Mode” selection has an influence on this 
+  58:Generated_Source\PSoC4/I2C_PM.c **** *  function implementation:
+  59:Generated_Source\PSoC4/I2C_PM.c **** *  - Checked: configures the component to be wakeup source from Deep Sleep.
+  60:Generated_Source\PSoC4/I2C_PM.c **** *  - Unchecked: stores the current component state (enabled or disabled) and 
+  61:Generated_Source\PSoC4/I2C_PM.c **** *    disables the component. See SCB_Stop() function for details about component 
+  62:Generated_Source\PSoC4/I2C_PM.c **** *    disabling.
+  63:Generated_Source\PSoC4/I2C_PM.c **** *
+  64:Generated_Source\PSoC4/I2C_PM.c **** *  Call the I2C_Sleep() function before calling the 
+  65:Generated_Source\PSoC4/I2C_PM.c **** *  CyPmSysDeepSleep() function. 
+  66:Generated_Source\PSoC4/I2C_PM.c **** *  Refer to the PSoC Creator System Reference Guide for more information about 
+  67:Generated_Source\PSoC4/I2C_PM.c **** *  power management functions and Low power section of this document for the 
+  68:Generated_Source\PSoC4/I2C_PM.c **** *  selected mode.
+  69:Generated_Source\PSoC4/I2C_PM.c **** *
+  70:Generated_Source\PSoC4/I2C_PM.c **** *  This function should not be called before entering Sleep.
+  71:Generated_Source\PSoC4/I2C_PM.c **** *
+  72:Generated_Source\PSoC4/I2C_PM.c **** *******************************************************************************/
+  73:Generated_Source\PSoC4/I2C_PM.c **** void I2C_Sleep(void)
+  74:Generated_Source\PSoC4/I2C_PM.c **** {
+  35              		.loc 1 74 0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 1, uses_anonymous_args = 0
+  39 0000 80B5     		push	{r7, lr}
+  40              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 3
+
+
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              		.cfi_def_cfa_register 7
+  75:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_UNCONFIG_CONST_CFG)
+  76:Generated_Source\PSoC4/I2C_PM.c **** 
+  77:Generated_Source\PSoC4/I2C_PM.c ****     if(I2C_SCB_WAKE_ENABLE_CHECK)
+  78:Generated_Source\PSoC4/I2C_PM.c ****     {
+  79:Generated_Source\PSoC4/I2C_PM.c ****         if(I2C_SCB_MODE_I2C_RUNTM_CFG)
+  80:Generated_Source\PSoC4/I2C_PM.c ****         {
+  81:Generated_Source\PSoC4/I2C_PM.c ****             I2C_I2CSaveConfig();
+  82:Generated_Source\PSoC4/I2C_PM.c ****         }
+  83:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_EZI2C_RUNTM_CFG)
+  84:Generated_Source\PSoC4/I2C_PM.c ****         {
+  85:Generated_Source\PSoC4/I2C_PM.c ****             I2C_EzI2CSaveConfig();
+  86:Generated_Source\PSoC4/I2C_PM.c ****         }
+  87:Generated_Source\PSoC4/I2C_PM.c ****     #if(!I2C_CY_SCBIP_V1)
+  88:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_SPI_RUNTM_CFG)
+  89:Generated_Source\PSoC4/I2C_PM.c ****         {
+  90:Generated_Source\PSoC4/I2C_PM.c ****             I2C_SpiSaveConfig();
+  91:Generated_Source\PSoC4/I2C_PM.c ****         }
+  92:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_UART_RUNTM_CFG)
+  93:Generated_Source\PSoC4/I2C_PM.c ****         {
+  94:Generated_Source\PSoC4/I2C_PM.c ****             I2C_UartSaveConfig();
+  95:Generated_Source\PSoC4/I2C_PM.c ****         }
+  96:Generated_Source\PSoC4/I2C_PM.c ****     #endif /* (!I2C_CY_SCBIP_V1) */
+  97:Generated_Source\PSoC4/I2C_PM.c ****         else
+  98:Generated_Source\PSoC4/I2C_PM.c ****         {
+  99:Generated_Source\PSoC4/I2C_PM.c ****             /* Unknown mode */
+ 100:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 101:Generated_Source\PSoC4/I2C_PM.c ****     }
+ 102:Generated_Source\PSoC4/I2C_PM.c ****     else
+ 103:Generated_Source\PSoC4/I2C_PM.c ****     {
+ 104:Generated_Source\PSoC4/I2C_PM.c ****         I2C_backup.enableState = (uint8) I2C_GET_CTRL_ENABLED;
+ 105:Generated_Source\PSoC4/I2C_PM.c **** 
+ 106:Generated_Source\PSoC4/I2C_PM.c ****         if(0u != I2C_backup.enableState)
+ 107:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 108:Generated_Source\PSoC4/I2C_PM.c ****             I2C_Stop();
+ 109:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 110:Generated_Source\PSoC4/I2C_PM.c ****     }
+ 111:Generated_Source\PSoC4/I2C_PM.c **** 
+ 112:Generated_Source\PSoC4/I2C_PM.c **** #else
+ 113:Generated_Source\PSoC4/I2C_PM.c **** 
+ 114:Generated_Source\PSoC4/I2C_PM.c ****     #if (I2C_SCB_MODE_I2C_CONST_CFG && I2C_I2C_WAKE_ENABLE_CONST)
+ 115:Generated_Source\PSoC4/I2C_PM.c ****         I2C_I2CSaveConfig();
+ 116:Generated_Source\PSoC4/I2C_PM.c **** 
+ 117:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_EZI2C_CONST_CFG && I2C_EZI2C_WAKE_ENABLE_CONST)
+ 118:Generated_Source\PSoC4/I2C_PM.c ****         I2C_EzI2CSaveConfig();
+ 119:Generated_Source\PSoC4/I2C_PM.c **** 
+ 120:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_SPI_CONST_CFG && I2C_SPI_WAKE_ENABLE_CONST)
+ 121:Generated_Source\PSoC4/I2C_PM.c ****         I2C_SpiSaveConfig();
+ 122:Generated_Source\PSoC4/I2C_PM.c **** 
+ 123:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_UART_CONST_CFG && I2C_UART_WAKE_ENABLE_CONST)
+ 124:Generated_Source\PSoC4/I2C_PM.c ****         I2C_UartSaveConfig();
+ 125:Generated_Source\PSoC4/I2C_PM.c **** 
+ 126:Generated_Source\PSoC4/I2C_PM.c ****     #else
+ 127:Generated_Source\PSoC4/I2C_PM.c **** 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 4
+
+
+ 128:Generated_Source\PSoC4/I2C_PM.c ****         I2C_backup.enableState = (uint8) I2C_GET_CTRL_ENABLED;
+  45              		.loc 1 128 0
+  46 0004 074B     		ldr	r3, .L4
+  47 0006 1B68     		ldr	r3, [r3]
+  48 0008 DB0F     		lsrs	r3, r3, #31
+  49 000a DBB2     		uxtb	r3, r3
+  50 000c 1A00     		movs	r2, r3
+  51 000e 064B     		ldr	r3, .L4+4
+  52 0010 1A70     		strb	r2, [r3]
+ 129:Generated_Source\PSoC4/I2C_PM.c **** 
+ 130:Generated_Source\PSoC4/I2C_PM.c ****         if(0u != I2C_backup.enableState)
+  53              		.loc 1 130 0
+  54 0012 054B     		ldr	r3, .L4+4
+  55 0014 1B78     		ldrb	r3, [r3]
+  56 0016 002B     		cmp	r3, #0
+  57 0018 01D0     		beq	.L3
+ 131:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 132:Generated_Source\PSoC4/I2C_PM.c ****             I2C_Stop();
+  58              		.loc 1 132 0
+  59 001a FFF7FEFF 		bl	I2C_Stop
+  60              	.L3:
+ 133:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 134:Generated_Source\PSoC4/I2C_PM.c **** 
+ 135:Generated_Source\PSoC4/I2C_PM.c ****     #endif /* defined (I2C_SCB_MODE_I2C_CONST_CFG) && (I2C_I2C_WAKE_ENABLE_CONST) */
+ 136:Generated_Source\PSoC4/I2C_PM.c **** 
+ 137:Generated_Source\PSoC4/I2C_PM.c **** #endif /* (I2C_SCB_MODE_UNCONFIG_CONST_CFG) */
+ 138:Generated_Source\PSoC4/I2C_PM.c **** }
+  61              		.loc 1 138 0
+  62 001e C046     		nop
+  63 0020 BD46     		mov	sp, r7
+  64              		@ sp needed
+  65 0022 80BD     		pop	{r7, pc}
+  66              	.L5:
+  67              		.align	2
+  68              	.L4:
+  69 0024 00002440 		.word	1076101120
+  70 0028 00000000 		.word	I2C_backup
+  71              		.cfi_endproc
+  72              	.LFE2:
+  73              		.size	I2C_Sleep, .-I2C_Sleep
+  74              		.section	.text.I2C_Wakeup,"ax",%progbits
+  75              		.align	2
+  76              		.global	I2C_Wakeup
+  77              		.code	16
+  78              		.thumb_func
+  79              		.type	I2C_Wakeup, %function
+  80              	I2C_Wakeup:
+  81              	.LFB3:
+ 139:Generated_Source\PSoC4/I2C_PM.c **** 
+ 140:Generated_Source\PSoC4/I2C_PM.c **** 
+ 141:Generated_Source\PSoC4/I2C_PM.c **** /*******************************************************************************
+ 142:Generated_Source\PSoC4/I2C_PM.c **** * Function Name: I2C_Wakeup
+ 143:Generated_Source\PSoC4/I2C_PM.c **** ****************************************************************************//**
+ 144:Generated_Source\PSoC4/I2C_PM.c **** *
+ 145:Generated_Source\PSoC4/I2C_PM.c **** *  Prepares the I2C component for Active mode operation after 
+ 146:Generated_Source\PSoC4/I2C_PM.c **** *  Deep Sleep.
+ 147:Generated_Source\PSoC4/I2C_PM.c **** *  The “Enable wakeup from Deep Sleep Mode” selection has influence on this 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 5
+
+
+ 148:Generated_Source\PSoC4/I2C_PM.c **** *  function implementation:
+ 149:Generated_Source\PSoC4/I2C_PM.c **** *  - Checked: restores the component Active mode configuration.
+ 150:Generated_Source\PSoC4/I2C_PM.c **** *  - Unchecked: enables the component if it was enabled before enter Deep Sleep.
+ 151:Generated_Source\PSoC4/I2C_PM.c **** *
+ 152:Generated_Source\PSoC4/I2C_PM.c **** *  This function should not be called after exiting Sleep.
+ 153:Generated_Source\PSoC4/I2C_PM.c **** *
+ 154:Generated_Source\PSoC4/I2C_PM.c **** *  \sideeffect
+ 155:Generated_Source\PSoC4/I2C_PM.c **** *   Calling the I2C_Wakeup() function without first calling the 
+ 156:Generated_Source\PSoC4/I2C_PM.c **** *   I2C_Sleep() function may produce unexpected behavior.
+ 157:Generated_Source\PSoC4/I2C_PM.c **** *
+ 158:Generated_Source\PSoC4/I2C_PM.c **** *******************************************************************************/
+ 159:Generated_Source\PSoC4/I2C_PM.c **** void I2C_Wakeup(void)
+ 160:Generated_Source\PSoC4/I2C_PM.c **** {
+  82              		.loc 1 160 0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 1, uses_anonymous_args = 0
+  86 0000 80B5     		push	{r7, lr}
+  87              		.cfi_def_cfa_offset 8
+  88              		.cfi_offset 7, -8
+  89              		.cfi_offset 14, -4
+  90 0002 00AF     		add	r7, sp, #0
+  91              		.cfi_def_cfa_register 7
+ 161:Generated_Source\PSoC4/I2C_PM.c **** #if(I2C_SCB_MODE_UNCONFIG_CONST_CFG)
+ 162:Generated_Source\PSoC4/I2C_PM.c **** 
+ 163:Generated_Source\PSoC4/I2C_PM.c ****     if(I2C_SCB_WAKE_ENABLE_CHECK)
+ 164:Generated_Source\PSoC4/I2C_PM.c ****     {
+ 165:Generated_Source\PSoC4/I2C_PM.c ****         if(I2C_SCB_MODE_I2C_RUNTM_CFG)
+ 166:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 167:Generated_Source\PSoC4/I2C_PM.c ****             I2C_I2CRestoreConfig();
+ 168:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 169:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_EZI2C_RUNTM_CFG)
+ 170:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 171:Generated_Source\PSoC4/I2C_PM.c ****             I2C_EzI2CRestoreConfig();
+ 172:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 173:Generated_Source\PSoC4/I2C_PM.c ****     #if(!I2C_CY_SCBIP_V1)
+ 174:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_SPI_RUNTM_CFG)
+ 175:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 176:Generated_Source\PSoC4/I2C_PM.c ****             I2C_SpiRestoreConfig();
+ 177:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 178:Generated_Source\PSoC4/I2C_PM.c ****         else if(I2C_SCB_MODE_UART_RUNTM_CFG)
+ 179:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 180:Generated_Source\PSoC4/I2C_PM.c ****             I2C_UartRestoreConfig();
+ 181:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 182:Generated_Source\PSoC4/I2C_PM.c ****     #endif /* (!I2C_CY_SCBIP_V1) */
+ 183:Generated_Source\PSoC4/I2C_PM.c ****         else
+ 184:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 185:Generated_Source\PSoC4/I2C_PM.c ****             /* Unknown mode */
+ 186:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 187:Generated_Source\PSoC4/I2C_PM.c ****     }
+ 188:Generated_Source\PSoC4/I2C_PM.c ****     else
+ 189:Generated_Source\PSoC4/I2C_PM.c ****     {
+ 190:Generated_Source\PSoC4/I2C_PM.c ****         if(0u != I2C_backup.enableState)
+ 191:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 192:Generated_Source\PSoC4/I2C_PM.c ****             I2C_Enable();
+ 193:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 194:Generated_Source\PSoC4/I2C_PM.c ****     }
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 6
+
+
+ 195:Generated_Source\PSoC4/I2C_PM.c **** 
+ 196:Generated_Source\PSoC4/I2C_PM.c **** #else
+ 197:Generated_Source\PSoC4/I2C_PM.c **** 
+ 198:Generated_Source\PSoC4/I2C_PM.c ****     #if (I2C_SCB_MODE_I2C_CONST_CFG  && I2C_I2C_WAKE_ENABLE_CONST)
+ 199:Generated_Source\PSoC4/I2C_PM.c ****         I2C_I2CRestoreConfig();
+ 200:Generated_Source\PSoC4/I2C_PM.c **** 
+ 201:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_EZI2C_CONST_CFG && I2C_EZI2C_WAKE_ENABLE_CONST)
+ 202:Generated_Source\PSoC4/I2C_PM.c ****         I2C_EzI2CRestoreConfig();
+ 203:Generated_Source\PSoC4/I2C_PM.c **** 
+ 204:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_SPI_CONST_CFG && I2C_SPI_WAKE_ENABLE_CONST)
+ 205:Generated_Source\PSoC4/I2C_PM.c ****         I2C_SpiRestoreConfig();
+ 206:Generated_Source\PSoC4/I2C_PM.c **** 
+ 207:Generated_Source\PSoC4/I2C_PM.c ****     #elif (I2C_SCB_MODE_UART_CONST_CFG && I2C_UART_WAKE_ENABLE_CONST)
+ 208:Generated_Source\PSoC4/I2C_PM.c ****         I2C_UartRestoreConfig();
+ 209:Generated_Source\PSoC4/I2C_PM.c **** 
+ 210:Generated_Source\PSoC4/I2C_PM.c ****     #else
+ 211:Generated_Source\PSoC4/I2C_PM.c **** 
+ 212:Generated_Source\PSoC4/I2C_PM.c ****         if(0u != I2C_backup.enableState)
+  92              		.loc 1 212 0
+  93 0004 044B     		ldr	r3, .L9
+  94 0006 1B78     		ldrb	r3, [r3]
+  95 0008 002B     		cmp	r3, #0
+  96 000a 01D0     		beq	.L8
+ 213:Generated_Source\PSoC4/I2C_PM.c ****         {
+ 214:Generated_Source\PSoC4/I2C_PM.c ****             I2C_Enable();
+  97              		.loc 1 214 0
+  98 000c FFF7FEFF 		bl	I2C_Enable
+  99              	.L8:
+ 215:Generated_Source\PSoC4/I2C_PM.c ****         }
+ 216:Generated_Source\PSoC4/I2C_PM.c **** 
+ 217:Generated_Source\PSoC4/I2C_PM.c ****     #endif /* (I2C_I2C_WAKE_ENABLE_CONST) */
+ 218:Generated_Source\PSoC4/I2C_PM.c **** 
+ 219:Generated_Source\PSoC4/I2C_PM.c **** #endif /* (I2C_SCB_MODE_UNCONFIG_CONST_CFG) */
+ 220:Generated_Source\PSoC4/I2C_PM.c **** }
+ 100              		.loc 1 220 0
+ 101 0010 C046     		nop
+ 102 0012 BD46     		mov	sp, r7
+ 103              		@ sp needed
+ 104 0014 80BD     		pop	{r7, pc}
+ 105              	.L10:
+ 106 0016 C046     		.align	2
+ 107              	.L9:
+ 108 0018 00000000 		.word	I2C_backup
+ 109              		.cfi_endproc
+ 110              	.LFE3:
+ 111              		.size	I2C_Wakeup, .-I2C_Wakeup
+ 112              		.text
+ 113              	.Letext0:
+ 114              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 115              		.file 3 "Generated_Source\\PSoC4\\I2C.h"
+ 116              		.section	.debug_info,"",%progbits
+ 117              	.Ldebug_info0:
+ 118 0000 12010000 		.4byte	0x112
+ 119 0004 0300     		.2byte	0x3
+ 120 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 121 000a 04       		.byte	0x4
+ 122 000b 01       		.uleb128 0x1
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 7
+
+
+ 123 000c 5E010000 		.4byte	.LASF20
+ 124 0010 0C       		.byte	0xc
+ 125 0011 C3000000 		.4byte	.LASF21
+ 126 0015 2E000000 		.4byte	.LASF22
+ 127 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 128 001d 00000000 		.4byte	0
+ 129 0021 00000000 		.4byte	0
+ 130 0025 00000000 		.4byte	.Ldebug_line0
+ 131 0029 02       		.uleb128 0x2
+ 132 002a 01       		.byte	0x1
+ 133 002b 06       		.byte	0x6
+ 134 002c 31010000 		.4byte	.LASF0
+ 135 0030 02       		.uleb128 0x2
+ 136 0031 01       		.byte	0x1
+ 137 0032 08       		.byte	0x8
+ 138 0033 F5000000 		.4byte	.LASF1
+ 139 0037 02       		.uleb128 0x2
+ 140 0038 02       		.byte	0x2
+ 141 0039 05       		.byte	0x5
+ 142 003a 54010000 		.4byte	.LASF2
+ 143 003e 02       		.uleb128 0x2
+ 144 003f 02       		.byte	0x2
+ 145 0040 07       		.byte	0x7
+ 146 0041 1E010000 		.4byte	.LASF3
+ 147 0045 02       		.uleb128 0x2
+ 148 0046 04       		.byte	0x4
+ 149 0047 05       		.byte	0x5
+ 150 0048 08010000 		.4byte	.LASF4
+ 151 004c 02       		.uleb128 0x2
+ 152 004d 04       		.byte	0x4
+ 153 004e 07       		.byte	0x7
+ 154 004f 94000000 		.4byte	.LASF5
+ 155 0053 02       		.uleb128 0x2
+ 156 0054 08       		.byte	0x8
+ 157 0055 05       		.byte	0x5
+ 158 0056 00000000 		.4byte	.LASF6
+ 159 005a 02       		.uleb128 0x2
+ 160 005b 08       		.byte	0x8
+ 161 005c 07       		.byte	0x7
+ 162 005d A6000000 		.4byte	.LASF7
+ 163 0061 03       		.uleb128 0x3
+ 164 0062 04       		.byte	0x4
+ 165 0063 05       		.byte	0x5
+ 166 0064 696E7400 		.ascii	"int\000"
+ 167 0068 02       		.uleb128 0x2
+ 168 0069 04       		.byte	0x4
+ 169 006a 07       		.byte	0x7
+ 170 006b 21000000 		.4byte	.LASF8
+ 171 006f 04       		.uleb128 0x4
+ 172 0070 8E000000 		.4byte	.LASF9
+ 173 0074 02       		.byte	0x2
+ 174 0075 D201     		.2byte	0x1d2
+ 175 0077 30000000 		.4byte	0x30
+ 176 007b 04       		.uleb128 0x4
+ 177 007c 0E000000 		.4byte	.LASF10
+ 178 0080 02       		.byte	0x2
+ 179 0081 D401     		.2byte	0x1d4
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 8
+
+
+ 180 0083 4C000000 		.4byte	0x4c
+ 181 0087 02       		.uleb128 0x2
+ 182 0088 04       		.byte	0x4
+ 183 0089 04       		.byte	0x4
+ 184 008a BD000000 		.4byte	.LASF11
+ 185 008e 02       		.uleb128 0x2
+ 186 008f 08       		.byte	0x8
+ 187 0090 04       		.byte	0x4
+ 188 0091 11010000 		.4byte	.LASF12
+ 189 0095 02       		.uleb128 0x2
+ 190 0096 01       		.byte	0x1
+ 191 0097 08       		.byte	0x8
+ 192 0098 03010000 		.4byte	.LASF13
+ 193 009c 04       		.uleb128 0x4
+ 194 009d 18010000 		.4byte	.LASF14
+ 195 00a1 02       		.byte	0x2
+ 196 00a2 7E02     		.2byte	0x27e
+ 197 00a4 A8000000 		.4byte	0xa8
+ 198 00a8 05       		.uleb128 0x5
+ 199 00a9 7B000000 		.4byte	0x7b
+ 200 00ad 02       		.uleb128 0x2
+ 201 00ae 08       		.byte	0x8
+ 202 00af 04       		.byte	0x4
+ 203 00b0 3D010000 		.4byte	.LASF15
+ 204 00b4 02       		.uleb128 0x2
+ 205 00b5 04       		.byte	0x4
+ 206 00b6 07       		.byte	0x7
+ 207 00b7 00020000 		.4byte	.LASF16
+ 208 00bb 06       		.uleb128 0x6
+ 209 00bc 01       		.byte	0x1
+ 210 00bd 03       		.byte	0x3
+ 211 00be 60       		.byte	0x60
+ 212 00bf D0000000 		.4byte	0xd0
+ 213 00c3 07       		.uleb128 0x7
+ 214 00c4 15000000 		.4byte	.LASF23
+ 215 00c8 03       		.byte	0x3
+ 216 00c9 62       		.byte	0x62
+ 217 00ca 6F000000 		.4byte	0x6f
+ 218 00ce 00       		.byte	0
+ 219 00cf 00       		.byte	0
+ 220 00d0 08       		.uleb128 0x8
+ 221 00d1 E3000000 		.4byte	.LASF17
+ 222 00d5 03       		.byte	0x3
+ 223 00d6 63       		.byte	0x63
+ 224 00d7 BB000000 		.4byte	0xbb
+ 225 00db 09       		.uleb128 0x9
+ 226 00dc 01       		.byte	0x1
+ 227 00dd F6010000 		.4byte	.LASF18
+ 228 00e1 01       		.byte	0x1
+ 229 00e2 49       		.byte	0x49
+ 230 00e3 01       		.byte	0x1
+ 231 00e4 00000000 		.4byte	.LFB2
+ 232 00e8 2C000000 		.4byte	.LFE2
+ 233 00ec 01       		.byte	0x1
+ 234 00ed 9C       		.byte	0x9c
+ 235 00ee 01       		.byte	0x1
+ 236 00ef 09       		.uleb128 0x9
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 9
+
+
+ 237 00f0 01       		.byte	0x1
+ 238 00f1 83000000 		.4byte	.LASF19
+ 239 00f5 01       		.byte	0x1
+ 240 00f6 9F       		.byte	0x9f
+ 241 00f7 01       		.byte	0x1
+ 242 00f8 00000000 		.4byte	.LFB3
+ 243 00fc 1C000000 		.4byte	.LFE3
+ 244 0100 01       		.byte	0x1
+ 245 0101 9C       		.byte	0x9c
+ 246 0102 01       		.byte	0x1
+ 247 0103 0A       		.uleb128 0xa
+ 248 0104 49010000 		.4byte	.LASF24
+ 249 0108 01       		.byte	0x1
+ 250 0109 2D       		.byte	0x2d
+ 251 010a D0000000 		.4byte	0xd0
+ 252 010e 01       		.byte	0x1
+ 253 010f 05       		.byte	0x5
+ 254 0110 03       		.byte	0x3
+ 255 0111 00000000 		.4byte	I2C_backup
+ 256 0115 00       		.byte	0
+ 257              		.section	.debug_abbrev,"",%progbits
+ 258              	.Ldebug_abbrev0:
+ 259 0000 01       		.uleb128 0x1
+ 260 0001 11       		.uleb128 0x11
+ 261 0002 01       		.byte	0x1
+ 262 0003 25       		.uleb128 0x25
+ 263 0004 0E       		.uleb128 0xe
+ 264 0005 13       		.uleb128 0x13
+ 265 0006 0B       		.uleb128 0xb
+ 266 0007 03       		.uleb128 0x3
+ 267 0008 0E       		.uleb128 0xe
+ 268 0009 1B       		.uleb128 0x1b
+ 269 000a 0E       		.uleb128 0xe
+ 270 000b 55       		.uleb128 0x55
+ 271 000c 06       		.uleb128 0x6
+ 272 000d 11       		.uleb128 0x11
+ 273 000e 01       		.uleb128 0x1
+ 274 000f 52       		.uleb128 0x52
+ 275 0010 01       		.uleb128 0x1
+ 276 0011 10       		.uleb128 0x10
+ 277 0012 06       		.uleb128 0x6
+ 278 0013 00       		.byte	0
+ 279 0014 00       		.byte	0
+ 280 0015 02       		.uleb128 0x2
+ 281 0016 24       		.uleb128 0x24
+ 282 0017 00       		.byte	0
+ 283 0018 0B       		.uleb128 0xb
+ 284 0019 0B       		.uleb128 0xb
+ 285 001a 3E       		.uleb128 0x3e
+ 286 001b 0B       		.uleb128 0xb
+ 287 001c 03       		.uleb128 0x3
+ 288 001d 0E       		.uleb128 0xe
+ 289 001e 00       		.byte	0
+ 290 001f 00       		.byte	0
+ 291 0020 03       		.uleb128 0x3
+ 292 0021 24       		.uleb128 0x24
+ 293 0022 00       		.byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 10
+
+
+ 294 0023 0B       		.uleb128 0xb
+ 295 0024 0B       		.uleb128 0xb
+ 296 0025 3E       		.uleb128 0x3e
+ 297 0026 0B       		.uleb128 0xb
+ 298 0027 03       		.uleb128 0x3
+ 299 0028 08       		.uleb128 0x8
+ 300 0029 00       		.byte	0
+ 301 002a 00       		.byte	0
+ 302 002b 04       		.uleb128 0x4
+ 303 002c 16       		.uleb128 0x16
+ 304 002d 00       		.byte	0
+ 305 002e 03       		.uleb128 0x3
+ 306 002f 0E       		.uleb128 0xe
+ 307 0030 3A       		.uleb128 0x3a
+ 308 0031 0B       		.uleb128 0xb
+ 309 0032 3B       		.uleb128 0x3b
+ 310 0033 05       		.uleb128 0x5
+ 311 0034 49       		.uleb128 0x49
+ 312 0035 13       		.uleb128 0x13
+ 313 0036 00       		.byte	0
+ 314 0037 00       		.byte	0
+ 315 0038 05       		.uleb128 0x5
+ 316 0039 35       		.uleb128 0x35
+ 317 003a 00       		.byte	0
+ 318 003b 49       		.uleb128 0x49
+ 319 003c 13       		.uleb128 0x13
+ 320 003d 00       		.byte	0
+ 321 003e 00       		.byte	0
+ 322 003f 06       		.uleb128 0x6
+ 323 0040 13       		.uleb128 0x13
+ 324 0041 01       		.byte	0x1
+ 325 0042 0B       		.uleb128 0xb
+ 326 0043 0B       		.uleb128 0xb
+ 327 0044 3A       		.uleb128 0x3a
+ 328 0045 0B       		.uleb128 0xb
+ 329 0046 3B       		.uleb128 0x3b
+ 330 0047 0B       		.uleb128 0xb
+ 331 0048 01       		.uleb128 0x1
+ 332 0049 13       		.uleb128 0x13
+ 333 004a 00       		.byte	0
+ 334 004b 00       		.byte	0
+ 335 004c 07       		.uleb128 0x7
+ 336 004d 0D       		.uleb128 0xd
+ 337 004e 00       		.byte	0
+ 338 004f 03       		.uleb128 0x3
+ 339 0050 0E       		.uleb128 0xe
+ 340 0051 3A       		.uleb128 0x3a
+ 341 0052 0B       		.uleb128 0xb
+ 342 0053 3B       		.uleb128 0x3b
+ 343 0054 0B       		.uleb128 0xb
+ 344 0055 49       		.uleb128 0x49
+ 345 0056 13       		.uleb128 0x13
+ 346 0057 38       		.uleb128 0x38
+ 347 0058 0B       		.uleb128 0xb
+ 348 0059 00       		.byte	0
+ 349 005a 00       		.byte	0
+ 350 005b 08       		.uleb128 0x8
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 11
+
+
+ 351 005c 16       		.uleb128 0x16
+ 352 005d 00       		.byte	0
+ 353 005e 03       		.uleb128 0x3
+ 354 005f 0E       		.uleb128 0xe
+ 355 0060 3A       		.uleb128 0x3a
+ 356 0061 0B       		.uleb128 0xb
+ 357 0062 3B       		.uleb128 0x3b
+ 358 0063 0B       		.uleb128 0xb
+ 359 0064 49       		.uleb128 0x49
+ 360 0065 13       		.uleb128 0x13
+ 361 0066 00       		.byte	0
+ 362 0067 00       		.byte	0
+ 363 0068 09       		.uleb128 0x9
+ 364 0069 2E       		.uleb128 0x2e
+ 365 006a 00       		.byte	0
+ 366 006b 3F       		.uleb128 0x3f
+ 367 006c 0C       		.uleb128 0xc
+ 368 006d 03       		.uleb128 0x3
+ 369 006e 0E       		.uleb128 0xe
+ 370 006f 3A       		.uleb128 0x3a
+ 371 0070 0B       		.uleb128 0xb
+ 372 0071 3B       		.uleb128 0x3b
+ 373 0072 0B       		.uleb128 0xb
+ 374 0073 27       		.uleb128 0x27
+ 375 0074 0C       		.uleb128 0xc
+ 376 0075 11       		.uleb128 0x11
+ 377 0076 01       		.uleb128 0x1
+ 378 0077 12       		.uleb128 0x12
+ 379 0078 01       		.uleb128 0x1
+ 380 0079 40       		.uleb128 0x40
+ 381 007a 0A       		.uleb128 0xa
+ 382 007b 9642     		.uleb128 0x2116
+ 383 007d 0C       		.uleb128 0xc
+ 384 007e 00       		.byte	0
+ 385 007f 00       		.byte	0
+ 386 0080 0A       		.uleb128 0xa
+ 387 0081 34       		.uleb128 0x34
+ 388 0082 00       		.byte	0
+ 389 0083 03       		.uleb128 0x3
+ 390 0084 0E       		.uleb128 0xe
+ 391 0085 3A       		.uleb128 0x3a
+ 392 0086 0B       		.uleb128 0xb
+ 393 0087 3B       		.uleb128 0x3b
+ 394 0088 0B       		.uleb128 0xb
+ 395 0089 49       		.uleb128 0x49
+ 396 008a 13       		.uleb128 0x13
+ 397 008b 3F       		.uleb128 0x3f
+ 398 008c 0C       		.uleb128 0xc
+ 399 008d 02       		.uleb128 0x2
+ 400 008e 0A       		.uleb128 0xa
+ 401 008f 00       		.byte	0
+ 402 0090 00       		.byte	0
+ 403 0091 00       		.byte	0
+ 404              		.section	.debug_aranges,"",%progbits
+ 405 0000 24000000 		.4byte	0x24
+ 406 0004 0200     		.2byte	0x2
+ 407 0006 00000000 		.4byte	.Ldebug_info0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 12
+
+
+ 408 000a 04       		.byte	0x4
+ 409 000b 00       		.byte	0
+ 410 000c 0000     		.2byte	0
+ 411 000e 0000     		.2byte	0
+ 412 0010 00000000 		.4byte	.LFB2
+ 413 0014 2C000000 		.4byte	.LFE2-.LFB2
+ 414 0018 00000000 		.4byte	.LFB3
+ 415 001c 1C000000 		.4byte	.LFE3-.LFB3
+ 416 0020 00000000 		.4byte	0
+ 417 0024 00000000 		.4byte	0
+ 418              		.section	.debug_ranges,"",%progbits
+ 419              	.Ldebug_ranges0:
+ 420 0000 00000000 		.4byte	.LFB2
+ 421 0004 2C000000 		.4byte	.LFE2
+ 422 0008 00000000 		.4byte	.LFB3
+ 423 000c 1C000000 		.4byte	.LFE3
+ 424 0010 00000000 		.4byte	0
+ 425 0014 00000000 		.4byte	0
+ 426              		.section	.debug_line,"",%progbits
+ 427              	.Ldebug_line0:
+ 428 0000 7D000000 		.section	.debug_str,"MS",%progbits,1
+ 428      02004C00 
+ 428      00000201 
+ 428      FB0E0D00 
+ 428      01010101 
+ 429              	.LASF6:
+ 430 0000 6C6F6E67 		.ascii	"long long int\000"
+ 430      206C6F6E 
+ 430      6720696E 
+ 430      7400
+ 431              	.LASF10:
+ 432 000e 75696E74 		.ascii	"uint32\000"
+ 432      333200
+ 433              	.LASF23:
+ 434 0015 656E6162 		.ascii	"enableState\000"
+ 434      6C655374 
+ 434      61746500 
+ 435              	.LASF8:
+ 436 0021 756E7369 		.ascii	"unsigned int\000"
+ 436      676E6564 
+ 436      20696E74 
+ 436      00
+ 437              	.LASF22:
+ 438 002e 433A5C55 		.ascii	"C:\\Users\\hasur\\Documents\\PSoC_4_BLE_Pressure_Se"
+ 438      73657273 
+ 438      5C686173 
+ 438      75725C44 
+ 438      6F63756D 
+ 439 005d 6E736F72 		.ascii	"nsor\\PSoC_4_BLE_Pressure_Sensor.cydsn\000"
+ 439      5C50536F 
+ 439      435F345F 
+ 439      424C455F 
+ 439      50726573 
+ 440              	.LASF19:
+ 441 0083 4932435F 		.ascii	"I2C_Wakeup\000"
+ 441      57616B65 
+ 441      757000
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 13
+
+
+ 442              	.LASF9:
+ 443 008e 75696E74 		.ascii	"uint8\000"
+ 443      3800
+ 444              	.LASF5:
+ 445 0094 6C6F6E67 		.ascii	"long unsigned int\000"
+ 445      20756E73 
+ 445      69676E65 
+ 445      6420696E 
+ 445      7400
+ 446              	.LASF7:
+ 447 00a6 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 447      206C6F6E 
+ 447      6720756E 
+ 447      7369676E 
+ 447      65642069 
+ 448              	.LASF11:
+ 449 00bd 666C6F61 		.ascii	"float\000"
+ 449      7400
+ 450              	.LASF21:
+ 451 00c3 47656E65 		.ascii	"Generated_Source\\PSoC4\\I2C_PM.c\000"
+ 451      72617465 
+ 451      645F536F 
+ 451      75726365 
+ 451      5C50536F 
+ 452              	.LASF17:
+ 453 00e3 4932435F 		.ascii	"I2C_BACKUP_STRUCT\000"
+ 453      4241434B 
+ 453      55505F53 
+ 453      54525543 
+ 453      5400
+ 454              	.LASF1:
+ 455 00f5 756E7369 		.ascii	"unsigned char\000"
+ 455      676E6564 
+ 455      20636861 
+ 455      7200
+ 456              	.LASF13:
+ 457 0103 63686172 		.ascii	"char\000"
+ 457      00
+ 458              	.LASF4:
+ 459 0108 6C6F6E67 		.ascii	"long int\000"
+ 459      20696E74 
+ 459      00
+ 460              	.LASF12:
+ 461 0111 646F7562 		.ascii	"double\000"
+ 461      6C6500
+ 462              	.LASF14:
+ 463 0118 72656733 		.ascii	"reg32\000"
+ 463      3200
+ 464              	.LASF3:
+ 465 011e 73686F72 		.ascii	"short unsigned int\000"
+ 465      7420756E 
+ 465      7369676E 
+ 465      65642069 
+ 465      6E7400
+ 466              	.LASF0:
+ 467 0131 7369676E 		.ascii	"signed char\000"
+ 467      65642063 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccODyecS.s 			page 14
+
+
+ 467      68617200 
+ 468              	.LASF15:
+ 469 013d 6C6F6E67 		.ascii	"long double\000"
+ 469      20646F75 
+ 469      626C6500 
+ 470              	.LASF24:
+ 471 0149 4932435F 		.ascii	"I2C_backup\000"
+ 471      6261636B 
+ 471      757000
+ 472              	.LASF2:
+ 473 0154 73686F72 		.ascii	"short int\000"
+ 473      7420696E 
+ 473      7400
+ 474              	.LASF20:
+ 475 015e 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 475      43313120 
+ 475      352E342E 
+ 475      31203230 
+ 475      31363036 
+ 476 0191 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -g"
+ 476      20726576 
+ 476      6973696F 
+ 476      6E203233 
+ 476      37373135 
+ 477 01c4 64776172 		.ascii	"dwarf-3 -O0 -ffunction-sections -ffat-lto-objects\000"
+ 477      662D3320 
+ 477      2D4F3020 
+ 477      2D666675 
+ 477      6E637469 
+ 478              	.LASF18:
+ 479 01f6 4932435F 		.ascii	"I2C_Sleep\000"
+ 479      536C6565 
+ 479      7000
+ 480              	.LASF16:
+ 481 0200 73697A65 		.ascii	"sizetype\000"
+ 481      74797065 
+ 481      00
+ 482              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

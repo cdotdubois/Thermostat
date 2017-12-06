@@ -1,0 +1,424 @@
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"cymetadata.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	cy_meta_flashprotect
+  20              		.section	.cyflashprotect,"a",%progbits
+  21              		.align	2
+  22              		.type	cy_meta_flashprotect, %object
+  23              		.size	cy_meta_flashprotect, 128
+  24              	cy_meta_flashprotect:
+  25 0000 00000000 		.space	128
+  25      00000000 
+  25      00000000 
+  25      00000000 
+  25      00000000 
+  26              		.global	cy_metadata
+  27              		.section	.cymeta,"a",%progbits
+  28              		.align	2
+  29              		.type	cy_metadata, %object
+  30              		.size	cy_metadata, 12
+  31              	cy_metadata:
+  32 0000 00       		.byte	0
+  33 0001 02       		.byte	2
+  34 0002 0E       		.byte	14
+  35 0003 34       		.byte	52
+  36 0004 11       		.byte	17
+  37 0005 9E       		.byte	-98
+  38 0006 00       		.byte	0
+  39 0007 01       		.byte	1
+  40 0008 00       		.byte	0
+  41 0009 00       		.byte	0
+  42 000a 00       		.byte	0
+  43 000b 00       		.byte	0
+  44              		.global	cy_meta_chipprotect
+  45              		.section	.cychipprotect,"a",%progbits
+  46              		.align	2
+  47              		.type	cy_meta_chipprotect, %object
+  48              		.size	cy_meta_chipprotect, 1
+  49              	cy_meta_chipprotect:
+  50 0000 01       		.byte	1
+  51              		.text
+  52              	.Letext0:
+  53              		.file 1 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 2
+
+
+  54              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+  55              		.file 3 "Generated_Source\\PSoC4\\cymetadata.c"
+  56              		.section	.debug_info,"",%progbits
+  57              	.Ldebug_info0:
+  58 0000 F7000000 		.4byte	0xf7
+  59 0004 0300     		.2byte	0x3
+  60 0006 00000000 		.4byte	.Ldebug_abbrev0
+  61 000a 04       		.byte	0x4
+  62 000b 01       		.uleb128 0x1
+  63 000c 4D010000 		.4byte	.LASF15
+  64 0010 0C       		.byte	0xc
+  65 0011 38000000 		.4byte	.LASF16
+  66 0015 81000000 		.4byte	.LASF17
+  67 0019 00000000 		.4byte	.Ldebug_line0
+  68 001d 02       		.uleb128 0x2
+  69 001e 01       		.byte	0x1
+  70 001f 06       		.byte	0x6
+  71 0020 41010000 		.4byte	.LASF0
+  72 0024 03       		.uleb128 0x3
+  73 0025 00000000 		.4byte	.LASF9
+  74 0029 01       		.byte	0x1
+  75 002a 1D       		.byte	0x1d
+  76 002b 2F000000 		.4byte	0x2f
+  77 002f 02       		.uleb128 0x2
+  78 0030 01       		.byte	0x1
+  79 0031 08       		.byte	0x8
+  80 0032 2A000000 		.4byte	.LASF1
+  81 0036 02       		.uleb128 0x2
+  82 0037 02       		.byte	0x2
+  83 0038 05       		.byte	0x5
+  84 0039 2E010000 		.4byte	.LASF2
+  85 003d 02       		.uleb128 0x2
+  86 003e 02       		.byte	0x2
+  87 003f 07       		.byte	0x7
+  88 0040 6E000000 		.4byte	.LASF3
+  89 0044 02       		.uleb128 0x2
+  90 0045 04       		.byte	0x4
+  91 0046 05       		.byte	0x5
+  92 0047 38010000 		.4byte	.LASF4
+  93 004b 02       		.uleb128 0x2
+  94 004c 04       		.byte	0x4
+  95 004d 07       		.byte	0x7
+  96 004e 5C000000 		.4byte	.LASF5
+  97 0052 02       		.uleb128 0x2
+  98 0053 08       		.byte	0x8
+  99 0054 05       		.byte	0x5
+ 100 0055 20010000 		.4byte	.LASF6
+ 101 0059 02       		.uleb128 0x2
+ 102 005a 08       		.byte	0x8
+ 103 005b 07       		.byte	0x7
+ 104 005c E3000000 		.4byte	.LASF7
+ 105 0060 04       		.uleb128 0x4
+ 106 0061 04       		.byte	0x4
+ 107 0062 05       		.byte	0x5
+ 108 0063 696E7400 		.ascii	"int\000"
+ 109 0067 02       		.uleb128 0x2
+ 110 0068 04       		.byte	0x4
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 3
+
+
+ 111 0069 07       		.byte	0x7
+ 112 006a D6000000 		.4byte	.LASF8
+ 113 006e 03       		.uleb128 0x3
+ 114 006f FA000000 		.4byte	.LASF10
+ 115 0073 02       		.byte	0x2
+ 116 0074 18       		.byte	0x18
+ 117 0075 24000000 		.4byte	0x24
+ 118 0079 05       		.uleb128 0x5
+ 119 007a 90000000 		.4byte	0x90
+ 120 007e 89000000 		.4byte	0x89
+ 121 0082 06       		.uleb128 0x6
+ 122 0083 89000000 		.4byte	0x89
+ 123 0087 7F       		.byte	0x7f
+ 124 0088 00       		.byte	0
+ 125 0089 02       		.uleb128 0x2
+ 126 008a 04       		.byte	0x4
+ 127 008b 07       		.byte	0x7
+ 128 008c 17010000 		.4byte	.LASF11
+ 129 0090 07       		.uleb128 0x7
+ 130 0091 6E000000 		.4byte	0x6e
+ 131 0095 08       		.uleb128 0x8
+ 132 0096 02010000 		.4byte	.LASF12
+ 133 009a 03       		.byte	0x3
+ 134 009b 1F       		.byte	0x1f
+ 135 009c A7000000 		.4byte	0xa7
+ 136 00a0 01       		.byte	0x1
+ 137 00a1 05       		.byte	0x5
+ 138 00a2 03       		.byte	0x3
+ 139 00a3 00000000 		.4byte	cy_meta_flashprotect
+ 140 00a7 07       		.uleb128 0x7
+ 141 00a8 79000000 		.4byte	0x79
+ 142 00ac 05       		.uleb128 0x5
+ 143 00ad 90000000 		.4byte	0x90
+ 144 00b1 BC000000 		.4byte	0xbc
+ 145 00b5 06       		.uleb128 0x6
+ 146 00b6 89000000 		.4byte	0x89
+ 147 00ba 0B       		.byte	0xb
+ 148 00bb 00       		.byte	0
+ 149 00bc 08       		.uleb128 0x8
+ 150 00bd 1E000000 		.4byte	.LASF13
+ 151 00c1 03       		.byte	0x3
+ 152 00c2 3C       		.byte	0x3c
+ 153 00c3 CE000000 		.4byte	0xce
+ 154 00c7 01       		.byte	0x1
+ 155 00c8 05       		.byte	0x5
+ 156 00c9 03       		.byte	0x3
+ 157 00ca 00000000 		.4byte	cy_metadata
+ 158 00ce 07       		.uleb128 0x7
+ 159 00cf AC000000 		.4byte	0xac
+ 160 00d3 05       		.uleb128 0x5
+ 161 00d4 90000000 		.4byte	0x90
+ 162 00d8 E3000000 		.4byte	0xe3
+ 163 00dc 06       		.uleb128 0x6
+ 164 00dd 89000000 		.4byte	0x89
+ 165 00e1 00       		.byte	0
+ 166 00e2 00       		.byte	0
+ 167 00e3 08       		.uleb128 0x8
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 4
+
+
+ 168 00e4 0A000000 		.4byte	.LASF14
+ 169 00e8 03       		.byte	0x3
+ 170 00e9 4B       		.byte	0x4b
+ 171 00ea F5000000 		.4byte	0xf5
+ 172 00ee 01       		.byte	0x1
+ 173 00ef 05       		.byte	0x5
+ 174 00f0 03       		.byte	0x3
+ 175 00f1 00000000 		.4byte	cy_meta_chipprotect
+ 176 00f5 07       		.uleb128 0x7
+ 177 00f6 D3000000 		.4byte	0xd3
+ 178 00fa 00       		.byte	0
+ 179              		.section	.debug_abbrev,"",%progbits
+ 180              	.Ldebug_abbrev0:
+ 181 0000 01       		.uleb128 0x1
+ 182 0001 11       		.uleb128 0x11
+ 183 0002 01       		.byte	0x1
+ 184 0003 25       		.uleb128 0x25
+ 185 0004 0E       		.uleb128 0xe
+ 186 0005 13       		.uleb128 0x13
+ 187 0006 0B       		.uleb128 0xb
+ 188 0007 03       		.uleb128 0x3
+ 189 0008 0E       		.uleb128 0xe
+ 190 0009 1B       		.uleb128 0x1b
+ 191 000a 0E       		.uleb128 0xe
+ 192 000b 10       		.uleb128 0x10
+ 193 000c 06       		.uleb128 0x6
+ 194 000d 00       		.byte	0
+ 195 000e 00       		.byte	0
+ 196 000f 02       		.uleb128 0x2
+ 197 0010 24       		.uleb128 0x24
+ 198 0011 00       		.byte	0
+ 199 0012 0B       		.uleb128 0xb
+ 200 0013 0B       		.uleb128 0xb
+ 201 0014 3E       		.uleb128 0x3e
+ 202 0015 0B       		.uleb128 0xb
+ 203 0016 03       		.uleb128 0x3
+ 204 0017 0E       		.uleb128 0xe
+ 205 0018 00       		.byte	0
+ 206 0019 00       		.byte	0
+ 207 001a 03       		.uleb128 0x3
+ 208 001b 16       		.uleb128 0x16
+ 209 001c 00       		.byte	0
+ 210 001d 03       		.uleb128 0x3
+ 211 001e 0E       		.uleb128 0xe
+ 212 001f 3A       		.uleb128 0x3a
+ 213 0020 0B       		.uleb128 0xb
+ 214 0021 3B       		.uleb128 0x3b
+ 215 0022 0B       		.uleb128 0xb
+ 216 0023 49       		.uleb128 0x49
+ 217 0024 13       		.uleb128 0x13
+ 218 0025 00       		.byte	0
+ 219 0026 00       		.byte	0
+ 220 0027 04       		.uleb128 0x4
+ 221 0028 24       		.uleb128 0x24
+ 222 0029 00       		.byte	0
+ 223 002a 0B       		.uleb128 0xb
+ 224 002b 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 5
+
+
+ 225 002c 3E       		.uleb128 0x3e
+ 226 002d 0B       		.uleb128 0xb
+ 227 002e 03       		.uleb128 0x3
+ 228 002f 08       		.uleb128 0x8
+ 229 0030 00       		.byte	0
+ 230 0031 00       		.byte	0
+ 231 0032 05       		.uleb128 0x5
+ 232 0033 01       		.uleb128 0x1
+ 233 0034 01       		.byte	0x1
+ 234 0035 49       		.uleb128 0x49
+ 235 0036 13       		.uleb128 0x13
+ 236 0037 01       		.uleb128 0x1
+ 237 0038 13       		.uleb128 0x13
+ 238 0039 00       		.byte	0
+ 239 003a 00       		.byte	0
+ 240 003b 06       		.uleb128 0x6
+ 241 003c 21       		.uleb128 0x21
+ 242 003d 00       		.byte	0
+ 243 003e 49       		.uleb128 0x49
+ 244 003f 13       		.uleb128 0x13
+ 245 0040 2F       		.uleb128 0x2f
+ 246 0041 0B       		.uleb128 0xb
+ 247 0042 00       		.byte	0
+ 248 0043 00       		.byte	0
+ 249 0044 07       		.uleb128 0x7
+ 250 0045 26       		.uleb128 0x26
+ 251 0046 00       		.byte	0
+ 252 0047 49       		.uleb128 0x49
+ 253 0048 13       		.uleb128 0x13
+ 254 0049 00       		.byte	0
+ 255 004a 00       		.byte	0
+ 256 004b 08       		.uleb128 0x8
+ 257 004c 34       		.uleb128 0x34
+ 258 004d 00       		.byte	0
+ 259 004e 03       		.uleb128 0x3
+ 260 004f 0E       		.uleb128 0xe
+ 261 0050 3A       		.uleb128 0x3a
+ 262 0051 0B       		.uleb128 0xb
+ 263 0052 3B       		.uleb128 0x3b
+ 264 0053 0B       		.uleb128 0xb
+ 265 0054 49       		.uleb128 0x49
+ 266 0055 13       		.uleb128 0x13
+ 267 0056 3F       		.uleb128 0x3f
+ 268 0057 0C       		.uleb128 0xc
+ 269 0058 02       		.uleb128 0x2
+ 270 0059 0A       		.uleb128 0xa
+ 271 005a 00       		.byte	0
+ 272 005b 00       		.byte	0
+ 273 005c 00       		.byte	0
+ 274              		.section	.debug_aranges,"",%progbits
+ 275 0000 14000000 		.4byte	0x14
+ 276 0004 0200     		.2byte	0x2
+ 277 0006 00000000 		.4byte	.Ldebug_info0
+ 278 000a 04       		.byte	0x4
+ 279 000b 00       		.byte	0
+ 280 000c 0000     		.2byte	0
+ 281 000e 0000     		.2byte	0
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 6
+
+
+ 282 0010 00000000 		.4byte	0
+ 283 0014 00000000 		.4byte	0
+ 284              		.section	.debug_line,"",%progbits
+ 285              	.Ldebug_line0:
+ 286 0000 3D010000 		.section	.debug_str,"MS",%progbits,1
+ 286      02003701 
+ 286      00000201 
+ 286      FB0E0D00 
+ 286      01010101 
+ 287              	.LASF9:
+ 288 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 288      6E74385F 
+ 288      7400
+ 289              	.LASF14:
+ 290 000a 63795F6D 		.ascii	"cy_meta_chipprotect\000"
+ 290      6574615F 
+ 290      63686970 
+ 290      70726F74 
+ 290      65637400 
+ 291              	.LASF13:
+ 292 001e 63795F6D 		.ascii	"cy_metadata\000"
+ 292      65746164 
+ 292      61746100 
+ 293              	.LASF1:
+ 294 002a 756E7369 		.ascii	"unsigned char\000"
+ 294      676E6564 
+ 294      20636861 
+ 294      7200
+ 295              	.LASF16:
+ 296 0038 47656E65 		.ascii	"Generated_Source\\PSoC4\\cymetadata.c\000"
+ 296      72617465 
+ 296      645F536F 
+ 296      75726365 
+ 296      5C50536F 
+ 297              	.LASF5:
+ 298 005c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 298      20756E73 
+ 298      69676E65 
+ 298      6420696E 
+ 298      7400
+ 299              	.LASF3:
+ 300 006e 73686F72 		.ascii	"short unsigned int\000"
+ 300      7420756E 
+ 300      7369676E 
+ 300      65642069 
+ 300      6E7400
+ 301              	.LASF17:
+ 302 0081 433A5C55 		.ascii	"C:\\Users\\hasur\\Documents\\PSoC_4_BLE_Pressure_Se"
+ 302      73657273 
+ 302      5C686173 
+ 302      75725C44 
+ 302      6F63756D 
+ 303 00b0 6E736F72 		.ascii	"nsor\\PSoC_4_BLE_Pressure_Sensor.cydsn\000"
+ 303      5C50536F 
+ 303      435F345F 
+ 303      424C455F 
+ 303      50726573 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 7
+
+
+ 304              	.LASF8:
+ 305 00d6 756E7369 		.ascii	"unsigned int\000"
+ 305      676E6564 
+ 305      20696E74 
+ 305      00
+ 306              	.LASF7:
+ 307 00e3 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 307      206C6F6E 
+ 307      6720756E 
+ 307      7369676E 
+ 307      65642069 
+ 308              	.LASF10:
+ 309 00fa 75696E74 		.ascii	"uint8_t\000"
+ 309      385F7400 
+ 310              	.LASF12:
+ 311 0102 63795F6D 		.ascii	"cy_meta_flashprotect\000"
+ 311      6574615F 
+ 311      666C6173 
+ 311      6870726F 
+ 311      74656374 
+ 312              	.LASF11:
+ 313 0117 73697A65 		.ascii	"sizetype\000"
+ 313      74797065 
+ 313      00
+ 314              	.LASF6:
+ 315 0120 6C6F6E67 		.ascii	"long long int\000"
+ 315      206C6F6E 
+ 315      6720696E 
+ 315      7400
+ 316              	.LASF2:
+ 317 012e 73686F72 		.ascii	"short int\000"
+ 317      7420696E 
+ 317      7400
+ 318              	.LASF4:
+ 319 0138 6C6F6E67 		.ascii	"long int\000"
+ 319      20696E74 
+ 319      00
+ 320              	.LASF0:
+ 321 0141 7369676E 		.ascii	"signed char\000"
+ 321      65642063 
+ 321      68617200 
+ 322              	.LASF15:
+ 323 014d 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 323      43313120 
+ 323      352E342E 
+ 323      31203230 
+ 323      31363036 
+ 324 0180 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -g"
+ 324      20726576 
+ 324      6973696F 
+ 324      6E203233 
+ 324      37373135 
+ 325 01b3 64776172 		.ascii	"dwarf-3 -O0 -ffunction-sections -ffat-lto-objects\000"
+ 325      662D3320 
+ 325      2D4F3020 
+ 325      2D666675 
+ 325      6E637469 
+ARM GAS  C:\Users\hasur\AppData\Local\Temp\ccLHEruF.s 			page 8
+
+
+ 326              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
