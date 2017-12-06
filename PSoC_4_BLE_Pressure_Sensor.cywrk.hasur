@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\VDD">
+<ExpandedNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Pins</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Analog</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Clocks</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Interrupts</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\System</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Directives</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Flash Security</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\BLEApplication.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\common.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\I2CMaster.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\main.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\BLEApplication.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\I2CMaster.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\main.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.wspx</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Pins</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Analog</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Clocks</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Interrupts</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\System</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Directives</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydwr\Flash Security</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\BLEApplication.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\common.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\I2CMaster.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Header Files\main.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\BLEApplication.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\I2CMaster.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Source Files\main.c</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\BLE</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\BLE_bless_isr</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\Btn_Interrupt</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\Button</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cy_boot</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cy_lfclk</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\GND</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\I2C</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\I2C_SCB_IRQ</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\I2C_SCBCLK</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\I2C_scl</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\I2C_sda</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\LED</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\VDD</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cycodeshareexport.ld</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cycodeshareimport.ld</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cycodeshareimport.scat</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cydevice_trm.h</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cydevicegnu_trm.inc</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cydeviceiar_trm.inc</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Generated_Source\PSoC4\cydevicerv_trm.inc</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PSoC_4_BLE_Pressure_Sensor">
+<ExpandedNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_bless_isr.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_custom.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_eventHandler.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_gatt.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_INT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_PVT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLEApplication.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Btn_Interrupt.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Button.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLFClk.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\GND.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\GND_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_BOOT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_BOOT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_INT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_MASTER.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_SCB_IRQ.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_SCBCLK.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_scl.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_scl_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_sda.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_sda_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CMaster.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\LED.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\LED_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\VDD.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\VDD_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\PSoC_4_BLE_Pressure_Sensor.elf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\PSoC_4_BLE_Pressure_Sensor.hex</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\PSoC_4_BLE_Pressure_Sensor.map</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.gpdsc</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.rpt</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_bless_isr.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_custom.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_eventHandler.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_gatt.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_INT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_PVT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\BLEApplication.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Btn_Interrupt.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Button.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLFClk.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\GND.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\GND_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_BOOT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_BOOT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_INT.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_I2C_MASTER.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_SCB_IRQ.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_SCBCLK.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_scl.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_scl_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_sda.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2C_sda_PM.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CMaster.lst</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\CortexM0\ARM_GCC_541\Debug\Listing Files\LED.lst</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PSoC_4_BLE_Pressure_Sensor">
+<ExpandedNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC 4 Architecture TRM</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC 4200 BLE Family Datasheet</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides\cy_boot_v5_60</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides\cy_lfclk_v1_20</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\BLE_v3_40.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_isr_v1_70.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_pins_v2_20</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Gnd_v1_0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Gnd_v1_0\Gnd_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\LED_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Power_v1_0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Power_v1_0\Power_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Resistor_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\SCB_P4_v4_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\SwitchSPST_v1_0.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC 4 Architecture TRM</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\PSoC 4200 BLE Family Datasheet</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides\cy_boot_v5_60</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\System Reference Guides\cy_lfclk_v1_20</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\BLE_v3_40.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_isr_v1_70.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_pins_v2_20</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Gnd_v1_0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Gnd_v1_0\Gnd_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\LED_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Power_v1_0</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Power_v1_0\Power_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\Resistor_v1_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\SCB_P4_v4_0.pdf</v>
+<v>PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor\SwitchSPST_v1_0.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\PSoC_4_BLE_Pressure_Sensor.cydwr" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\TopDesign\TopDesign.cysch" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\Generated_Source\PSoC4\LED.c" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\main.h" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\BLEApplication.h" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\BLEApplication.c" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\main.c" />
+<name v=".\PSoC_4_BLE_Pressure_Sensor.cydsn\Generated_Source\PSoC4\LED.h" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1035, 631" SelectedTabbedMdiWindow="73e1abde-af30-4c2f-9215-f8f6e3e7ca8c"><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\PSoC_4_BLE_Pressure_Sensor.cydwr" Guid="9d6cb966-349f-468f-8b5f-f3badf71eeb3" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="53763dd3-4133-4ef3-9bad-abdffc53b54c" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\TopDesign\TopDesign.cysch" Guid="964f32dc-6c51-4735-ae38-20506342c9fe" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\Generated_Source\PSoC4\LED.c" Guid="f308663c-b2ea-4171-a8b7-ed4c29dc874c" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\main.h" Guid="eed8ac82-b0d5-45f8-ab43-9c6d87213407" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\BLEApplication.h" Guid="ef1b5d3e-58a9-4092-88a4-9f7a520138ba" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\BLEApplication.c" Guid="91febcb6-cf46-4176-a03d-6a644cfa459b" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\main.c" Guid="73e1abde-af30-4c2f-9215-f8f6e3e7ca8c" /><DocumentWindow Key="C:\Users\hasur\Documents\PSoC_4_BLE_Pressure_Sensor\PSoC_4_BLE_Pressure_Sensor.cydsn\Generated_Source\PSoC4\LED.h" Guid="98c275e4-b292-404f-8689-ad240b96caf3" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>
